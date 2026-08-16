@@ -1,15 +1,17 @@
 {
   "name": "TKL Báo Giá Công Trình",
   "short_name": "TKL",
+  "description": "Ung dung tinh khoi luong va bao gia cong trinh",
   "start_url": "/TKL/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1e3a8a",
   "icons": [
     {
-      "src": "https://via.placeholder.com/512",
+      "src": "https://cdn-icons-png.flaticon.com/512/3062/3062634.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
