@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TKL - Dự Toán & Báo Giá Thi Công Chuyên Nghiệp</title>
+    <title>PHƯƠNG VY LUXURY WINDOW - Dự Toán & Báo Giá Chuyên Nghiệp</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -14,282 +14,331 @@
             body { background: white; color: black; }
         }
         .print-only { display: none; }
-        .tab-btn.active { border-bottom: 2px solid #2563eb; color: #2563eb; font-weight: 600; }
-        .subtab-btn.active { background-color: #2563eb; color: white; }
+        .tab-btn.active { border-bottom: 3px solid #1e3a8a; color: #1e3a8a; font-weight: 700; background-color: #f8fafc; }
+        .subtab-btn.active { background-color: #1e3a8a; color: white; }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 font-sans min-h-screen flex flex-col">
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <!-- Header -->
-    <header class="bg-blue-600 text-white p-4 shadow-md no-print sticky top-0 z-50">
+    <!-- Header Doanh Nghiệp -->
+    <header class="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 text-white p-4 shadow-xl no-print sticky top-0 z-50 border-b border-blue-500/30">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold tracking-wide">TKL ESTIMATOR</h1>
+            <div>
+                <h1 class="text-base font-extrabold tracking-wider uppercase text-yellow-400">PHƯƠNG VY LUXURY</h1>
+                <p class="text-[11px] text-slate-300 font-medium">Hệ Thống Báo Giá & Dự Toán Thi Công</p>
+            </div>
             <div class="flex items-center gap-2">
-                <span id="vipStatusBadge" class="text-xs bg-yellow-400 text-gray-900 font-bold px-2.5 py-1 rounded-full uppercase">Bản FREE</span>
-                <button onclick="confirmResetData()" class="text-[10px] bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded shadow" title="Xóa dữ liệu cũ, nhập mới từ đầu">🔄 Reset</button>
+                <span id="vipStatusBadge" class="text-[10px] bg-yellow-400 text-slate-900 font-extrabold px-2 py-1 rounded-full uppercase tracking-wider shadow">FREE</span>
+                <button onclick="confirmResetData()" class="text-[10px] bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded shadow transition" title="Xóa dữ liệu cũ, nhập mới từ đầu">🔄 Reset</button>
             </div>
         </div>
     </header>
 
     <!-- Navigation Tabs -->
-    <nav class="bg-white border-b shadow-sm no-print sticky top-[60px] z-40">
+    <nav class="bg-white border-b shadow-sm no-print sticky top-[62px] z-40">
         <div class="max-w-md mx-auto flex justify-around">
-            <button onclick="switchTab('khoan')" id="tab-khoan" class="tab-btn active py-3 px-4 text-sm text-gray-600">Khoán Khối Lượng</button>
-            <button onclick="switchTab('baogia')" id="tab-baogia" class="tab-btn py-3 px-4 text-sm text-gray-600 flex items-center gap-1">
-                Báo Giá Chuyên Sâu <span class="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold">PRO</span>
+            <button onclick="switchTab('khoan')" id="tab-khoan" class="tab-btn active py-3 px-3 text-xs text-slate-600 flex-1 text-center font-semibold">Khoán Khối Lượng</button>
+            <button onclick="switchTab('baogia')" id="tab-baogia" class="tab-btn py-3 px-3 text-xs text-slate-600 flex-1 text-center font-semibold flex items-center justify-center gap-1">
+                Báo Giá PRO <span class="bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded font-bold">VIP</span>
             </button>
-            <button onclick="switchTab('contact')" id="tab-contact" class="tab-btn py-3 px-4 text-sm text-gray-600">Liên Hệ</button>
+            <button onclick="switchTab('contact')" id="tab-contact" class="tab-btn py-3 px-3 text-xs text-slate-600 flex-1 text-center font-semibold">Công Ty & Liên Hệ</button>
         </div>
     </nav>
 
     <!-- Main Container -->
-    <main class="max-w-md mx-auto w-full flex-grow p-4 pb-28">
+    <main class="max-w-md mx-auto w-full flex-grow p-4 pb-32">
 
-        <!-- TAB 1: KHOÁN KHỐI LƯỢNG (FREE & PRO) -->
+        <!-- TAB 1: KHOÁN KHỐI LƯỢNG -->
         <section id="sec-khoan" class="space-y-4">
             <div class="flex justify-between items-center px-1">
-                <h2 class="text-xs font-bold text-gray-500 uppercase">Khoán Khối Lượng Đo Đạc</h2>
-                <button onclick="addNewCategorySection()" class="bg-blue-600 text-white text-xs font-semibold py-1.5 px-3 rounded-lg hover:bg-blue-700 shadow-sm no-print">
+                <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wide">Bảng Đo Đạc & Khối Lượng</h2>
+                <button onclick="addNewCategorySection()" class="bg-blue-600 text-white text-xs font-semibold py-1.5 px-3 rounded-lg hover:bg-blue-700 shadow-sm transition flex items-center gap-1">
                     ➕ Thêm Hạng Mục
                 </button>
             </div>
 
-            <div id="pdf-area-khoan" class="space-y-4 bg-white p-2 rounded-xl">
-                <h2 class="text-sm font-bold text-gray-800 print-only text-center mb-2">BẢNG KHOÁN KHỐI LƯỢNG THI CÔNG</h2>
+            <!-- Khu vực xuất PDF (Giao diện chuẩn hóa cực nét, không bị mờ chữ) -->
+            <div id="pdf-area-khoan" class="space-y-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <!-- Thông tin tiêu đề xuất PDF chuyên nghiệp -->
+                <div class="text-center pb-3 border-b-2 border-slate-800 space-y-1">
+                    <h2 id="pdfCompanyTitle" class="text-base font-extrabold text-slate-900 uppercase">CÔNG TY TNHH PHƯƠNG VY LUXURY WINDOW</h2>
+                    <p id="pdfCompanyMeta" class="text-[11px] text-slate-600 font-medium">Đ/C: Bình Tân, TP.HCM | SĐT: 0937091679</p>
+                    <h3 class="text-sm font-bold text-blue-700 uppercase pt-1">BẢNG KHOÁN KHỐI LƯỢNG THI CÔNG CHI TIẾT</h3>
+                </div>
+
                 <div id="categoriesContainer" class="space-y-4">
-                    <div class="category-card bg-white p-4 rounded-xl shadow-sm border space-y-3" data-cat-id="1">
-                        <div class="flex justify-between items-center border-b pb-2">
-                            <select class="cat-name-select font-bold text-sm text-blue-600 bg-transparent border-none focus:ring-0 cursor-pointer" onchange="saveToStorage(); calculateTotals()">
+                    <div class="category-card bg-slate-50/70 p-3.5 rounded-xl border border-slate-200 space-y-3" data-cat-id="1">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                            <select class="cat-name-select font-bold text-xs text-blue-900 bg-white border border-slate-300 rounded p-1.5 focus:ring-1 focus:ring-blue-500 cursor-pointer" onchange="saveToStorage(); calculateTotals()">
                                 <option value="Trần thạch cao" data-unit="m²" data-calc="area">Trần thạch cao (m²)</option>
                                 <option value="Phào chỉ" data-unit="m" data-calc="perimeter">Phào chỉ (Mét tới)</option>
                                 <option value="Vách thạch cao" data-unit="m²" data-calc="area">Vách thạch cao (m²)</option>
                                 <option value="Ốp tường PVC" data-unit="m²" data-calc="area">Ốp tường PVC (m²)</option>
                             </select>
-                            <div class="flex items-center gap-2">
-                                <input type="number" class="cat-price w-24 border rounded p-1 text-xs text-right font-bold" placeholder="Đơn giá" oninput="saveToStorage(); calculateTotals()">
-                                <span class="text-xs text-gray-500">đ</span>
+                            <div class="flex items-center gap-1">
+                                <input type="number" class="cat-price w-24 bg-white border border-slate-300 rounded p-1.5 text-xs text-right font-bold text-slate-800" placeholder="Đơn giá" oninput="saveToStorage(); calculateTotals()">
+                                <span class="text-xs text-slate-600 font-semibold">đ</span>
                             </div>
                         </div>
 
                         <div class="space-y-2 location-list">
-                            <div class="location-row bg-gray-50 p-2.5 rounded-lg border space-y-2">
+                            <div class="location-row bg-white p-3 rounded-lg border border-slate-200 shadow-2xs space-y-2">
                                 <div class="flex justify-between items-center">
-                                    <input type="text" class="loc-name text-xs font-semibold bg-transparent border-b border-gray-300 w-1/2" value="Phòng khách" oninput="saveToStorage()">
-                                    <select class="loc-shape text-[11px] border rounded p-1 bg-white" onchange="toggleRowInputs(this); saveToStorage(); calculateTotals();">
+                                    <input type="text" class="loc-name text-xs font-bold text-slate-800 bg-slate-50 border border-slate-200 rounded px-2 py-1 w-1/2" value="Phòng khách" oninput="saveToStorage()">
+                                    <select class="loc-shape text-[11px] border border-slate-300 rounded p-1 bg-white font-medium text-slate-700" onchange="toggleRowInputs(this); saveToStorage(); calculateTotals();">
                                         <option value="rect">Chữ nhật (DxR)</option>
                                         <option value="circle">Tròn (Bán kính R)</option>
                                     </select>
                                 </div>
                                 <div class="input-rect grid grid-cols-2 gap-2">
-                                    <input type="number" step="0.01" class="loc-length border rounded p-1 text-xs bg-white" placeholder="Dài (m)" oninput="saveToStorage(); calculateTotals()">
-                                    <input type="number" step="0.01" class="loc-width border rounded p-1 text-xs bg-white" placeholder="Rộng (m)" oninput="saveToStorage(); calculateTotals()">
+                                    <input type="number" step="0.01" class="loc-length bg-slate-50 border border-slate-300 rounded p-1.5 text-xs text-slate-800 font-medium" placeholder="Dài (m)" oninput="saveToStorage(); calculateTotals()">
+                                    <input type="number" step="0.01" class="loc-width bg-slate-50 border border-slate-300 rounded p-1.5 text-xs text-slate-800 font-medium" placeholder="Rộng (m)" oninput="saveToStorage(); calculateTotals()">
                                 </div>
                                 <div class="input-circle hidden">
-                                    <input type="number" step="0.01" class="loc-radius border rounded p-1 text-xs bg-white" placeholder="Bán kính R (m)" oninput="saveToStorage(); calculateTotals()">
+                                    <input type="number" step="0.01" class="loc-radius bg-slate-50 border border-slate-300 rounded p-1.5 text-xs text-slate-800 font-medium" placeholder="Bán kính R (m)" oninput="saveToStorage(); calculateTotals()">
                                 </div>
-                                <div class="flex justify-between items-center text-[11px] pt-1 text-gray-600 border-t">
-                                    <span>Khối lượng: <strong class="loc-subtotal text-blue-600 font-bold">0 m²</strong></span>
-                                    <button onclick="removeLocationRow(this)" class="text-red-500 hover:text-red-700 no-print">Xóa vị trí</button>
+                                <div class="flex justify-between items-center text-[11px] pt-1 text-slate-600 border-t border-slate-100">
+                                    <span>Khối lượng: <strong class="loc-subtotal text-blue-600 font-extrabold">0 m²</strong></span>
+                                    <button onclick="removeLocationRow(this)" class="text-red-500 hover:text-red-700 font-semibold no-print">Xóa vị trí</button>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center pt-1">
-                            <button onclick="addLocationRow(this)" class="text-xs text-emerald-600 font-semibold hover:underline no-print">＋ Thêm vị trí mới</button>
-                            <div class="text-xs font-bold text-gray-700">
-                                Tổng hạng mục: <span class="cat-total-qty text-blue-600">0 m²</span> — <span class="cat-total-price text-red-600">0 đ</span>
+                        <div class="flex justify-between items-center pt-1 text-xs">
+                            <button onclick="addLocationRow(this)" class="text-emerald-700 font-bold hover:underline no-print flex items-center gap-1">＋ Thêm vị trí</button>
+                            <div class="font-bold text-slate-700">
+                                Tổng hạng mục: <span class="cat-total-qty text-blue-700 font-extrabold">0 m²</span> — <span class="cat-total-price text-red-600 font-extrabold">0 đ</span>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Chữ ký / Ghi chú dưới bản in PDF -->
+                <div class="pt-4 border-t border-slate-200 grid grid-cols-2 text-center text-[11px] text-slate-700 mt-4">
+                    <div>
+                        <p class="font-bold">ĐẠI DIỆN KHÁCH HÀNG</p>
+                        <p class="text-slate-400 italic">(Ký, ghi rõ họ tên)</p>
+                    </div>
+                    <div>
+                        <p class="font-bold">ĐẠI DIỆN THI CÔNG</p>
+                        <p class="text-slate-400 italic">(Ký, đóng dấu)</p>
+                    </div>
+                </div>
             </div>
 
-            <!-- Nút xuất PDF cho Khoán Khối Lượng -->
-            <button onclick="exportSectionPDF('pdf-area-khoan', 'Khoan-Khoi-Luong.pdf')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-2 no-print">
-                📄 Tải File PDF Khoán Khối Lượng
+            <!-- Nút tải PDF tối ưu siêu nét, hỗ trợ trên mọi thiết bị di động -->
+            <button onclick="exportSectionPDF('pdf-area-khoan', 'Khoan-Khoi-Luong-PhuongVy.pdf')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-xs shadow-md flex items-center justify-center gap-2 no-print transition">
+                📄 Tải File PDF Khoán Khối Lượng (Siêu Nét)
             </button>
         </section>
 
 
         <!-- TAB 2: BÁO GIÁ CHUYÊN SÂU PRO -->
         <section id="sec-baogia" class="space-y-4 hidden">
-            <div class="flex border-b bg-white rounded-t-xl overflow-x-auto no-print text-xs">
-                <button onclick="switchSubTab('bg-thachcao')" id="sub-bg-thachcao" class="subtab-btn active px-3 py-2 whitespace-nowrap font-semibold">Thạch Cao</button>
-                <button onclick="switchSubTab('bg-nhomkinh')" id="sub-bg-nhomkinh" class="subtab-btn px-3 py-2 whitespace-nowrap font-semibold">Nhôm Kính Xingfa</button>
-                <button onclick="switchSubTab('bg-go')" id="sub-bg-go" class="subtab-btn px-3 py-2 whitespace-nowrap font-semibold">Ván Gỗ Nội Thất</button>
+            <div class="flex border-b bg-white rounded-t-xl overflow-x-auto no-print text-xs shadow-2xs">
+                <button onclick="switchSubTab('bg-thachcao')" id="sub-bg-thachcao" class="subtab-btn active px-3 py-2.5 whitespace-nowrap font-bold flex-1 text-center">Thạch Cao</button>
+                <button onclick="switchSubTab('bg-nhomkinh')" id="sub-bg-nhomkinh" class="subtab-btn px-3 py-2.5 whitespace-nowrap font-bold flex-1 text-center">Nhôm Kính Xingfa</button>
+                <button onclick="switchSubTab('bg-go')" id="sub-bg-go" class="subtab-btn px-3 py-2.5 whitespace-nowrap font-bold flex-1 text-center">Ván Gỗ Nội Thất</button>
             </div>
 
             <!-- 1. BÁO GIÁ THẠCH CAO -->
-            <div id="subsec-bg-thachcao" class="bg-white p-4 rounded-xl shadow-sm border space-y-3">
-                <div id="pdf-area-thachcao" class="space-y-3">
-                    <h3 class="font-bold text-sm text-gray-700 border-b pb-1">Báo Giá & Tính Vật Tư Thạch Cao</h3>
+            <div id="subsec-bg-thachcao" class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                <div id="pdf-area-thachcao" class="space-y-3 bg-white p-2">
+                    <div class="text-center pb-2 border-b border-slate-200">
+                        <h3 class="font-extrabold text-sm text-slate-900 uppercase">BÁO GIÁ CHI TIẾT TRẦN & VÁCH THẠCH CAO</h3>
+                        <p class="text-[11px] text-slate-600 font-medium">Đơn vị: Công Ty TNHH Phương Vy Luxury Window</p>
+                    </div>
                     
-                    <div class="space-y-2">
-                        <label class="text-xs font-semibold text-gray-600">Chọn hoặc Tự nhập Khung xương:</label>
-                        <select id="tcKhungSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('tcKhung'); saveToStorage();">
-                            <option value="Vĩnh Tường BASI">Khung xương Vĩnh Tường BASI</option>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-700">Khung xương:</label>
+                        <select id="tcKhungSelect" class="w-full border border-slate-300 rounded p-2 text-xs bg-slate-50 font-medium" onchange="toggleCustomInput('tcKhung'); saveToStorage();">
+                            <option value="Vĩnh Tường BASI">Khung xương Vĩnh Tường BASI chính hãng</option>
                             <option value="Vĩnh Tường Alpha">Khung xương Vĩnh Tường Alpha</option>
                             <option value="Vĩnh Tường Eko">Khung xương Vĩnh Tường Eko</option>
                             <option value="custom">-- Tự nhập tên khung khác --</option>
                         </select>
-                        <input type="text" id="tcKhungCustom" placeholder="Nhập tên khung xương tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="saveToStorage(); calculateThachCaoDetail()">
+                        <input type="text" id="tcKhungCustom" placeholder="Nhập tên khung xương tự do..." class="w-full border border-slate-300 rounded p-2 text-xs hidden bg-slate-50" oninput="saveToStorage(); calculateThachCaoDetail()">
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="text-xs font-semibold text-gray-600">Chọn hoặc Tự nhập Tấm thạch cao:</label>
-                        <select id="tcTamSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('tcTam'); saveToStorage();">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-700">Tấm thạch cao:</label>
+                        <select id="tcTamSelect" class="w-full border border-slate-300 rounded p-2 text-xs bg-slate-50 font-medium" onchange="toggleCustomInput('tcTam'); saveToStorage();">
                             <option value="Gyproc Tiêu Chuẩn 9mm">Tấm Gyproc Tiêu Chuẩn 9mm (1.2m x 2.4m)</option>
                             <option value="Gyproc Chống Ẩm 9mm">Tấm Gyproc Chống Ẩm 9mm (1.2m x 2.4m)</option>
                             <option value="Knauf Tiêu Chuẩn 9mm">Tấm Knauf Tiêu Chuẩn 9mm (1.2m x 2.4m)</option>
                             <option value="custom">-- Tự nhập tên tấm khác --</option>
                         </select>
-                        <input type="text" id="tcTamCustom" placeholder="Nhập tên tấm thạch cao tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="saveToStorage(); calculateThachCaoDetail()">
+                        <input type="text" id="tcTamCustom" placeholder="Nhập tên tấm thạch cao tự do..." class="w-full border border-slate-300 rounded p-2 text-xs hidden bg-slate-50" oninput="saveToStorage(); calculateThachCaoDetail()">
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="text-xs text-gray-500">Diện tích (m²)</label>
-                            <input type="number" id="tcArea" placeholder="VD: 100" class="w-full border rounded p-2 text-xs" oninput="saveToStorage(); calculateThachCaoDetail()">
+                            <label class="text-xs font-semibold text-slate-700">Diện tích (m²)</label>
+                            <input type="number" id="tcArea" placeholder="VD: 100" class="w-full border border-slate-300 rounded p-2 text-xs bg-slate-50 font-medium" oninput="saveToStorage(); calculateThachCaoDetail()">
                         </div>
                         <div>
-                            <label class="text-xs text-gray-500">Đơn giá trọn gói/m²</label>
-                            <input type="number" id="tcPrice" placeholder="VD: 160000" class="w-full border rounded p-2 text-xs" oninput="saveToStorage(); calculateThachCaoDetail()">
+                            <label class="text-xs font-semibold text-slate-700">Đơn giá trọn gói/m²</label>
+                            <input type="number" id="tcPrice" placeholder="VD: 160000" class="w-full border border-slate-300 rounded p-2 text-xs bg-slate-50 font-medium" oninput="saveToStorage(); calculateThachCaoDetail()">
                         </div>
                     </div>
 
-                    <div id="tcResult" class="p-3 bg-blue-50 rounded-lg text-xs space-y-1.5 border border-blue-200">
-                        <p class="font-bold text-blue-800">Kết quả báo giá & vật tư phụ kiện định mức:</p>
-                        <p id="tcDetailText">Nhập thông tin để xem chi tiết vật tư định mức...</p>
+                    <div id="tcResult" class="p-3.5 bg-blue-50/70 rounded-xl text-xs space-y-1.5 border border-blue-200">
+                        <p class="font-bold text-blue-900">Kết quả báo giá & định mức vật tư phụ kiện:</p>
+                        <p id="tcDetailText" class="text-slate-700">Nhập thông tin để xem chi tiết vật tư định mức...</p>
                     </div>
                 </div>
 
-                <button onclick="exportSectionPDF('pdf-area-thachcao', 'Bao-Gia-Thach-Cao.pdf')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-xl text-xs shadow flex items-center justify-center gap-2 mt-2 no-print">
-                    📄 Tải PDF Báo Giá Thạch Cao
+                <button onclick="exportSectionPDF('pdf-area-thachcao', 'Bao-Gia-Thach-Cao-PhuongVy.pdf')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-2 mt-2 no-print transition">
+                    📄 Tải PDF Báo Giá Thạch Cao (Siêu Nét)
                 </button>
             </div>
 
             <!-- 2. BÁO GIÁ NHÔM KÍNH -->
-            <div id="subsec-bg-nhomkinh" class="bg-white p-4 rounded-xl shadow-sm border space-y-3 hidden">
-                <div id="pdf-area-nhomkinh" class="space-y-3">
-                    <h3 class="font-bold text-sm text-gray-700 border-b pb-1">Báo Giá & Tính Vật Tư Nhôm Kính Xingfa</h3>
+            <div id="subsec-bg-nhomkinh" class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3 hidden">
+                <div id="pdf-area-nhomkinh" class="space-y-3 bg-white p-2">
+                    <div class="text-center pb-2 border-b border-slate-200">
+                        <h3 class="font-extrabold text-sm text-slate-900 uppercase">BÁO GIÁ NHÔM KÍNH XINGFA CAO CẤP</h3>
+                        <p class="text-[11px] text-slate-600 font-medium">Đơn vị: Công Ty TNHH Phương Vy Luxury Window</p>
+                    </div>
                     
-                    <div class="space-y-2">
-                        <label class="text-xs font-semibold text-gray-600">Chọn hoặc Tự nhập Hệ nhôm:</label>
-                        <select id="xkHeSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('xkHe'); saveToStorage();">
-                            <option value="Xingfa Hệ 55 (Cửa quay)">Xingfa Hệ 55 (Cửa quay)</option>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-700">Hệ nhôm:</label>
+                        <select id="xkHeSelect" class="w-full border border-slate-300 rounded p-2 text-xs bg-slate-50 font-medium" onchange="toggleCustomInput('xkHe'); saveToStorage();">
+                            <option value="Xingfa Hệ 55 (Cửa quay)">Xingfa Hệ 55 (Cửa quay chính hãng)</option>
                             <option value="Xingfa Hệ 93 (Cửa lùa)">Xingfa Hệ 93 (Cửa lùa)</option>
-                            <option value="Xingfa Cầu Cách Nhiệt">Xingfa Cầu Cách Nhiệt</option>
+                            <option value="Xingfa Cầu Cách Nhiệt">Xingfa Cầu Cách Nhiệt Nhập Khẩu</option>
                             <option value="custom">-- Tự nhập hệ nhôm khác --</option>
                         </select>
-                        <input type="text" id="xkHeCustom" placeholder="Nhập tên hệ nhôm tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="saveToStorage(); calculateNhomKinhDetail()">
+                        <input type="text" id="xkHeCustom" placeholder="Nhập tên hệ nhôm tự do..." class="w-full border border-slate-300 rounded p-2 text-xs hidden bg-slate-50" oninput="saveToStorage(); calculateNhomKinhDetail()">
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="text-xs font-semibold text-gray-600">Chọn hoặc Tự nhập Loại kính:</label>
-                        <select id="xkKinhSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('xkKinh'); saveToStorage();">
-                            <option value="Kính cường lực 8mm">Kính cường lực 8mm</option>
-                            <option value="Kính cường lực 10mm">Kính cường lực 10mm</option>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-700">Loại kính:</label>
+                        <select id="xkKinhSelect" class="w-full border border-slate-300 rounded p-2 text-xs bg-slate-50 font-medium" onchange="toggleCustomInput('xkKinh'); saveToStorage();">
+                            <option value="Kính cường lực 8mm">Kính cường lực 8mm Chuẩn Chu Lai</option>
+                            <option value="Kính cường lực 10mm">Kính cường lực 10mm Chuẩn Chu Lai</option>
                             <option value="Kính dán an toàn 6.38mm">Kính dán an toàn 6.38mm</option>
                             <option value="custom">-- Tự nhập loại kính khác --</option>
                         </select>
-                        <input type="text" id="xkKinhCustom" placeholder="Nhập loại kính tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="saveToStorage(); calculateNhomKinhDetail()">
+                        <input type="text" id="xkKinhCustom" placeholder="Nhập loại kính tự do..." class="w-full border border-slate-300 rounded p-2 text-xs hidden bg-slate-50" oninput="saveToStorage(); calculateNhomKinhDetail()">
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="text-xs text-gray-500">Tổng diện tích (m²)</label>
-                            <input type="number" id="xkArea" placeholder="VD: 35" class="w-full border rounded p-2 text-xs" oninput="saveToStorage(); calculateNhomKinhDetail()">
+                            <label class="text-xs font-semibold text-slate-700">Tổng diện tích (m²)</label>
+                            <input type="number" id="xkArea" placeholder="VD: 35" class="w-full border border-slate-300 rounded p-2 text-xs bg-slate-50 font-medium" oninput="saveToStorage(); calculateNhomKinhDetail()">
                         </div>
                         <div>
-                            <label class="text-xs text-gray-500">Đơn giá/m²</label>
-                            <input type="number" id="xkPrice" placeholder="VD: 2200000" class="w-full border rounded p-2 text-xs" oninput="saveToStorage(); calculateNhomKinhDetail()">
+                            <label class="text-xs font-semibold text-slate-700">Đơn giá/m²</label>
+                            <input type="number" id="xkPrice" placeholder="VD: 2200000" class="w-full border border-slate-300 rounded p-2 text-xs bg-slate-50 font-medium" oninput="saveToStorage(); calculateNhomKinhDetail()">
                         </div>
                     </div>
 
-                    <div id="xkResult" class="p-3 bg-emerald-50 rounded-lg text-xs space-y-1.5 border border-emerald-200">
-                        <p class="font-bold text-emerald-800">Kết quả báo giá nhôm kính & phụ kiện:</p>
-                        <p id="xkDetailText">Nhập thông tin để xem định mức vật tư phụ kiện...</p>
+                    <div id="xkResult" class="p-3.5 bg-emerald-50/70 rounded-xl text-xs space-y-1.5 border border-emerald-200">
+                        <p class="font-bold text-emerald-900">Kết quả báo giá nhôm kính & phụ kiện:</p>
+                        <p id="xkDetailText" class="text-slate-700">Nhập thông tin để xem định mức vật tư phụ kiện...</p>
                     </div>
                 </div>
 
-                <button onclick="exportSectionPDF('pdf-area-nhomkinh', 'Bao-Gia-Nhom-Kinh.pdf')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-xl text-xs shadow flex items-center justify-center gap-2 mt-2 no-print">
-                    📄 Tải PDF Báo Giá Nhôm Kính
+                <button onclick="exportSectionPDF('pdf-area-nhomkinh', 'Bao-Gia-Nhom-Kinh-PhuongVy.pdf')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-2 mt-2 no-print transition">
+                    📄 Tải PDF Báo Giá Nhôm Kính (Siêu Nét)
                 </button>
             </div>
 
             <!-- 3. BÁO GIÁ VÁN NỘI THẤT -->
-            <div id="subsec-bg-go" class="bg-white p-4 rounded-xl shadow-sm border space-y-3 hidden">
-                <div id="pdf-area-go" class="space-y-3">
-                    <h3 class="font-bold text-sm text-gray-700 border-b pb-1">Báo Giá & Tính Ván Gỗ Nội Thất</h3>
+            <div id="subsec-bg-go" class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3 hidden">
+                <div id="pdf-area-go" class="space-y-3 bg-white p-2">
+                    <div class="text-center pb-2 border-b border-slate-200">
+                        <h3 class="font-extrabold text-sm text-slate-900 uppercase">BÁO GIÁ VÁN GỖ & NỘI THẤT CAO CẤP</h3>
+                        <p class="text-[11px] text-slate-600 font-medium">Đơn vị: Công Ty TNHH Phương Vy Luxury Window</p>
+                    </div>
                     
-                    <div class="space-y-2">
-                        <label class="text-xs font-semibold text-gray-600">Chọn hoặc Tự nhập Loại ván gỗ:</label>
-                        <select id="goLoaiSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('goLoai'); saveToStorage();">
-                            <option value="MDF An Cường Melamine 17mm">MDF An Cường Melamine 17mm (1.22m x 2.44m)</option>
-                            <option value="MDF Thái Lan Chống Ẩm 17mm">MDF Thái Lan Chống Ẩm 17mm (1.22m x 2.44m)</option>
-                            <option value="Plywood Phim / Melamine">Plywood Phim / Melamine (1.22m x 2.44m)</option>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-700">Loại ván gỗ:</label>
+                        <select id="goLoaiSelect" class="w-full border border-slate-300 rounded p-2 text-xs bg-slate-50 font-medium" onchange="toggleCustomInput('goLoai'); saveToStorage();">
+                            <option value="MDF An Cường Melamine 17mm">MDF An Cường Melamine 17mm chính hãng</option>
+                            <option value="MDF Thái Lan Chống Ẩm 17mm">MDF Thái Lan Chống Ẩm 17mm</option>
+                            <option value="Plywood Phim / Melamine">Plywood Phim / Melamine cao cấp</option>
                             <option value="custom">-- Tự nhập loại ván khác --</option>
                         </select>
-                        <input type="text" id="goLoaiCustom" placeholder="Nhập loại ván gỗ tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="saveToStorage(); calculateGoDetail()">
+                        <input type="text" id="goLoaiCustom" placeholder="Nhập loại ván gỗ tự do..." class="w-full border border-slate-300 rounded p-2 text-xs hidden bg-slate-50" oninput="saveToStorage(); calculateGoDetail()">
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="text-xs text-gray-500">Diện tích bề mặt (m²)</label>
-                            <input type="number" id="goArea" placeholder="VD: 25" class="w-full border rounded p-2 text-xs" oninput="saveToStorage(); calculateGoDetail()">
+                            <label class="text-xs font-semibold text-slate-700">Diện tích bề mặt (m²)</label>
+                            <input type="number" id="goArea" placeholder="VD: 25" class="w-full border border-slate-300 rounded p-2 text-xs bg-slate-50 font-medium" oninput="saveToStorage(); calculateGoDetail()">
                         </div>
                         <div>
-                            <label class="text-xs text-gray-500">Đơn giá hoàn thiện/m²</label>
-                            <input type="number" id="goPrice" value="2200000" class="w-full border rounded p-2 text-xs" oninput="saveToStorage(); calculateGoDetail()">
+                            <label class="text-xs font-semibold text-slate-700">Đơn giá hoàn thiện/m²</label>
+                            <input type="number" id="goPrice" value="2200000" class="w-full border border-slate-300 rounded p-2 text-xs bg-slate-50 font-medium" oninput="saveToStorage(); calculateGoDetail()">
                         </div>
                     </div>
 
-                    <div id="goResult" class="p-3 bg-amber-50 rounded-lg text-xs space-y-1.5 border border-amber-200">
-                        <p class="font-bold text-amber-800">Kết quả dự toán ván gỗ & phụ kiện:</p>
-                        <p id="goDetailText">Nhập thông tin để xem chi phí...</p>
+                    <div id="goResult" class="p-3.5 bg-amber-50/70 rounded-xl text-xs space-y-1.5 border border-amber-200">
+                        <p class="font-bold text-amber-900">Kết quả dự toán ván gỗ & phụ kiện:</p>
+                        <p id="goDetailText" class="text-slate-700">Nhập thông tin để xem chi phí...</p>
                     </div>
                 </div>
 
-                <button onclick="exportSectionPDF('pdf-area-go', 'Bao-Gia-Van-Noi-That.pdf')" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-xl text-xs shadow flex items-center justify-center gap-2 mt-2 no-print">
-                    📄 Tải PDF Báo Giá Nội Thất
+                <button onclick="exportSectionPDF('pdf-area-go', 'Bao-Gia-Noi-That-PhuongVy.pdf')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-2 mt-2 no-print transition">
+                    📄 Tải PDF Báo Giá Nội Thất (Siêu Nét)
                 </button>
             </div>
         </section>
 
 
-        <!-- TAB 3: CONTACT & ACTIVATION -->
+        <!-- TAB 3: THÔNG TIN CÔNG TY & LIÊN HỆ -->
         <section id="sec-contact" class="space-y-4 hidden">
-            <div id="activationWrapper" class="bg-white p-5 rounded-xl shadow-sm border text-center space-y-4">
-                <h2 class="text-lg font-bold text-gray-800">Mở Khóa Bản Quyền VIP Trọn Đời</h2>
-                <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl inline-block w-full max-w-xs mx-auto">
-                    <p class="text-xs font-bold text-blue-900 mb-2 uppercase">Chuyển Khoản Ngân Hàng Vietcombank</p>
-                    <img id="vietqrImg" src="https://img.vietqr.io/image/VCB-0881000475550-compact2.png?amount=50000&addInfo=KICH%20HOAT%20TKL%20VIP" alt="QR" class="w-48 h-48 mx-auto rounded-lg shadow-sm border bg-white p-1">
-                    <div class="mt-3 text-xs space-y-1 text-gray-700">
-                        <p>STK: <strong class="text-blue-700 text-sm font-mono">0881000475550</strong></p>
-                        <p>Số tiền: <strong class="text-red-600 text-sm">50.000 VNĐ</strong></p>
+            <!-- Cấu hình tên công ty hiển thị trực tiếp trên PDF -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                <h3 class="font-bold text-sm text-slate-800 border-b pb-1.5">⚙️ Cài Đặt Thông Tin Doanh Nghiệp Trên PDF</h3>
+                <div class="space-y-2">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-700">Tên công ty / Cơ sở:</label>
+                        <input type="text" id="settingCompanyName" value="CÔNG TY TNHH PHƯƠNG VY LUXURY WINDOW" class="w-full border border-slate-300 rounded p-2 text-xs font-bold text-slate-900 mt-1 bg-slate-50" oninput="updateCompanyProfile()">
                     </div>
-                </div>
-                <div class="bg-gray-50 p-4 rounded-xl border space-y-2">
-                    <p class="text-xs font-semibold text-gray-700">Nhập Mã Kích Hoạt Nâng Cấp:</p>
-                    <input type="text" id="activationCodeInput" placeholder="Nhập mã kích hoạt..." class="w-full text-center py-2 px-3 rounded-lg text-black text-sm uppercase tracking-widest border font-bold bg-white">
-                    <button onclick="activatePro()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 rounded-lg text-sm shadow">Kích Hoạt VIP Ngay</button>
-                </div>
-                <div class="bg-gray-50 p-3 rounded-lg text-left text-xs space-y-1 border">
-                    <p class="text-gray-500">Device ID thiết bị:</p>
-                    <div class="flex justify-between items-center">
-                        <span id="contactDeviceId" class="font-mono font-bold text-gray-800">TKL-000000</span>
-                        <button onclick="copyDeviceId()" class="text-[10px] bg-gray-200 px-2 py-1 rounded">Sao chép</button>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-700">Địa chỉ & Điện thoại hiển thị:</label>
+                        <input type="text" id="settingCompanyMeta" value="Đ/C: Bình Tân, TP.HCM | SĐT: 0937091679" class="w-full border border-slate-300 rounded p-2 text-xs text-slate-700 mt-1 bg-slate-50" oninput="updateCompanyProfile()">
                     </div>
                 </div>
             </div>
 
-            <!-- Thông tin liên hệ luôn hiển thị -->
-            <div class="bg-white p-4 rounded-xl shadow-sm border text-center space-y-2 text-xs text-gray-600">
-                <p class="font-bold text-gray-800 text-sm">Hỗ Trợ Kỹ Thuật & Giải Đáp</p>
-                <p>Tác giả: Nguyên – SĐT/Zalo: <strong class="text-blue-600">0937091679</strong></p>
+            <!-- Kích hoạt VIP -->
+            <div id="activationWrapper" class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 text-center space-y-4">
+                <h2 class="text-base font-extrabold text-slate-900">Mở Khóa Bản Quyền VIP Trọn Đời</h2>
+                <div class="p-4 bg-blue-50/70 border border-blue-200 rounded-xl inline-block w-full max-w-xs mx-auto">
+                    <p class="text-xs font-bold text-blue-900 mb-2 uppercase tracking-wide">Chuyển Khoản Ngân Hàng Vietcombank</p>
+                    <img id="vietqrImg" src="https://img.vietqr.io/image/VCB-0881000475550-compact2.png?amount=50000&addInfo=KICH%20HOAT%20TKL%20VIP" alt="QR" class="w-48 h-48 mx-auto rounded-lg shadow-xs border bg-white p-1">
+                    <div class="mt-3 text-xs space-y-1 text-slate-700">
+                        <p>STK: <strong class="text-blue-700 text-sm font-mono">0881000475550</strong></p>
+                        <p>Chủ TK: <strong class="text-slate-900">MR. PHÁT</strong></p>
+                        <p>Số tiền: <strong class="text-red-600 text-sm font-bold">50.000 VNĐ</strong></p>
+                    </div>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                    <p class="text-xs font-semibold text-slate-700">Nhập Mã Kích Hoạt Nâng Cấp:</p>
+                    <input type="text" id="activationCodeInput" placeholder="Nhập mã kích hoạt..." class="w-full text-center py-2 px-3 rounded-lg text-slate-900 text-sm uppercase tracking-widest border border-slate-300 font-bold bg-white shadow-2xs">
+                    <button onclick="activatePro()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-extrabold py-2.5 rounded-lg text-sm shadow transition">Kích Hoạt VIP Ngay</button>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-lg text-left text-xs space-y-1 border border-slate-200">
+                    <p class="text-slate-500">Device ID thiết bị:</p>
+                    <div class="flex justify-between items-center">
+                        <span id="contactDeviceId" class="font-mono font-bold text-slate-800">TKL-000000</span>
+                        <button onclick="copyDeviceId()" class="text-[10px] bg-slate-200 hover:bg-slate-300 px-2 py-1 rounded font-semibold transition">Sao chép</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liên hệ hỗ trợ -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 text-center space-y-2 text-xs text-slate-600">
+                <p class="font-extrabold text-slate-800 text-sm">Hỗ Trợ Kỹ Thuật & Giải Đáp</p>
+                <p>Đơn vị: <strong class="text-blue-900">Công Ty TNHH Phương Vy Luxury Window</strong></p>
+                <p>Hotline/Zalo: <strong class="text-blue-600 text-sm">0937091679</strong> (Mr. Phát)</p>
                 <div class="flex justify-center gap-2 pt-2">
-                    <a href="tel:0937091679" class="bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold">📞 Gọi Điện</a>
-                    <a href="https://zalo.me/0937091679" target="_blank" class="bg-emerald-600 text-white py-2 px-4 rounded-lg font-semibold">💬 Chat Zalo</a>
+                    <a href="tel:0937091679" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-bold shadow-2xs transition">📞 Gọi Điện</a>
+                    <a href="https://zalo.me/0937091679" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-lg font-bold shadow-2xs transition">💬 Chat Zalo</a>
                 </div>
             </div>
         </section>
@@ -297,15 +346,15 @@
     </main>
 
     <!-- THANH TỔNG KẾT CỐ ĐỊNH DƯỚI CÙNG -->
-    <footer class="bg-gray-900 text-white fixed bottom-0 left-0 right-0 p-3 shadow-lg z-50">
+    <footer class="bg-slate-900 text-white fixed bottom-0 left-0 right-0 p-3.5 shadow-2xl z-50 border-t border-slate-800">
         <div class="max-w-md mx-auto flex justify-between items-center text-xs">
             <div>
-                <span class="text-gray-400 block">TỔNG KHỐI LƯỢNG TOÀN BỘ:</span>
-                <span id="grandTotalQty" class="font-bold text-sm text-yellow-400">0</span>
+                <span class="text-slate-400 block text-[10px] uppercase font-semibold">TỔNG KHỐI LƯỢNG TOÀN BỘ:</span>
+                <span id="grandTotalQty" class="font-extrabold text-sm text-yellow-400">0</span>
             </div>
             <div class="text-right">
-                <span class="text-gray-400 block">TỔNG THÀNH TIỀN:</span>
-                <span id="grandTotalPrice" class="font-extrabold text-base text-green-400">0 đ</span>
+                <span class="text-slate-400 block text-[10px] uppercase font-semibold">TỔNG THÀNH TIỀN:</span>
+                <span id="grandTotalPrice" class="font-extrabold text-base text-emerald-400">0 đ</span>
             </div>
         </div>
     </footer>
@@ -324,25 +373,35 @@
             document.getElementById('vietqrImg').src = `https://img.vietqr.io/image/VCB-0881000475550-compact2.png?amount=50000&addInfo=KICH%20HOAT%20VIP%20${deviceId}`;
             checkVipStatus();
             
-            // Tải dữ liệu lưu trữ tự động nếu có
+            // Tải dữ liệu lưu trữ tự động (giữ nguyên khi lỡ tay tắt máy)
             loadFromStorage();
+            updateCompanyProfile();
         });
+
+        function updateCompanyProfile() {
+            const name = document.getElementById('settingCompanyName').value;
+            const meta = document.getElementById('settingCompanyMeta').value;
+            
+            document.getElementById('pdfCompanyTitle').innerText = name;
+            document.getElementById('pdfCompanyMeta').innerText = meta;
+            saveToStorage();
+        }
 
         function checkVipStatus() {
             const vipKey = localStorage.getItem('tkl_vip_key');
             if (vipKey === 'VIP-8888' || vipKey === 'VIP-' + deviceId.slice(-4)) {
                 isVipActivated = true;
                 const badge = document.getElementById('vipStatusBadge');
-                badge.innerText = 'Bản PRO (VIP)';
-                badge.className = 'text-xs bg-emerald-500 text-white font-bold px-2.5 py-1 rounded-full uppercase';
+                badge.innerText = 'PRO VIP';
+                badge.className = 'text-[10px] bg-emerald-500 text-white font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider shadow';
                 
                 const activationWrapper = document.getElementById('activationWrapper');
                 if (activationWrapper) {
                     activationWrapper.innerHTML = `
                         <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2 text-center">
                             <span class="text-2xl">🎉</span>
-                            <h3 class="font-bold text-sm text-emerald-800">Tài Khoản Đã Kích Hoạt PRO (VIP)</h3>
-                            <p class="text-xs text-emerald-600">Mọi tính năng chuyên sâu đã được mở khóa hoàn toàn.</p>
+                            <h3 class="font-extrabold text-sm text-emerald-900">Bản Quyền PRO Đã Kích Hoạt</h3>
+                            <p class="text-xs text-emerald-700">Mọi tính năng nâng cao & xuất PDF không giới hạn đã sẵn sàng.</p>
                         </div>
                     `;
                 }
@@ -420,25 +479,25 @@
             const listContainer = card.querySelector('.location-list');
             
             const newRow = document.createElement('div');
-            newRow.className = 'location-row bg-gray-50 p-2.5 rounded-lg border space-y-2';
+            newRow.className = 'location-row bg-white p-3 rounded-lg border border-slate-200 shadow-2xs space-y-2';
             newRow.innerHTML = `
                 <div class="flex justify-between items-center">
-                    <input type="text" class="loc-name text-xs font-semibold bg-transparent border-b border-gray-300 w-1/2" value="Vị trí mới" oninput="saveToStorage()">
-                    <select class="loc-shape text-[11px] border rounded p-1 bg-white" onchange="toggleRowInputs(this); saveToStorage(); calculateTotals();">
+                    <input type="text" class="loc-name text-xs font-bold text-slate-800 bg-slate-50 border border-slate-200 rounded px-2 py-1 w-1/2" value="Vị trí mới" oninput="saveToStorage()">
+                    <select class="loc-shape text-[11px] border border-slate-300 rounded p-1 bg-white font-medium text-slate-700" onchange="toggleRowInputs(this); saveToStorage(); calculateTotals();">
                         <option value="rect">Chữ nhật (DxR)</option>
                         <option value="circle">Tròn (Bán kính R)</option>
                     </select>
                 </div>
                 <div class="input-rect grid grid-cols-2 gap-2">
-                    <input type="number" step="0.01" class="loc-length border rounded p-1 text-xs bg-white" placeholder="Dài (m)" oninput="saveToStorage(); calculateTotals()">
-                    <input type="number" step="0.01" class="loc-width border rounded p-1 text-xs bg-white" placeholder="Rộng (m)" oninput="saveToStorage(); calculateTotals()">
+                    <input type="number" step="0.01" class="loc-length bg-slate-50 border border-slate-300 rounded p-1.5 text-xs text-slate-800 font-medium" placeholder="Dài (m)" oninput="saveToStorage(); calculateTotals()">
+                    <input type="number" step="0.01" class="loc-width bg-slate-50 border border-slate-300 rounded p-1.5 text-xs text-slate-800 font-medium" placeholder="Rộng (m)" oninput="saveToStorage(); calculateTotals()">
                 </div>
                 <div class="input-circle hidden">
-                    <input type="number" step="0.01" class="loc-radius border rounded p-1 text-xs bg-white" placeholder="Bán kính R (m)" oninput="saveToStorage(); calculateTotals()">
+                    <input type="number" step="0.01" class="loc-radius bg-slate-50 border border-slate-300 rounded p-1.5 text-xs text-slate-800 font-medium" placeholder="Bán kính R (m)" oninput="saveToStorage(); calculateTotals()">
                 </div>
-                <div class="flex justify-between items-center text-[11px] pt-1 text-gray-600 border-t">
-                    <span>Khối lượng: <strong class="loc-subtotal text-blue-600 font-bold">0</strong></span>
-                    <button onclick="removeLocationRow(this)" class="text-red-500 hover:text-red-700">Xóa vị trí</button>
+                <div class="flex justify-between items-center text-[11px] pt-1 text-slate-600 border-t border-slate-100">
+                    <span>Khối lượng: <strong class="loc-subtotal text-blue-600 font-extrabold">0</strong></span>
+                    <button onclick="removeLocationRow(this)" class="text-red-500 hover:text-red-700 font-semibold">Xóa vị trí</button>
                 </div>
             `;
             listContainer.appendChild(newRow);
@@ -461,7 +520,7 @@
         function addNewCategorySection(savedData = null) {
             const container = document.getElementById('categoriesContainer');
             const newCard = document.createElement('div');
-            newCard.className = 'category-card bg-white p-4 rounded-xl shadow-sm border space-y-3';
+            newCard.className = 'category-card bg-slate-50/70 p-3.5 rounded-xl border border-slate-200 space-y-3';
             
             let catNameVal = "Trần thạch cao";
             let catPriceVal = "";
@@ -471,28 +530,28 @@
             }
 
             newCard.innerHTML = `
-                <div class="flex justify-between items-center border-b pb-2">
-                    <select class="cat-name-select font-bold text-sm text-blue-600 bg-transparent border-none focus:ring-0 cursor-pointer" onchange="saveToStorage(); calculateTotals()">
+                <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                    <select class="cat-name-select font-bold text-xs text-blue-900 bg-white border border-slate-300 rounded p-1.5 focus:ring-1 focus:ring-blue-500 cursor-pointer" onchange="saveToStorage(); calculateTotals()">
                         <option value="Trần thạch cao" ${catNameVal==='Trần thạch cao'?'selected':''} data-unit="m²" data-calc="area">Trần thạch cao (m²)</option>
                         <option value="Phào chỉ" ${catNameVal==='Phào chỉ'?'selected':''} data-unit="m" data-calc="perimeter">Phào chỉ (Mét tới)</option>
                         <option value="Vách thạch cao" ${catNameVal==='Vách thạch cao'?'selected':''} data-unit="m²" data-calc="area">Vách thạch cao (m²)</option>
                         <option value="Ốp tường PVC" ${catNameVal==='Ốp tường PVC'?'selected':''} data-unit="m²" data-calc="area">Ốp tường PVC (m²)</option>
                     </select>
                     <div class="flex items-center gap-1">
-                        <input type="number" class="cat-price w-24 border rounded p-1 text-xs text-right font-bold" placeholder="Đơn giá" value="${catPriceVal}" oninput="saveToStorage(); calculateTotals()">
-                        <span class="text-xs text-gray-500">đ</span>
-                        <button onclick="removeCategoryCard(this)" class="ml-2 text-red-500 font-bold text-xs">✕ Xóa</button>
+                        <input type="number" class="cat-price w-24 bg-white border border-slate-300 rounded p-1.5 text-xs text-right font-bold text-slate-800" placeholder="Đơn giá" value="${catPriceVal}" oninput="saveToStorage(); calculateTotals()">
+                        <span class="text-xs text-slate-600 font-semibold">đ</span>
+                        <button onclick="removeCategoryCard(this)" class="ml-2 text-red-600 font-bold text-xs hover:text-red-800">✕ Xóa</button>
                     </div>
                 </div>
 
                 <div class="space-y-2 location-list">
-                    <!-- Dữ liệu vị trí sẽ được load hoặc tạo mặc định -->
+                    <!-- Dữ liệu vị trí -->
                 </div>
 
-                <div class="flex justify-between items-center pt-1">
-                    <button onclick="addLocationRow(this)" class="text-xs text-emerald-600 font-semibold hover:underline">＋ Thêm vị trí mới</button>
-                    <div class="text-xs font-bold text-gray-700">
-                        Tổng hạng mục: <span class="cat-total-qty text-blue-600">0</span> — <span class="cat-total-price text-red-600">0 đ</span>
+                <div class="flex justify-between items-center pt-1 text-xs">
+                    <button onclick="addLocationRow(this)" class="text-emerald-700 font-bold hover:underline">＋ Thêm vị trí</button>
+                    <div class="font-bold text-slate-700">
+                        Tổng hạng mục: <span class="cat-total-qty text-blue-700 font-extrabold">0</span> — <span class="cat-total-price text-red-600 font-extrabold">0 đ</span>
                     </div>
                 </div>
             `;
@@ -502,49 +561,49 @@
                 listContainer.innerHTML = '';
                 savedData.rows.forEach(r => {
                     const rDiv = document.createElement('div');
-                    rDiv.className = 'location-row bg-gray-50 p-2.5 rounded-lg border space-y-2';
+                    rDiv.className = 'location-row bg-white p-3 rounded-lg border border-slate-200 shadow-2xs space-y-2';
                     rDiv.innerHTML = `
                         <div class="flex justify-between items-center">
-                            <input type="text" class="loc-name text-xs font-semibold bg-transparent border-b border-gray-300 w-1/2" value="${r.name}" oninput="saveToStorage()">
-                            <select class="loc-shape text-[11px] border rounded p-1 bg-white" onchange="toggleRowInputs(this); saveToStorage(); calculateTotals();">
+                            <input type="text" class="loc-name text-xs font-bold text-slate-800 bg-slate-50 border border-slate-200 rounded px-2 py-1 w-1/2" value="${r.name}" oninput="saveToStorage()">
+                            <select class="loc-shape text-[11px] border border-slate-300 rounded p-1 bg-white font-medium text-slate-700" onchange="toggleRowInputs(this); saveToStorage(); calculateTotals();">
                                 <option value="rect" ${r.shape==='rect'?'selected':''}>Chữ nhật (DxR)</option>
                                 <option value="circle" ${r.shape==='circle'?'selected':''}>Tròn (Bán kính R)</option>
                             </select>
                         </div>
                         <div class="input-rect grid grid-cols-2 gap-2 ${r.shape==='circle'?'hidden':''}">
-                            <input type="number" step="0.01" class="loc-length border rounded p-1 text-xs bg-white" placeholder="Dài (m)" value="${r.length}" oninput="saveToStorage(); calculateTotals()">
-                            <input type="number" step="0.01" class="loc-width border rounded p-1 text-xs bg-white" placeholder="Rộng (m)" value="${r.width}" oninput="saveToStorage(); calculateTotals()">
+                            <input type="number" step="0.01" class="loc-length bg-slate-50 border border-slate-300 rounded p-1.5 text-xs text-slate-800 font-medium" placeholder="Dài (m)" value="${r.length}" oninput="saveToStorage(); calculateTotals()">
+                            <input type="number" step="0.01" class="loc-width bg-slate-50 border border-slate-300 rounded p-1.5 text-xs text-slate-800 font-medium" placeholder="Rộng (m)" value="${r.width}" oninput="saveToStorage(); calculateTotals()">
                         </div>
                         <div class="input-circle ${r.shape==='rect'?'hidden':''}">
-                            <input type="number" step="0.01" class="loc-radius border rounded p-1 text-xs bg-white" placeholder="Bán kính R (m)" value="${r.radius}" oninput="saveToStorage(); calculateTotals()">
+                            <input type="number" step="0.01" class="loc-radius bg-slate-50 border border-slate-300 rounded p-1.5 text-xs text-slate-800 font-medium" placeholder="Bán kính R (m)" value="${r.radius}" oninput="saveToStorage(); calculateTotals()">
                         </div>
-                        <div class="flex justify-between items-center text-[11px] pt-1 text-gray-600 border-t">
-                            <span>Khối lượng: <strong class="loc-subtotal text-blue-600 font-bold">0</strong></span>
-                            <button onclick="removeLocationRow(this)" class="text-red-500 hover:text-red-700">Xóa vị trí</button>
+                        <div class="flex justify-between items-center text-[11px] pt-1 text-slate-600 border-t border-slate-100">
+                            <span>Khối lượng: <strong class="loc-subtotal text-blue-600 font-extrabold">0</strong></span>
+                            <button onclick="removeLocationRow(this)" class="text-red-500 hover:text-red-700 font-semibold">Xóa vị trí</button>
                         </div>
                     `;
                     listContainer.appendChild(rDiv);
                 });
             } else {
                 listContainer.innerHTML = `
-                    <div class="location-row bg-gray-50 p-2.5 rounded-lg border space-y-2">
+                    <div class="location-row bg-white p-3 rounded-lg border border-slate-200 shadow-2xs space-y-2">
                         <div class="flex justify-between items-center">
-                            <input type="text" class="loc-name text-xs font-semibold bg-transparent border-b border-gray-300 w-1/2" value="Phòng mới" oninput="saveToStorage()">
-                            <select class="loc-shape text-[11px] border rounded p-1 bg-white" onchange="toggleRowInputs(this); saveToStorage(); calculateTotals();">
+                            <input type="text" class="loc-name text-xs font-bold text-slate-800 bg-slate-50 border border-slate-200 rounded px-2 py-1 w-1/2" value="Phòng mới" oninput="saveToStorage()">
+                            <select class="loc-shape text-[11px] border border-slate-300 rounded p-1 bg-white font-medium text-slate-700" onchange="toggleRowInputs(this); saveToStorage(); calculateTotals();">
                                 <option value="rect">Chữ nhật (DxR)</option>
                                 <option value="circle">Tròn (Bán kính R)</option>
                             </select>
                         </div>
                         <div class="input-rect grid grid-cols-2 gap-2">
-                            <input type="number" step="0.01" class="loc-length border rounded p-1 text-xs bg-white" placeholder="Dài (m)" oninput="saveToStorage(); calculateTotals()">
-                            <input type="number" step="0.01" class="loc-width border rounded p-1 text-xs bg-white" placeholder="Rộng (m)" oninput="saveToStorage(); calculateTotals()">
+                            <input type="number" step="0.01" class="loc-length bg-slate-50 border border-slate-300 rounded p-1.5 text-xs text-slate-800 font-medium" placeholder="Dài (m)" oninput="saveToStorage(); calculateTotals()">
+                            <input type="number" step="0.01" class="loc-width bg-slate-50 border border-slate-300 rounded p-1.5 text-xs text-slate-800 font-medium" placeholder="Rộng (m)" oninput="saveToStorage(); calculateTotals()">
                         </div>
                         <div class="input-circle hidden">
-                            <input type="number" step="0.01" class="loc-radius border rounded p-1 text-xs bg-white" placeholder="Bán kính R (m)" oninput="saveToStorage(); calculateTotals()">
+                            <input type="number" step="0.01" class="loc-radius bg-slate-50 border border-slate-300 rounded p-1.5 text-xs text-slate-800 font-medium" placeholder="Bán kính R (m)" oninput="saveToStorage(); calculateTotals()">
                         </div>
-                        <div class="flex justify-between items-center text-[11px] pt-1 text-gray-600 border-t">
-                            <span>Khối lượng: <strong class="loc-subtotal text-blue-600 font-bold">0</strong></span>
-                            <button onclick="removeLocationRow(this)" class="text-red-500 hover:text-red-700">Xóa vị trí</button>
+                        <div class="flex justify-between items-center text-[11px] pt-1 text-slate-600 border-t border-slate-100">
+                            <span>Khối lượng: <strong class="loc-subtotal text-blue-600 font-extrabold">0</strong></span>
+                            <button onclick="removeLocationRow(this)" class="text-red-500 hover:text-red-700 font-semibold">Xóa vị trí</button>
                         </div>
                     </div>
                 `;
@@ -647,7 +706,7 @@
                 <p><strong>Khối lượng:</strong> ${area} m² | Đơn giá: ${price.toLocaleString()} đ/m²</p>
                 <div class="mt-2 pt-2 border-t border-blue-200">
                     <p class="font-bold text-blue-900 mb-1">📦 Định mức vật tư phụ kiện chi tiết:</p>
-                    <ul class="list-disc pl-4 space-y-0.5 text-gray-700">
+                    <ul class="list-disc pl-4 space-y-0.5 text-slate-700">
                         <li>Số lượng tấm thạch cao (1.2m × 2.4m): <strong>${soTam} tấm</strong></li>
                         <li>Thanh xương chính: <strong>${thanhChinh} cây</strong></li>
                         <li>Thanh xương phụ: <strong>${thanhPhu} cây</strong></li>
@@ -656,7 +715,7 @@
                         <li>Băng keo xử lý mối nối: ~<strong>${bangKeo} m</strong></li>
                     </ul>
                 </div>
-                <p class="text-blue-700 font-bold pt-2">Tổng thành tiền: ${total.toLocaleString('vi-VN')} VNĐ</p>
+                <p class="text-blue-800 font-extrabold pt-2">Tổng thành tiền: ${total.toLocaleString('vi-VN')} VNĐ</p>
             `;
         }
 
@@ -682,14 +741,14 @@
                 <p><strong>Khối lượng:</strong> ${area} m² | Đơn giá: ${price.toLocaleString()} đ/m²</p>
                 <div class="mt-2 pt-2 border-t border-emerald-200">
                     <p class="font-bold text-emerald-900 mb-1">📦 Định mức vật tư phụ kiện đi kèm:</p>
-                    <ul class="list-disc pl-4 space-y-0.5 text-gray-700">
+                    <ul class="list-disc pl-4 space-y-0.5 text-slate-700">
                         <li>Gioăng cao su EPDM: ~<strong>${gioang} m</strong></li>
                         <li>Keo Silicon chuyên dụng: ~<strong>${keoSilicon} chai</strong></li>
                         <li>Ke góc / Phụ kiện liên kết: ~<strong>${keNhay} cái</strong></li>
                         <li>Bộ khóa & bản lề/ bánh xe: Theo số bộ thực tế</li>
                     </ul>
                 </div>
-                <p class="text-emerald-700 font-bold pt-2">Tổng thành tiền nhôm kính: ${total.toLocaleString('vi-VN')} VNĐ</p>
+                <p class="text-emerald-800 font-extrabold pt-2">Tổng thành tiền nhôm kính: ${total.toLocaleString('vi-VN')} VNĐ</p>
             `;
         }
 
@@ -711,14 +770,14 @@
                 <p><strong>Khối lượng bề mặt:</strong> ${area} m² | Đơn giá: ${price.toLocaleString()} đ/m²</p>
                 <div class="mt-2 pt-2 border-t border-amber-200">
                     <p class="font-bold text-amber-900 mb-1">📦 Định mức vật tư nội thất:</p>
-                    <ul class="list-disc pl-4 space-y-0.5 text-gray-700">
+                    <ul class="list-disc pl-4 space-y-0.5 text-slate-700">
                         <li>Số lượng tấm ván (1.22m × 2.44m): <strong>${soTamVan} tấm</strong></li>
                         <li>Chỉ dán cạnh PVC: ~<strong>${chiDan} m</strong></li>
                         <li>Phụ kiện bản lề / ray trượt: ~<strong>${banLeHoacRay} bộ/cái</strong></li>
                         <li>Vít cấu tạo & cam chốt: Theo bản vẽ gia công</li>
                     </ul>
                 </div>
-                <p class="text-amber-700 font-bold pt-2">Tổng thành tiền nội thất gỗ: ${total.toLocaleString('vi-VN')} VNĐ</p>
+                <p class="text-amber-800 font-extrabold pt-2">Tổng thành tiền nội thất gỗ: ${total.toLocaleString('vi-VN')} VNĐ</p>
             `;
         }
 
@@ -743,6 +802,8 @@
 
             const data = {
                 categories: categories,
+                companyName: document.getElementById('settingCompanyName').value,
+                companyMeta: document.getElementById('settingCompanyMeta').value,
                 thachcao: {
                     khungSelect: document.getElementById('tcKhungSelect').value,
                     khungCustom: document.getElementById('tcKhungCustom').value,
@@ -782,6 +843,13 @@
 
             try {
                 const data = JSON.parse(savedString);
+
+                if (data.companyName) {
+                    document.getElementById('settingCompanyName').value = data.companyName;
+                }
+                if (data.companyMeta) {
+                    document.getElementById('settingCompanyMeta').value = data.companyMeta;
+                }
 
                 // Khôi phục Tab 1: Khoán Khối Lượng
                 if (data.categories && data.categories.length > 0) {
@@ -828,6 +896,7 @@
                 console.error("Lỗi khi tải dữ liệu cũ:", e);
             }
 
+            updateCompanyProfile();
             calculateTotals();
             calculateThachCaoDetail();
             calculateNhomKinhDetail();
@@ -841,49 +910,56 @@
             }
         }
 
+        // --- CƠ CHẾ XUẤT PDF SIÊU NÉT & TẢI TRỰC TIẾP TRÊN MỌI DI ĐỘNG ---
         async function exportSectionPDF(elementId, filename) {
             const element = document.getElementById(elementId);
             if (!element) return;
 
             try {
+                // Tăng độ phân giải scale lên 3 để chữ không bị mờ nhòe
                 const canvas = await html2canvas(element, {
-                    scale: 2,
+                    scale: 3,
                     useCORS: true,
-                    logging: false
+                    logging: false,
+                    backgroundColor: '#ffffff'
                 });
 
-                const imgData = canvas.toDataURL('image/png');
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 
                 const pageWidth = pdf.internal.pageSize.getWidth();
                 const pageHeight = pdf.internal.pageSize.getHeight();
-                const imgWidth = pageWidth - 20;
+                const imgWidth = pageWidth - 20; // căn lề 10mm mỗi bên
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
                 let heightLeft = imgHeight;
                 let position = 10;
 
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+                pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight, undefined, 'FAST');
+                heightLeft -= (pageHeight - 20);
 
                 while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
+                    position = heightLeft - imgHeight + 10;
                     pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
+                    pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight, undefined, 'FAST');
+                    heightLeft -= (pageHeight - 20);
                 }
 
-                // Ép tải file trực tiếp trên mọi trình duyệt/WebView di động
+                // Xuất file và ép buộc tải xuống trực tiếp trên Chrome/Safari di động
                 const pdfBlob = pdf.output('blob');
                 const blobUrl = URL.createObjectURL(pdfBlob);
+                
                 const downloadLink = document.createElement('a');
                 downloadLink.href = blobUrl;
                 downloadLink.download = filename;
                 document.body.appendChild(downloadLink);
                 downloadLink.click();
                 document.body.removeChild(downloadLink);
-                URL.revokeObjectURL(blobUrl);
+                
+                setTimeout(() => {
+                    URL.revokeObjectURL(blobUrl);
+                }, 1000);
 
             } catch (error) {
                 console.error("Lỗi xuất PDF:", error);
