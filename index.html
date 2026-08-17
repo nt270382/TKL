@@ -24,7 +24,10 @@
     <header class="bg-blue-600 text-white p-4 shadow-md no-print sticky top-0 z-50">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold tracking-wide">TKL ESTIMATOR</h1>
-            <span id="vipStatusBadge" class="text-xs bg-yellow-400 text-gray-900 font-bold px-2.5 py-1 rounded-full uppercase">Bản FREE</span>
+            <div class="flex items-center gap-2">
+                <span id="vipStatusBadge" class="text-xs bg-yellow-400 text-gray-900 font-bold px-2.5 py-1 rounded-full uppercase">Bản FREE</span>
+                <button onclick="confirmResetData()" class="text-[10px] bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded shadow" title="Xóa dữ liệu cũ, nhập mới từ đầu">🔄 Reset</button>
+            </div>
         </div>
     </header>
 
@@ -56,14 +59,14 @@
                 <div id="categoriesContainer" class="space-y-4">
                     <div class="category-card bg-white p-4 rounded-xl shadow-sm border space-y-3" data-cat-id="1">
                         <div class="flex justify-between items-center border-b pb-2">
-                            <select class="cat-name-select font-bold text-sm text-blue-600 bg-transparent border-none focus:ring-0 cursor-pointer" onchange="calculateTotals()">
+                            <select class="cat-name-select font-bold text-sm text-blue-600 bg-transparent border-none focus:ring-0 cursor-pointer" onchange="saveToStorage(); calculateTotals()">
                                 <option value="Trần thạch cao" data-unit="m²" data-calc="area">Trần thạch cao (m²)</option>
                                 <option value="Phào chỉ" data-unit="m" data-calc="perimeter">Phào chỉ (Mét tới)</option>
                                 <option value="Vách thạch cao" data-unit="m²" data-calc="area">Vách thạch cao (m²)</option>
                                 <option value="Ốp tường PVC" data-unit="m²" data-calc="area">Ốp tường PVC (m²)</option>
                             </select>
                             <div class="flex items-center gap-2">
-                                <input type="number" class="cat-price w-24 border rounded p-1 text-xs text-right font-bold" placeholder="Đơn giá" oninput="calculateTotals()">
+                                <input type="number" class="cat-price w-24 border rounded p-1 text-xs text-right font-bold" placeholder="Đơn giá" oninput="saveToStorage(); calculateTotals()">
                                 <span class="text-xs text-gray-500">đ</span>
                             </div>
                         </div>
@@ -71,18 +74,18 @@
                         <div class="space-y-2 location-list">
                             <div class="location-row bg-gray-50 p-2.5 rounded-lg border space-y-2">
                                 <div class="flex justify-between items-center">
-                                    <input type="text" class="loc-name text-xs font-semibold bg-transparent border-b border-gray-300 w-1/2" value="Phòng khách">
-                                    <select class="loc-shape text-[11px] border rounded p-1 bg-white" onchange="toggleRowInputs(this); calculateTotals();">
+                                    <input type="text" class="loc-name text-xs font-semibold bg-transparent border-b border-gray-300 w-1/2" value="Phòng khách" oninput="saveToStorage()">
+                                    <select class="loc-shape text-[11px] border rounded p-1 bg-white" onchange="toggleRowInputs(this); saveToStorage(); calculateTotals();">
                                         <option value="rect">Chữ nhật (DxR)</option>
                                         <option value="circle">Tròn (Bán kính R)</option>
                                     </select>
                                 </div>
                                 <div class="input-rect grid grid-cols-2 gap-2">
-                                    <input type="number" step="0.01" class="loc-length border rounded p-1 text-xs bg-white" placeholder="Dài (m)" oninput="calculateTotals()">
-                                    <input type="number" step="0.01" class="loc-width border rounded p-1 text-xs bg-white" placeholder="Rộng (m)" oninput="calculateTotals()">
+                                    <input type="number" step="0.01" class="loc-length border rounded p-1 text-xs bg-white" placeholder="Dài (m)" oninput="saveToStorage(); calculateTotals()">
+                                    <input type="number" step="0.01" class="loc-width border rounded p-1 text-xs bg-white" placeholder="Rộng (m)" oninput="saveToStorage(); calculateTotals()">
                                 </div>
                                 <div class="input-circle hidden">
-                                    <input type="number" step="0.01" class="loc-radius border rounded p-1 text-xs bg-white" placeholder="Bán kính R (m)" oninput="calculateTotals()">
+                                    <input type="number" step="0.01" class="loc-radius border rounded p-1 text-xs bg-white" placeholder="Bán kính R (m)" oninput="saveToStorage(); calculateTotals()">
                                 </div>
                                 <div class="flex justify-between items-center text-[11px] pt-1 text-gray-600 border-t">
                                     <span>Khối lượng: <strong class="loc-subtotal text-blue-600 font-bold">0 m²</strong></span>
@@ -108,7 +111,7 @@
         </section>
 
 
-        <!-- TAB 2: BÁO GIÁ CHUYÊN SÂU PRO (Thạch cao, Nhôm kính, Ván nội thất) -->
+        <!-- TAB 2: BÁO GIÁ CHUYÊN SÂU PRO -->
         <section id="sec-baogia" class="space-y-4 hidden">
             <div class="flex border-b bg-white rounded-t-xl overflow-x-auto no-print text-xs">
                 <button onclick="switchSubTab('bg-thachcao')" id="sub-bg-thachcao" class="subtab-btn active px-3 py-2 whitespace-nowrap font-semibold">Thạch Cao</button>
@@ -123,34 +126,34 @@
                     
                     <div class="space-y-2">
                         <label class="text-xs font-semibold text-gray-600">Chọn hoặc Tự nhập Khung xương:</label>
-                        <select id="tcKhungSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('tcKhung')">
+                        <select id="tcKhungSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('tcKhung'); saveToStorage();">
                             <option value="Vĩnh Tường BASI">Khung xương Vĩnh Tường BASI</option>
                             <option value="Vĩnh Tường Alpha">Khung xương Vĩnh Tường Alpha</option>
                             <option value="Vĩnh Tường Eko">Khung xương Vĩnh Tường Eko</option>
                             <option value="custom">-- Tự nhập tên khung khác --</option>
                         </select>
-                        <input type="text" id="tcKhungCustom" placeholder="Nhập tên khung xương tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="calculateThachCaoDetail()">
+                        <input type="text" id="tcKhungCustom" placeholder="Nhập tên khung xương tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="saveToStorage(); calculateThachCaoDetail()">
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-xs font-semibold text-gray-600">Chọn hoặc Tự nhập Tấm thạch cao:</label>
-                        <select id="tcTamSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('tcTam')">
+                        <select id="tcTamSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('tcTam'); saveToStorage();">
                             <option value="Gyproc Tiêu Chuẩn 9mm">Tấm Gyproc Tiêu Chuẩn 9mm (1.2m x 2.4m)</option>
                             <option value="Gyproc Chống Ẩm 9mm">Tấm Gyproc Chống Ẩm 9mm (1.2m x 2.4m)</option>
                             <option value="Knauf Tiêu Chuẩn 9mm">Tấm Knauf Tiêu Chuẩn 9mm (1.2m x 2.4m)</option>
                             <option value="custom">-- Tự nhập tên tấm khác --</option>
                         </select>
-                        <input type="text" id="tcTamCustom" placeholder="Nhập tên tấm thạch cao tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="calculateThachCaoDetail()">
+                        <input type="text" id="tcTamCustom" placeholder="Nhập tên tấm thạch cao tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="saveToStorage(); calculateThachCaoDetail()">
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="text-xs text-gray-500">Diện tích (m²)</label>
-                            <input type="number" id="tcArea" placeholder="VD: 100" class="w-full border rounded p-2 text-xs" oninput="calculateThachCaoDetail()">
+                            <input type="number" id="tcArea" placeholder="VD: 100" class="w-full border rounded p-2 text-xs" oninput="saveToStorage(); calculateThachCaoDetail()">
                         </div>
                         <div>
                             <label class="text-xs text-gray-500">Đơn giá trọn gói/m²</label>
-                            <input type="number" id="tcPrice" placeholder="VD: 160000" class="w-full border rounded p-2 text-xs" oninput="calculateThachCaoDetail()">
+                            <input type="number" id="tcPrice" placeholder="VD: 160000" class="w-full border rounded p-2 text-xs" oninput="saveToStorage(); calculateThachCaoDetail()">
                         </div>
                     </div>
 
@@ -172,34 +175,34 @@
                     
                     <div class="space-y-2">
                         <label class="text-xs font-semibold text-gray-600">Chọn hoặc Tự nhập Hệ nhôm:</label>
-                        <select id="xkHeSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('xkHe')">
+                        <select id="xkHeSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('xkHe'); saveToStorage();">
                             <option value="Xingfa Hệ 55 (Cửa quay)">Xingfa Hệ 55 (Cửa quay)</option>
                             <option value="Xingfa Hệ 93 (Cửa lùa)">Xingfa Hệ 93 (Cửa lùa)</option>
                             <option value="Xingfa Cầu Cách Nhiệt">Xingfa Cầu Cách Nhiệt</option>
                             <option value="custom">-- Tự nhập hệ nhôm khác --</option>
                         </select>
-                        <input type="text" id="xkHeCustom" placeholder="Nhập tên hệ nhôm tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="calculateNhomKinhDetail()">
+                        <input type="text" id="xkHeCustom" placeholder="Nhập tên hệ nhôm tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="saveToStorage(); calculateNhomKinhDetail()">
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-xs font-semibold text-gray-600">Chọn hoặc Tự nhập Loại kính:</label>
-                        <select id="xkKinhSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('xkKinh')">
+                        <select id="xkKinhSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('xkKinh'); saveToStorage();">
                             <option value="Kính cường lực 8mm">Kính cường lực 8mm</option>
                             <option value="Kính cường lực 10mm">Kính cường lực 10mm</option>
                             <option value="Kính dán an toàn 6.38mm">Kính dán an toàn 6.38mm</option>
                             <option value="custom">-- Tự nhập loại kính khác --</option>
                         </select>
-                        <input type="text" id="xkKinhCustom" placeholder="Nhập loại kính tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="calculateNhomKinhDetail()">
+                        <input type="text" id="xkKinhCustom" placeholder="Nhập loại kính tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="saveToStorage(); calculateNhomKinhDetail()">
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="text-xs text-gray-500">Tổng diện tích (m²)</label>
-                            <input type="number" id="xkArea" placeholder="VD: 35" class="w-full border rounded p-2 text-xs" oninput="calculateNhomKinhDetail()">
+                            <input type="number" id="xkArea" placeholder="VD: 35" class="w-full border rounded p-2 text-xs" oninput="saveToStorage(); calculateNhomKinhDetail()">
                         </div>
                         <div>
                             <label class="text-xs text-gray-500">Đơn giá/m²</label>
-                            <input type="number" id="xkPrice" placeholder="VD: 2200000" class="w-full border rounded p-2 text-xs" oninput="calculateNhomKinhDetail()">
+                            <input type="number" id="xkPrice" placeholder="VD: 2200000" class="w-full border rounded p-2 text-xs" oninput="saveToStorage(); calculateNhomKinhDetail()">
                         </div>
                     </div>
 
@@ -221,23 +224,23 @@
                     
                     <div class="space-y-2">
                         <label class="text-xs font-semibold text-gray-600">Chọn hoặc Tự nhập Loại ván gỗ:</label>
-                        <select id="goLoaiSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('goLoai')">
+                        <select id="goLoaiSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('goLoai'); saveToStorage();">
                             <option value="MDF An Cường Melamine 17mm">MDF An Cường Melamine 17mm (1.22m x 2.44m)</option>
                             <option value="MDF Thái Lan Chống Ẩm 17mm">MDF Thái Lan Chống Ẩm 17mm (1.22m x 2.44m)</option>
                             <option value="Plywood Phim / Melamine">Plywood Phim / Melamine (1.22m x 2.44m)</option>
                             <option value="custom">-- Tự nhập loại ván khác --</option>
                         </select>
-                        <input type="text" id="goLoaiCustom" placeholder="Nhập loại ván gỗ tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="calculateGoDetail()">
+                        <input type="text" id="goLoaiCustom" placeholder="Nhập loại ván gỗ tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="saveToStorage(); calculateGoDetail()">
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="text-xs text-gray-500">Diện tích bề mặt (m²)</label>
-                            <input type="number" id="goArea" placeholder="VD: 25" class="w-full border rounded p-2 text-xs" oninput="calculateGoDetail()">
+                            <input type="number" id="goArea" placeholder="VD: 25" class="w-full border rounded p-2 text-xs" oninput="saveToStorage(); calculateGoDetail()">
                         </div>
                         <div>
                             <label class="text-xs text-gray-500">Đơn giá hoàn thiện/m²</label>
-                            <input type="number" id="goPrice" value="2200000" class="w-full border rounded p-2 text-xs" oninput="calculateGoDetail()">
+                            <input type="number" id="goPrice" value="2200000" class="w-full border rounded p-2 text-xs" oninput="saveToStorage(); calculateGoDetail()">
                         </div>
                     </div>
 
@@ -320,10 +323,9 @@
             document.getElementById('contactDeviceId').innerText = deviceId;
             document.getElementById('vietqrImg').src = `https://img.vietqr.io/image/VCB-0881000475550-compact2.png?amount=50000&addInfo=KICH%20HOAT%20VIP%20${deviceId}`;
             checkVipStatus();
-            calculateTotals();
-            calculateThachCaoDetail();
-            calculateNhomKinhDetail();
-            calculateGoDetail();
+            
+            // Tải dữ liệu lưu trữ tự động nếu có
+            loadFromStorage();
         });
 
         function checkVipStatus() {
@@ -405,6 +407,7 @@
                 customInput.focus();
             } else {
                 customInput.classList.add('hidden');
+                customInput.value = '';
             }
             
             if(prefix.startsWith('tc')) calculateThachCaoDetail();
@@ -420,18 +423,18 @@
             newRow.className = 'location-row bg-gray-50 p-2.5 rounded-lg border space-y-2';
             newRow.innerHTML = `
                 <div class="flex justify-between items-center">
-                    <input type="text" class="loc-name text-xs font-semibold bg-transparent border-b border-gray-300 w-1/2" value="Vị trí mới">
-                    <select class="loc-shape text-[11px] border rounded p-1 bg-white" onchange="toggleRowInputs(this); calculateTotals();">
+                    <input type="text" class="loc-name text-xs font-semibold bg-transparent border-b border-gray-300 w-1/2" value="Vị trí mới" oninput="saveToStorage()">
+                    <select class="loc-shape text-[11px] border rounded p-1 bg-white" onchange="toggleRowInputs(this); saveToStorage(); calculateTotals();">
                         <option value="rect">Chữ nhật (DxR)</option>
                         <option value="circle">Tròn (Bán kính R)</option>
                     </select>
                 </div>
                 <div class="input-rect grid grid-cols-2 gap-2">
-                    <input type="number" step="0.01" class="loc-length border rounded p-1 text-xs bg-white" placeholder="Dài (m)" oninput="calculateTotals()">
-                    <input type="number" step="0.01" class="loc-width border rounded p-1 text-xs bg-white" placeholder="Rộng (m)" oninput="calculateTotals()">
+                    <input type="number" step="0.01" class="loc-length border rounded p-1 text-xs bg-white" placeholder="Dài (m)" oninput="saveToStorage(); calculateTotals()">
+                    <input type="number" step="0.01" class="loc-width border rounded p-1 text-xs bg-white" placeholder="Rộng (m)" oninput="saveToStorage(); calculateTotals()">
                 </div>
                 <div class="input-circle hidden">
-                    <input type="number" step="0.01" class="loc-radius border rounded p-1 text-xs bg-white" placeholder="Bán kính R (m)" oninput="calculateTotals()">
+                    <input type="number" step="0.01" class="loc-radius border rounded p-1 text-xs bg-white" placeholder="Bán kính R (m)" oninput="saveToStorage(); calculateTotals()">
                 </div>
                 <div class="flex justify-between items-center text-[11px] pt-1 text-gray-600 border-t">
                     <span>Khối lượng: <strong class="loc-subtotal text-blue-600 font-bold">0</strong></span>
@@ -439,6 +442,7 @@
                 </div>
             `;
             listContainer.appendChild(newRow);
+            saveToStorage();
             calculateTotals();
         }
 
@@ -450,49 +454,39 @@
                 return;
             }
             row.remove();
+            saveToStorage();
             calculateTotals();
         }
 
-        function addNewCategorySection() {
+        function addNewCategorySection(savedData = null) {
             const container = document.getElementById('categoriesContainer');
             const newCard = document.createElement('div');
             newCard.className = 'category-card bg-white p-4 rounded-xl shadow-sm border space-y-3';
+            
+            let catNameVal = "Trần thạch cao";
+            let catPriceVal = "";
+            if (savedData) {
+                catNameVal = savedData.name;
+                catPriceVal = savedData.price;
+            }
+
             newCard.innerHTML = `
                 <div class="flex justify-between items-center border-b pb-2">
-                    <select class="cat-name-select font-bold text-sm text-blue-600 bg-transparent border-none focus:ring-0 cursor-pointer" onchange="calculateTotals()">
-                        <option value="Trần thạch cao" data-unit="m²" data-calc="area">Trần thạch cao (m²)</option>
-                        <option value="Phào chỉ" data-unit="m" data-calc="perimeter">Phào chỉ (Mét tới)</option>
-                        <option value="Vách thạch cao" data-unit="m²" data-calc="area">Vách thạch cao (m²)</option>
-                        <option value="Ốp tường PVC" data-unit="m²" data-calc="area">Ốp tường PVC (m²)</option>
+                    <select class="cat-name-select font-bold text-sm text-blue-600 bg-transparent border-none focus:ring-0 cursor-pointer" onchange="saveToStorage(); calculateTotals()">
+                        <option value="Trần thạch cao" ${catNameVal==='Trần thạch cao'?'selected':''} data-unit="m²" data-calc="area">Trần thạch cao (m²)</option>
+                        <option value="Phào chỉ" ${catNameVal==='Phào chỉ'?'selected':''} data-unit="m" data-calc="perimeter">Phào chỉ (Mét tới)</option>
+                        <option value="Vách thạch cao" ${catNameVal==='Vách thạch cao'?'selected':''} data-unit="m²" data-calc="area">Vách thạch cao (m²)</option>
+                        <option value="Ốp tường PVC" ${catNameVal==='Ốp tường PVC'?'selected':''} data-unit="m²" data-calc="area">Ốp tường PVC (m²)</option>
                     </select>
                     <div class="flex items-center gap-1">
-                        <input type="number" class="cat-price w-24 border rounded p-1 text-xs text-right font-bold" placeholder="Đơn giá" oninput="calculateTotals()">
+                        <input type="number" class="cat-price w-24 border rounded p-1 text-xs text-right font-bold" placeholder="Đơn giá" value="${catPriceVal}" oninput="saveToStorage(); calculateTotals()">
                         <span class="text-xs text-gray-500">đ</span>
                         <button onclick="removeCategoryCard(this)" class="ml-2 text-red-500 font-bold text-xs">✕ Xóa</button>
                     </div>
                 </div>
 
                 <div class="space-y-2 location-list">
-                    <div class="location-row bg-gray-50 p-2.5 rounded-lg border space-y-2">
-                        <div class="flex justify-between items-center">
-                            <input type="text" class="loc-name text-xs font-semibold bg-transparent border-b border-gray-300 w-1/2" value="Phòng mới">
-                            <select class="loc-shape text-[11px] border rounded p-1 bg-white" onchange="toggleRowInputs(this); calculateTotals();">
-                                <option value="rect">Chữ nhật (DxR)</option>
-                                <option value="circle">Tròn (Bán kính R)</option>
-                            </select>
-                        </div>
-                        <div class="input-rect grid grid-cols-2 gap-2">
-                            <input type="number" step="0.01" class="loc-length border rounded p-1 text-xs bg-white" placeholder="Dài (m)" oninput="calculateTotals()">
-                            <input type="number" step="0.01" class="loc-width border rounded p-1 text-xs bg-white" placeholder="Rộng (m)" oninput="calculateTotals()">
-                        </div>
-                        <div class="input-circle hidden">
-                            <input type="number" step="0.01" class="loc-radius border rounded p-1 text-xs bg-white" placeholder="Bán kính R (m)" oninput="calculateTotals()">
-                        </div>
-                        <div class="flex justify-between items-center text-[11px] pt-1 text-gray-600 border-t">
-                            <span>Khối lượng: <strong class="loc-subtotal text-blue-600 font-bold">0</strong></span>
-                            <button onclick="removeLocationRow(this)" class="text-red-500 hover:text-red-700">Xóa vị trí</button>
-                        </div>
-                    </div>
+                    <!-- Dữ liệu vị trí sẽ được load hoặc tạo mặc định -->
                 </div>
 
                 <div class="flex justify-between items-center pt-1">
@@ -502,7 +496,62 @@
                     </div>
                 </div>
             `;
+
+            const listContainer = newCard.querySelector('.location-list');
+            if (savedData && savedData.rows && savedData.rows.length > 0) {
+                listContainer.innerHTML = '';
+                savedData.rows.forEach(r => {
+                    const rDiv = document.createElement('div');
+                    rDiv.className = 'location-row bg-gray-50 p-2.5 rounded-lg border space-y-2';
+                    rDiv.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <input type="text" class="loc-name text-xs font-semibold bg-transparent border-b border-gray-300 w-1/2" value="${r.name}" oninput="saveToStorage()">
+                            <select class="loc-shape text-[11px] border rounded p-1 bg-white" onchange="toggleRowInputs(this); saveToStorage(); calculateTotals();">
+                                <option value="rect" ${r.shape==='rect'?'selected':''}>Chữ nhật (DxR)</option>
+                                <option value="circle" ${r.shape==='circle'?'selected':''}>Tròn (Bán kính R)</option>
+                            </select>
+                        </div>
+                        <div class="input-rect grid grid-cols-2 gap-2 ${r.shape==='circle'?'hidden':''}">
+                            <input type="number" step="0.01" class="loc-length border rounded p-1 text-xs bg-white" placeholder="Dài (m)" value="${r.length}" oninput="saveToStorage(); calculateTotals()">
+                            <input type="number" step="0.01" class="loc-width border rounded p-1 text-xs bg-white" placeholder="Rộng (m)" value="${r.width}" oninput="saveToStorage(); calculateTotals()">
+                        </div>
+                        <div class="input-circle ${r.shape==='rect'?'hidden':''}">
+                            <input type="number" step="0.01" class="loc-radius border rounded p-1 text-xs bg-white" placeholder="Bán kính R (m)" value="${r.radius}" oninput="saveToStorage(); calculateTotals()">
+                        </div>
+                        <div class="flex justify-between items-center text-[11px] pt-1 text-gray-600 border-t">
+                            <span>Khối lượng: <strong class="loc-subtotal text-blue-600 font-bold">0</strong></span>
+                            <button onclick="removeLocationRow(this)" class="text-red-500 hover:text-red-700">Xóa vị trí</button>
+                        </div>
+                    `;
+                    listContainer.appendChild(rDiv);
+                });
+            } else {
+                listContainer.innerHTML = `
+                    <div class="location-row bg-gray-50 p-2.5 rounded-lg border space-y-2">
+                        <div class="flex justify-between items-center">
+                            <input type="text" class="loc-name text-xs font-semibold bg-transparent border-b border-gray-300 w-1/2" value="Phòng mới" oninput="saveToStorage()">
+                            <select class="loc-shape text-[11px] border rounded p-1 bg-white" onchange="toggleRowInputs(this); saveToStorage(); calculateTotals();">
+                                <option value="rect">Chữ nhật (DxR)</option>
+                                <option value="circle">Tròn (Bán kính R)</option>
+                            </select>
+                        </div>
+                        <div class="input-rect grid grid-cols-2 gap-2">
+                            <input type="number" step="0.01" class="loc-length border rounded p-1 text-xs bg-white" placeholder="Dài (m)" oninput="saveToStorage(); calculateTotals()">
+                            <input type="number" step="0.01" class="loc-width border rounded p-1 text-xs bg-white" placeholder="Rộng (m)" oninput="saveToStorage(); calculateTotals()">
+                        </div>
+                        <div class="input-circle hidden">
+                            <input type="number" step="0.01" class="loc-radius border rounded p-1 text-xs bg-white" placeholder="Bán kính R (m)" oninput="saveToStorage(); calculateTotals()">
+                        </div>
+                        <div class="flex justify-between items-center text-[11px] pt-1 text-gray-600 border-t">
+                            <span>Khối lượng: <strong class="loc-subtotal text-blue-600 font-bold">0</strong></span>
+                            <button onclick="removeLocationRow(this)" class="text-red-500 hover:text-red-700">Xóa vị trí</button>
+                        </div>
+                    </div>
+                `;
+            }
+
             container.appendChild(newCard);
+            saveToStorage();
             calculateTotals();
         }
 
@@ -514,6 +563,7 @@
                 return;
             }
             card.remove();
+            saveToStorage();
             calculateTotals();
         }
 
@@ -672,6 +722,125 @@
             `;
         }
 
+        // --- CƠ CHẾ LƯU & KHÔI PHỤC DỮ LIỆU TỰ ĐỘNG ---
+        function saveToStorage() {
+            const categories = [];
+            document.querySelectorAll('.category-card').forEach(card => {
+                const name = card.querySelector('.cat-name-select').value;
+                const price = card.querySelector('.cat-price').value;
+                const rows = [];
+                card.querySelectorAll('.location-row').forEach(row => {
+                    rows.push({
+                        name: row.querySelector('.loc-name').value,
+                        shape: row.querySelector('.loc-shape').value,
+                        length: row.querySelector('.loc-length').value,
+                        width: row.querySelector('.loc-width').value,
+                        radius: row.querySelector('.loc-radius').value
+                    });
+                });
+                categories.push({ name, price, rows });
+            });
+
+            const data = {
+                categories: categories,
+                thachcao: {
+                    khungSelect: document.getElementById('tcKhungSelect').value,
+                    khungCustom: document.getElementById('tcKhungCustom').value,
+                    tamSelect: document.getElementById('tcTamSelect').value,
+                    tamCustom: document.getElementById('tcTamCustom').value,
+                    area: document.getElementById('tcArea').value,
+                    price: document.getElementById('tcPrice').value
+                },
+                nhomkinh: {
+                    heSelect: document.getElementById('xkHeSelect').value,
+                    heCustom: document.getElementById('xkHeCustom').value,
+                    kinhSelect: document.getElementById('xkKinhSelect').value,
+                    kinhCustom: document.getElementById('xkKinhCustom').value,
+                    area: document.getElementById('xkArea').value,
+                    price: document.getElementById('xkPrice').value
+                },
+                ngoithat: {
+                    loaiSelect: document.getElementById('goLoaiSelect').value,
+                    loaiCustom: document.getElementById('goLoaiCustom').value,
+                    area: document.getElementById('goArea').value,
+                    price: document.getElementById('goPrice').value
+                }
+            };
+
+            localStorage.setItem('tkl_saved_data', JSON.stringify(data));
+        }
+
+        function loadFromStorage() {
+            const savedString = localStorage.getItem('tkl_saved_data');
+            if (!savedString) {
+                calculateTotals();
+                calculateThachCaoDetail();
+                calculateNhomKinhDetail();
+                calculateGoDetail();
+                return;
+            }
+
+            try {
+                const data = JSON.parse(savedString);
+
+                // Khôi phục Tab 1: Khoán Khối Lượng
+                if (data.categories && data.categories.length > 0) {
+                    document.getElementById('categoriesContainer').innerHTML = '';
+                    data.categories.forEach(cat => {
+                        addNewCategorySection(cat);
+                    });
+                }
+
+                // Khôi phục Tab 2: Thạch Cao
+                if (data.thachcao) {
+                    document.getElementById('tcKhungSelect').value = data.thachcao.khungSelect;
+                    toggleCustomInput('tcKhung');
+                    document.getElementById('tcKhungCustom').value = data.thachcao.khungCustom || '';
+                    document.getElementById('tcTamSelect').value = data.thachcao.tamSelect;
+                    toggleCustomInput('tcTam');
+                    document.getElementById('tcTamCustom').value = data.thachcao.tamCustom || '';
+                    document.getElementById('tcArea').value = data.thachcao.area || '';
+                    document.getElementById('tcPrice').value = data.thachcao.price || '';
+                }
+
+                // Khôi phục Tab 2: Nhôm Kính
+                if (data.nhomkinh) {
+                    document.getElementById('xkHeSelect').value = data.nhomkinh.heSelect;
+                    toggleCustomInput('xkHe');
+                    document.getElementById('xkHeCustom').value = data.nhomkinh.heCustom || '';
+                    document.getElementById('xkKinhSelect').value = data.nhomkinh.kinhSelect;
+                    toggleCustomInput('xkKinh');
+                    document.getElementById('xkKinhCustom').value = data.nhomkinh.kinhCustom || '';
+                    document.getElementById('xkArea').value = data.nhomkinh.area || '';
+                    document.getElementById('xkPrice').value = data.nhomkinh.price || '';
+                }
+
+                // Khôi phục Tab 2: Nội Thất
+                if (data.ngoithat) {
+                    document.getElementById('goLoaiSelect').value = data.ngoithat.loaiSelect;
+                    toggleCustomInput('goLoai');
+                    document.getElementById('goLoaiCustom').value = data.ngoithat.loaiCustom || '';
+                    document.getElementById('goArea').value = data.ngoithat.area || '';
+                    document.getElementById('goPrice').value = data.ngoithat.price || '';
+                }
+
+            } catch (e) {
+                console.error("Lỗi khi tải dữ liệu cũ:", e);
+            }
+
+            calculateTotals();
+            calculateThachCaoDetail();
+            calculateNhomKinhDetail();
+            calculateGoDetail();
+        }
+
+        function confirmResetData() {
+            if (confirm("⚠️ Bạn có chắc chắn muốn xóa toàn bộ dữ liệu đã nhập và làm lại từ đầu không?")) {
+                localStorage.removeItem('tkl_saved_data');
+                location.reload();
+            }
+        }
+
         async function exportSectionPDF(elementId, filename) {
             const element = document.getElementById(elementId);
             if (!element) return;
@@ -705,7 +874,7 @@
                     heightLeft -= pageHeight;
                 }
 
-                // Ép trình duyệt tải tệp trực tiếp về máy thay vì xem trước
+                // Ép tải file trực tiếp trên mọi trình duyệt/WebView di động
                 const pdfBlob = pdf.output('blob');
                 const blobUrl = URL.createObjectURL(pdfBlob);
                 const downloadLink = document.createElement('a');
