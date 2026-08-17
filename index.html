@@ -1,535 +1,282 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <link rel="manifest" href="manifest.json">
-
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sổ Tay Báo Giá Công Trình Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TKL Pro - Tính Báo Giá & Cầu Thang</title>
     <style>
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
-        body { margin: 0; padding: 12px; background: #eef2f5; color: #1e293b; padding-bottom: 120px; }
+        :root { --primary: #1a73e8; --accent: #e67e22; --bg: #f4f7f6; --danger: #d9534f; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 10px; }
         
-        .header-title { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; }
-        .header-title h1 { margin: 0; font-size: 18pt; color: #1e3a8a; text-transform: uppercase; letter-spacing: 0.5px; }
-        .header-title p { margin: 4px 0 0 0; font-size: 10pt; color: #64748b; }
+        .tab-menu { display: flex; gap: 5px; background: #fff; padding: 5px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; background: #eee; font-weight: 600; cursor: pointer; color: #555; }
+        .tab-btn.active { background: var(--primary); color: white; }
 
-        .card { background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); border: 1px solid #cbd5e1; }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
-        h3 { margin: 0; font-size: 16px; color: #1e3a8a; }
-        
-        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .input-full { grid-column: span 2; }
-        label { display: block; font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 3px; text-transform: uppercase; }
-        input, select { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; background: #f8fafc; color: #0f172a; }
-        
-        .size-row { display: grid; grid-template-columns: 1.2fr 0.8fr 0.8fr 1.5fr 0.8fr 34px; gap: 6px; align-items: center; margin-bottom: 8px; background: #f8fafc; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; }
-        .calc-display { font-size: 12px; font-weight: 600; color: #2563eb; text-align: center; background: #eff6ff; padding: 8px; border-radius: 6px; border: 1px solid #bfdbfe; font-family: monospace; white-space: nowrap; }
-        .row-subtotal { font-weight: bold; color: #0f172a; text-align: center; background: #e0e7ff; padding: 8px; border-radius: 6px; font-size: 13px; border: 1px solid #c7d2fe; white-space: nowrap; }
-        
-        .btn-del-size { background: #ef4444; color: white; border: none; border-radius: 6px; width: 34px; height: 36px; font-weight: bold; cursor: pointer; }
-        .btn-add-size { background: #e2e8f0; color: #334155; border: none; border-radius: 6px; padding: 8px 12px; font-size: 12px; font-weight: 600; margin-top: 4px; cursor: pointer; width: 100%; }
-        .btn-add-card { background: #2563eb; color: white; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: bold; width: 100%; margin-bottom: 8px; cursor: pointer; }
-        .btn-pdf { background: #059669; color: white; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: bold; width: 100%; margin-bottom: 8px; cursor: pointer; }
-        .btn-zalo { background: #0284c7; color: white; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: bold; width: 100%; margin-bottom: 12px; cursor: pointer; }
-        .btn-danger { background: #fee2e2; color: #dc2626; border: none; border-radius: 6px; padding: 4px 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        
-        .footer-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -4px 12px rgba(0,0,0,0.15); z-index: 100; }
-        .total-val { font-size: 18px; font-weight: bold; color: #38bdf8; }
-        .sub-total { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+        .card { background: white; padding: 20px; border-radius: 15px; margin-top: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        h3 { color: var(--primary); margin-top: 0; border-bottom: 2px solid var(--bg); padding-bottom: 8px; }
 
-        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 10pt; }
-        .pdf-table th, .pdf-table td { border: 1px solid #cbd5e1; padding: 6px 8px; text-align: left; }
-        .pdf-table th { background: #f1f5f9; color: #334155; font-weight: bold; font-size: 9pt; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 6px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
+        .input-row { display: flex; gap: 8px; }
 
-        @media (max-width: 768px) {
-            .size-row { grid-template-columns: 1fr 1fr; }
-            .calc-display { grid-column: span 2; }
-            .row-subtotal { grid-column: span 1; }
-            .btn-del-size { grid-column: span 1; width: 100%; }
-        }
+        .action-btn { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--primary); color: white; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer; }
+        .btn-vip { background: linear-gradient(to right, #e67e22, #f39c12); }
+        .btn-danger { background: var(--danger); }
+
+        .pos-box { border: 1px solid #e0e0e0; padding: 10px; border-radius: 10px; margin-bottom: 10px; background: #fafafa; }
+        .pos-label { text-align: center; font-weight: bold; color: var(--primary); display: block; margin-bottom: 5px; }
+        .res-badge { background: #e8f0fe; color: var(--primary); padding: 8px; border-radius: 6px; text-align: center; font-weight: bold; margin-top: 5px; }
+
+        .lock-overlay { border: 2px dashed var(--accent); padding: 25px; border-radius: 12px; text-align: center; background: #fffdf9; }
+        .hidden { display: none !important; }
+        .result-box { background: #f0f7ff; border-left: 4px solid var(--primary); padding: 12px; margin-top: 12px; border-radius: 4px; }
     </style>
-    <!-- THƯ VIỆN HỖ TRỢ XUẤT FILE PDF TRỰC TIẾP TRÊN APK MOBILE -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
-    <!-- KHUNG CHỨA NỘI DUNG SẼ XUẤT FILE PDF -->
-    <div id="exportPdfArea" style="background: #ffffff; padding: 10px; border-radius: 8px;">
-        <div class="header-title">
-            <h1>BẢNG BÁO GIÁ CÔNG TRÌNH</h1>
-            <p>Chi tiết khối lượng kích thước & Công thức tính toán</p>
-        </div>
-
-        <div id="itemsContainer"></div>
-
-        <div id="pdfSummaryArea" style="margin-top: 18px; padding: 14px; background: #1e293b; color: #fff; border-radius: 6px;">
-            <div style="font-size: 10pt; text-transform: uppercase; color: #94a3b8; font-weight: bold;">TỔNG CỘNG BÁO GIÁ CÔNG TRÌNH</div>
-            <div id="pdfGrandTotal" style="font-size: 18pt; font-weight: bold; color: #38bdf8; margin-top: 2px;">0 VNĐ</div>
-            <div id="pdfTotalMetrics" style="font-size: 10pt; color: #cbd5e1; margin-top: 2px;">Tổng S: 0 m² | Tổng P: 0 m</div>
-        </div>
-    </div>
-
-    <div class="no-export" style="margin-top: 15px;">
-        <button class="btn-add-card" onclick="addItem()">+ THÊM HẠNG MỤC MỚI</button>
-        <button class="btn-pdf" id="btnExportPdf" onclick="exportPDF()">XUẤT FILE PDF</button>
-        <button class="btn-zalo" onclick="copyForZalo()">COPIED VĂN BẢN ĐỂ GỬI ZALO</button>
-    </div>
-
-    <div class="footer-bar">
-        <div>
-            <div style="font-size: 11px; text-transform: uppercase; color: #94a3b8;">Tổng Cộng Công Trình</div>
-            <div class="total-val" id="grandTotal">0 VNĐ</div>
-        </div>
-        <div style="text-align: right;">
-            <div class="sub-total" id="totalMetrics">Tổng S: 0 m² | Tổng P: 0 m</div>
-        </div>
-    </div>
-
-    <script>
-        let itemIndex = 0;
-
-        function addItem(data = null) {
-            itemIndex++;
-            const id = itemIndex;
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.id = `item-${id}`;
-            card.innerHTML = `
-                <div class="card-header">
-                    <h3>Hạng Mục #${id}: <span class="item-title-text">${data ? data.type : ''}</span></h3>
-                    <div class="price-badge-text" style="display:none; font-size: 10pt; font-weight: bold; color: #2563eb;"></div>
-                    <button class="btn-danger action-btn no-export" onclick="removeItem(${id})">Xóa</button>
-                </div>
-                
-                <div class="input-grid no-export">
-                    <div class="input-full">
-                        <label>Tên Hạng Mục / Loại Vật Liệu</label>
-                        <input type="text" class="item-type" placeholder="VD: Trần thạch cao / Chỉ phào" value="${data ? data.type : ''}" oninput="updateTitle(${id}); saveData(); calculateAll();">
-                    </div>
-                    <div>
-                        <label>Đơn Giá (VNĐ)</label>
-                        <input type="number" class="item-price" placeholder="VD: 180000" value="${data ? data.price : ''}" oninput="saveData(); calculateAll();">
-                    </div>
-                    <div>
-                        <label>Cách Tính Hạng Mục</label>
-                        <select class="calc-mode" onchange="saveData(); calculateAll();">
-                            <option value="area" ${data && data.mode === 'area' ? 'selected' : ''}>Tính m² (Dài x Rộng)</option>
-                            <option value="perimeter" ${data && data.mode === 'perimeter' ? 'selected' : ''}>Tính Chu Vi (Dài+Rộng)x2</option>
-                        </select>
-                    </div>
-                </div>
-
-                <label class="action-btn no-export">Danh Sách Kích Thước Theo Vị Trí</label>
-                <div id="sizes-${id}"></div>
-                <button class="btn-add-size action-btn no-export" onclick="addSize(${id})">+ Thêm Vị Trí Kích Thước</button>
-
-                <table class="pdf-table" id="pdf-table-${id}" style="display:none;">
-                    <thead>
-                        <tr>
-                            <th style="width:25%;">Vị Trí</th>
-                            <th style="width:15%; text-align:center;">Dài (m)</th>
-                            <th style="width:15%; text-align:center;">Rộng (m)</th>
-                            <th style="width:25%;">Phép Tính Chi Tiết</th>
-                            <th style="width:20%; text-align:right;">Khối Lượng</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-
-                <div class="sub-total" id="subtotal-${id}" style="margin-top: 12px; font-weight: 700; color: #0f172a; text-align: right; font-size: 14px; background: #f1f5f9; padding: 8px; border-radius: 6px;">
-                    Tổng khối lượng: 0 | Thành tiền: 0 VNĐ
-                </div>
-            `;
-            document.getElementById('itemsContainer').appendChild(card);
-
-            if (data && data.sizes) {
-                data.sizes.forEach(s => addSize(id, s));
-            } else {
-                addSize(id);
-            }
-            updateTitle(id);
-            calculateAll();
-        }
-
-        function updateTitle(id) {
-            const card = document.getElementById(`item-${id}`);
-            const val = card.querySelector('.item-type').value || '';
-            card.querySelector('.item-title-text').innerText = val;
-        }
-
-        function removeItem(id) {
-            document.getElementById(`item-${id}`).remove();
-            saveData();
-            calculateAll();
-        }
-
-        function addSize(itemId, sData = null) {
-            const container = document.getElementById(`sizes-${itemId}`);
-            const row = document.createElement('div');
-            row.className = 'size-row';
-            row.innerHTML = `
-                <input type="text" class="size-loc" placeholder="Vị trí (Phòng khách)" value="${sData ? sData.loc : ''}" oninput="saveData(); calculateAll();">
-                <input type="number" class="size-l" placeholder="Dài (m)" value="${sData ? sData.l : ''}" oninput="saveData(); calculateAll();">
-                <input type="number" class="size-w" placeholder="Rộng (m)" value="${sData ? sData.w : ''}" oninput="saveData(); calculateAll();">
-                <div class="calc-display">-</div>
-                <div class="row-subtotal">0</div>
-                <button class="btn-del-size action-btn no-export" onclick="removeSize(this)">×</button>
-            `;
-            container.appendChild(row);
-            saveData();
-            calculateAll();
-        }
-
-        function removeSize(btn) {
-            const row = btn.parentElement;
-            if (row.parentElement.children.length > 1) {
-                row.remove();
-                saveData();
-                calculateAll();
-            }
-        }
-
-        function calculateAll() {
-            let grandTotal = 0;
-            let grandArea = 0;
-            let grandPerimeter = 0;
-
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                const id = card.id.replace('item-', '');
-                const price = parseFloat(card.querySelector('.item-price').value) || 0;
-                const mode = card.querySelector('.calc-mode').value;
-                const unitText = mode === 'area' ? 'm²' : 'm';
-
-                card.querySelector('.price-badge-text').innerText = `Đơn giá: ${price.toLocaleString('vi-VN')} VNĐ / ${unitText}`;
-                
-                let itemTotalVal = 0;
-                const pdfTbody = card.querySelector(`#pdf-table-${id} tbody`);
-                pdfTbody.innerHTML = '';
-
-                const sizeRows = card.querySelectorAll('.size-row');
-                sizeRows.forEach(row => {
-                    const loc = row.querySelector('.size-loc').value || 'Mặc định';
-                    const l = parseFloat(row.querySelector('.size-l').value) || 0;
-                    const w = parseFloat(row.querySelector('.size-w').value) || 0;
-
-                    let rowVal = 0;
-                    let formulaText = '-';
-
-                    if (mode === 'area') {
-                        rowVal = l * w;
-                        formulaText = `${l.toFixed(2)} × ${w.toFixed(2)}`;
-                    } else if (mode === 'perimeter') {
-                        rowVal = 2 * (l + w);
-                        formulaText = `(${l.toFixed(2)} + ${w.toFixed(2)}) × 2`;
-                    }
-
-                    row.querySelector('.calc-display').innerText = (l > 0 || w > 0) ? formulaText : '-';
-                    row.querySelector('.row-subtotal').innerText = rowVal > 0 ? `${rowVal.toFixed(2)} ${unitText}` : '0';
-                    itemTotalVal += rowVal;
-
-                    if (l > 0 || w > 0) {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${loc}</td>
-                            <td style="text-align:center;">${l.toFixed(2)}</td>
-                            <td style="text-align:center;">${w.toFixed(2)}</td>
-                            <td style="color:#2563eb; font-weight:bold; font-family:monospace;">${formulaText}</td>
-                            <td style="text-align:right; font-weight:bold;">${rowVal.toFixed(2)} ${unitText}</td>
-                        `;
-                        pdfTbody.appendChild(tr);
-                    }
-                });
-
-                const itemTotalMoney = itemTotalVal * price;
-                
-                if (mode === 'area') grandArea += itemTotalVal;
-                else grandPerimeter += itemTotalVal;
-                
-                grandTotal += itemTotalMoney;
-
-                document.getElementById(`subtotal-${id}`).innerText = 
-                    `Tổng khối lượng: ${itemTotalVal.toFixed(2)} ${unitText} | Thành tiền: ${Math.round(itemTotalMoney).toLocaleString('vi-VN')} VNĐ`;
-            });
-
-            const totalMoneyText = `${Math.round(grandTotal).toLocaleString('vi-VN')} VNĐ`;
-            const totalMetricsText = `Tổng S: ${grandArea.toFixed(2)} m² | Tổng P: ${grandPerimeter.toFixed(2)} m`;
-
-            document.getElementById('grandTotal').innerText = totalMoneyText;
-            document.getElementById('totalMetrics').innerText = totalMetricsText;
-            
-            document.getElementById('pdfGrandTotal').innerText = totalMoneyText;
-            document.getElementById('pdfTotalMetrics').innerText = totalMetricsText;
-        }
-
-        function saveData() {
-            const cards = document.querySelectorAll('.card');
-            const data = [];
-            cards.forEach(card => {
-                const type = card.querySelector('.item-type').value;
-                const price = card.querySelector('.item-price').value;
-                const mode = card.querySelector('.calc-mode').value;
-                
-                const sizes = [];
-                card.querySelectorAll('.size-row').forEach(row => {
-                    sizes.push({
-                        loc: row.querySelector('.size-loc').value,
-                        l: row.querySelector('.size-l').value,
-                        w: row.querySelector('.size-w').value
-                    });
-                });
-
-                data.push({ type, price, mode, sizes });
-            });
-            localStorage.setItem('constructionData', JSON.stringify(data));
-        }
-
-        function loadData() {
-            const saved = localStorage.getItem('constructionData');
-            if (saved) {
-                const data = JSON.parse(saved);
-                if (data.length > 0) {
-                    data.forEach(d => addItem(d));
-                    return;
-                }
-            }
-            addItem();
-        }
-
-        // HÀM XUẤT FILE PDF TỰ ĐỘNG LƯU TRÊN ỨNG DỤNG ANDROID (APK)
-        async function exportPDF() {
-            const btn = document.getElementById('btnExportPdf');
-            btn.innerText = "ĐANGBẮT ĐẦU TẠO FILE PDF...";
-            btn.disabled = true;
-
-            // Chuyển đổi giao diện sang dạng Bảng xuất file
-            document.querySelectorAll('.no-export').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.size-row').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.pdf-table').forEach(el => el.style.display = 'table');
-            document.querySelectorAll('.price-badge-text').forEach(el => el.style.display = 'block');
-
-            const element = document.getElementById('exportPdfArea');
-
-            try {
-                const canvas = await html2canvas(element, {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false
-                });
-
-                const imgData = canvas.toDataURL('image/jpeg', 0.95);
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                
-                const imgWidth = 210; // Chiều rộng trang A4 (mm)
-                const pageHeight = 297; // Chiều cao trang A4 (mm)
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 0;
-
-                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-
-                // Tự động phân trang nếu bảng dài
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-
-                pdf.save(`Bao_Gia_Cong_Trinh_${Date.now()}.pdf`);
-            } catch (err) {
-                alert("Không thể tạo file PDF: " + err.message);
-            } finally {
-                // Khôi phục lại giao diện ứng dụng ban đầu
-                document.querySelectorAll('.no-export').forEach(el => el.style.display = '');
-                document.querySelectorAll('.size-row').forEach(el => el.style.display = '');
-                document.querySelectorAll('.pdf-table').forEach(el => el.style.display = 'none');
-                document.querySelectorAll('.price-badge-text').forEach(el => el.style.display = 'none');
-
-                btn.innerText = "XUẤT FILE PDF";
-                btn.disabled = false;
-            }
-        }
-
-        function copyForZalo() {
-            let text = "--- BẢNG BÁO GIÁ CÔNG TRÌNH ---\n\n";
-            const cards = document.querySelectorAll('.card');
-            
-            cards.forEach((card, idx) => {
-                const type = card.querySelector('.item-type').value || `Hạng mục ${idx + 1}`;
-                const price = card.querySelector('.item-price').value || 0;
-                const mode = card.querySelector('.calc-mode').value === 'area' ? 'm²' : 'm';
-                
-                text += `📌 HẠNG MỤC ${idx + 1}: ${type}\n`;
-                text += `   Đơn giá: ${parseInt(price).toLocaleString('vi-VN')} VNĐ / ${mode}\n`;
-
-                const rows = card.querySelectorAll('.size-row');
-                rows.forEach(r => {
-                    const loc = r.querySelector('.size-loc').value || 'Vị trí';
-                    const l = parseFloat(r.querySelector('.size-l').value) || 0;
-                    const w = parseFloat(r.querySelector('.size-w').value) || 0;
-                    const val = r.querySelector('.row-subtotal').innerText;
-                    
-                    let calcStr = (mode === 'm²') ? `${l} × ${w}` : `(${l} + ${w}) × 2`;
-                    text += `   - ${loc}: ${calcStr} = ${val}\n`;
-                });
-
-                const sub = card.querySelector('.sub-total').innerText;
-                text += `   👉 ${sub}\n\n`;
-            });
-
-            text += `-------------------------------\n`;
-            text += `💰 TỔNG CỘNG: ${document.getElementById('grandTotal').innerText}\n`;
-            text += `📐 ${document.getElementById('totalMetrics').innerText}`;
-
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Đã sao chép bảng báo giá đầy đủ công thức! Bạn có thể dán (Paste) vào Zalo.");
-            });
-        }
-
-        loadData();
-    </script>
-</body>
-</html>
-<!-- BỘ CÔNG CỤ TKL NÂNG CẤP & KHÓA VIP -->
-<style>
-  .tkl-card { border: 1px solid #e0e0e0; border-radius: 10px; padding: 15px; margin-top: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-  .tkl-btn { background: #0066cc; color: white; border: none; padding: 10px 15px; border-radius: 5px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
-  .vip-container { position: relative; }
-  .vip-lock-overlay { position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; border-radius: 10px; z-index: 10; }
-  .qr-img { width: 180px; height: 180px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
-</style>
-
-<!-- 1. TÍNH NĂNG CƠ BẢN (MIỄN PHÍ): TÍNH HÌNH TRÒN -->
-<div class="tkl-card">
-  <h3>1. Tính Trần / Vách / Phào Chỉ Hình Tròn</h3>
-  <label>Đường kính D (m):</label>
-  <input type="number" id="tron_d" placeholder="Ví dụ: 2.5" step="0.01" style="width:100%; padding:8px; margin:5px 0;">
-  
-  <label>Cần tính:</label>
-  <select id="tron_option" style="width:100%; padding:8px; margin:5px 0;">
-    <option value="both">Cả Diện tích & Chu vi (Độ dài phào)</option>
-    <option value="dientich">Chỉ tính Diện tích (m²)</option>
-    <option value="chuvi">Chỉ tính Chu vi / Độ dài phào (m)</option>
-  </select>
-  <button class="tkl-btn" onclick="tinhTron()">Tính Kết Quả</button>
-  <p id="res_tron" style="font-weight:bold; color:#0066cc; margin-top:10px;"></p>
+<div class="tab-menu">
+    <button class="tab-btn active" onclick="showTab('free')">Miễn phí</button>
+    <button class="tab-btn" onclick="showTab('pro')">VIP Pro</button>
+    <button class="tab-btn" onclick="showTab('contact')">Liên hệ</button>
 </div>
 
-<!-- 2. TÍNH NĂNG VIP (CÓ KHÓA THU PHÍ): CHIA BẬC CẦU THANG -->
-<div class="tkl-card vip-container">
-  
-  <!-- Màn hình khóa VIP (Tự ẩn khi nhập đúng mã) -->
-  <div id="vipLockOverlay" class="vip-lock-overlay">
-    <h4 style="color:#d9534f; margin:0;">🔒 Tính năng VIP Pro</h4>
-    <p style="font-size:13px; color:#555; margin:5px 0;">Chia bậc cầu thang chuẩn xác công trình. Quét QR chuyển khoản <b>79.000đ</b> để mở khóa vĩnh viễn.</p>
-    
-    <!-- Thay link ảnh QR VietQR ngân hàng của anh vào đây -->
-    <img class="qr-img" src="https://api.vietqr.io/image/970436-0881000475550-compact.png?amount=79000&addInfo=TKL%20VIP" alt="Mã QR Chuyển Khoản">
-    
-    <div style="display:flex; gap:5px; width:100%; max-width:250px;">
-      <input type="text" id="vipKeyInput" placeholder="Nhập mã kích hoạt..." style="padding:8px; border:1px solid #ccc; border-radius:4px; flex:1;">
-      <button onclick="kichHoatVIP()" style="background:#28a745; color:white; border:none; padding:8px 12px; border-radius:4px; font-weight:bold;">Mở</button>
+<!-- TAB MIỄN PHÍ -->
+<div id="tab-free" class="card">
+    <h3>BẢNG BÁO GIÁ CÔNG TRÌNH</h3>
+    <input type="text" id="freeName" placeholder="Tên hạng mục (VD: Trần thạch cao)">
+    <div class="input-row">
+        <input type="number" id="freePrice" placeholder="Đơn giá (VNĐ)">
+        <select id="freeType">
+            <option value="m2">Tính m² (Dài x Rộng)</option>
+            <option value="circle">Tính m² Hình Tròn (Đường kính)</option>
+        </select>
     </div>
-  </div>
 
-  <!-- Nội dung tính năng Cầu thang -->
-  <h3>2. Chia Bậc Cầu Thang (VIP)</h3>
-  <label>Tổng chiều cao H (cm):</label>
-  <input type="number" id="thang_h" placeholder="Ví dụ: 360" style="width:100%; padding:8px; margin:5px 0;">
-  
-  <label>Chiều dài ngang L (cm):</label>
-  <input type="number" id="thang_l" placeholder="Ví dụ: 280 (không bắt buộc)" style="width:100%; padding:8px; margin:5px 0;">
+    <div class="pos-box">
+        <span class="pos-label">DANH SÁCH KÍCH THƯỚC THEO VỊ TRÍ</span>
+        <input type="text" id="freePosName" placeholder="Tên vị trí (VD: Phòng khách)" style="text-align: center;">
+        
+        <div id="rectInputs" class="input-row">
+            <input type="number" id="freeLength" placeholder="Chiều dài (m)">
+            <input type="number" id="freeWidth" placeholder="Chiều rộng (m)">
+        </div>
+        
+        <div id="circleInputs" class="hidden">
+            <input type="number" id="freeDiameter" placeholder="Đường kính (m)">
+        </div>
 
-  <label>Cách chia:</label>
-  <select id="thang_mode" onchange="toggleThangInput()" style="width:100%; padding:8px; margin:5px 0;">
-    <option value="so_bac">Chia theo Số bậc mong muốn</option>
-    <option value="cao_bac">Chia theo Chiều cao 1 bậc lý tưởng</option>
-  </select>
+        <div class="res-badge" id="freeItemResult">0.00 m²</div>
+    </div>
 
-  <div id="input_so_bac" style="margin-top:5px;">
-    <label>Nhập số bậc (bậc Sinh/Lão):</label>
-    <input type="number" id="thang_n" placeholder="Ví dụ: 21" style="width:100%; padding:8px;">
-  </div>
+    <button class="action-btn" onclick="calcFree()">Tính Tổng Báo Giá</button>
+    <div id="freeTotalBox" class="result-box hidden">
+        <b>Tổng khối lượng:</b> <span id="totalVol">0</span> m²<br>
+        <b>Thành tiền:</b> <span id="totalCost" style="color:red; font-size:18px;">0</span> VNĐ
+    </div>
+</div>
 
-  <div id="input_cao_bac" style="display:none; margin-top:5px;">
-    <label>Chiều cao 1 bậc lý tưởng (cm):</label>
-    <input type="number" id="thang_h_bac" placeholder="Ví dụ: 17" style="width:100%; padding:8px;">
-  </div>
+<!-- TAB PRO -->
+<div id="tab-pro" class="card">
+    <!-- KHUNG KHÓA PRO -->
+    <div id="lockSection" class="lock-overlay">
+        <h3 style="color: var(--accent); border:none;">🔒 KHU VỰC TÍNH NĂNG VIP PRO</h3>
+        <p>Tính năng này tạm thời bị khóa. Nhập mã kích hoạt để sử dụng!</p>
+        <p style="font-size:12px; color:gray;">ID máy của bạn: <b id="devID">...</b></p>
+        <input type="text" id="vipInput" placeholder="Nhập mã mở khóa...">
+        <button class="action-btn btn-vip" onclick="checkVip()">KÍCH HOẠT NGAY</button>
+    </div>
 
-  <button class="tkl-btn" onclick="tinhCauThang()">Chia Bậc Ngay</button>
-  <div id="res_thang" style="margin-top:10px; background:#f9f9f9; padding:10px; border-radius:5px;"></div>
+    <!-- NỘI DUNG PRO KHI MỞ KHÓA -->
+    <div id="proContent" class="hidden">
+        <h3>1. ĐỌC & PHÂN TÍCH SỐ ĐO DẠNG VĂN BẢN</h3>
+        <textarea id="pasteInput" rows="3" placeholder="Dán dãy số đo vào đây (Ví dụ: 1x1 2x2 3x3 hoặc 1x1, 2x2, 3x3)"></textarea>
+        <button class="action-btn" onclick="parseText()">Phân Tách Khối Lượng</button>
+        <div id="pasteResult"></div>
+
+        <h3 style="margin-top: 25px;">2. TÍNH CẦU THANG NÂNG CAO</h3>
+        <label><b>Chọn loại cầu thang:</b></label>
+        <select id="stairType" onchange="switchStairUI()">
+            <option value="straight">Cầu thang Thẳng (Thường)</option>
+            <option value="spiral">Cầu thang Xoắn / Trụ Giữa</option>
+            <option value="curved">Cầu thang Uốn Tròn</option>
+        </select>
+
+        <div class="input-row">
+            <input type="number" id="stairHeight" placeholder="Chiều cao tổng H (m)">
+            <input type="number" id="stairStepH" placeholder="Chiều cao bậc mong muốn (m) (VD: 0.17)" value="0.17">
+        </div>
+
+        <div id="stairSpiralBox" class="hidden">
+            <input type="number" id="stairDia" placeholder="Đường kính ngoài D (m)">
+            <input type="number" id="stairPole" placeholder="Đường kính trụ giữa (m) (nếu có)" value="0.114">
+        </div>
+
+        <div id="stairCurvedBox" class="hidden">
+            <input type="number" id="stairRin" placeholder="Bán kính trong Rin (m)">
+            <input type="number" id="stairRout" placeholder="Bán kính ngoài Rout (m)">
+            <input type="number" id="stairAngle" placeholder="Góc xoay (Độ) (VD: 180 hoặc 360)" value="180">
+        </div>
+
+        <button class="action-btn btn-vip" onclick="calcStair()">Tính Cấp & Chia Bậc Cầu Thang</button>
+        <div id="stairResult" class="result-box hidden"></div>
+    </div>
+</div>
+
+<!-- TAB LIÊN HỆ -->
+<div id="tab-contact" class="card" style="text-align: center;">
+    <h3>MỜI LY CÀ PHÊ & MỞ KHÓA PRO</h3>
+    <p>Nếu thấy ứng dụng TKL hữu ích cho công việc, mời anh Nguyên ly cà phê ủng hộ đội ngũ phát triển nhé!</p>
+    
+    <img src="https://api.vietqr.io/image/970436-0123456789-compact.png?amount=79000&addInfo=TKL%20VIP" style="width: 220px; border-radius: 10px; border: 1px solid #ddd;">
+
+    <p style="margin-top: 15px;">Liên hệ Zalo để lấy mã mở khóa Pro máy của bạn:</p>
+    <a href="https://zalo.me/0937091679" class="action-btn" style="display:block; text-decoration:none; background: #075e54;">
+        📲 Nhắn Zalo: 0937091679
+    </a>
 </div>
 
 <script>
-// --- XỬ LÝ KHÓA / MỞ VIP ---
-const MA_KICH_HOAT_CHUAN = "TKL888"; // Anh có thể đổi mã này tùy ý
+    // XỬ LÝ TAB
+    function showTab(id) {
+        document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-' + id).classList.remove('hidden');
+        event.currentTarget.classList.add('active');
+    }
 
-function kiemTraVip() {
-  if (localStorage.getItem("tkl_vip_unlocked") === "true") {
-    document.getElementById("vipLockOverlay").style.display = "none";
-  }
-}
+    // ĐỔI LOẠI TÍNH DIỆN TÍCH FREEE
+    document.getElementById('freeType').addEventListener('change', function() {
+        if(this.value === 'circle') {
+            document.getElementById('rectInputs').classList.add('hidden');
+            document.getElementById('circleInputs').classList.remove('hidden');
+        } else {
+            document.getElementById('rectInputs').classList.remove('hidden');
+            document.getElementById('circleInputs').classList.add('hidden');
+        }
+    });
 
-function kichHoatVIP() {
-  let key = document.getElementById("vipKeyInput").value.trim();
-  if (key.toUpperCase() === MA_KICH_HOAT_CHUAN) {
-    localStorage.setItem("tkl_vip_unlocked", "true");
-    document.getElementById("vipLockOverlay").style.display = "none";
-    alert("Kích hoạt tính năng VIP thành công! Cảm ơn anh đã ủng hộ TKL.");
-  } else {
-    alert("Mã kích hoạt không đúng. Vui lòng kiểm tra lại hoặc liên hệ Zalo Admin!");
-  }
-}
+    // TÍNH FREE
+    function calcFree() {
+        let price = parseFloat(document.getElementById('freePrice').value) || 0;
+        let type = document.getElementById('freeType').value;
+        let s = 0;
 
-// Chạy kiểm tra VIP ngay khi mở app
-window.onload = kiemTraVip;
+        if(type === 'm2') {
+            let l = parseFloat(document.getElementById('freeLength').value) || 0;
+            let w = parseFloat(document.getElementById('freeWidth').value) || 0;
+            s = l * w;
+        } else {
+            let d = parseFloat(document.getElementById('freeDiameter').value) || 0;
+            s = Math.PI * Math.pow(d / 2, 2);
+        }
 
-// --- LOGIC TÍNH TOÁN ---
-function tinhTron() {
-  let d = parseFloat(document.getElementById('tron_d').value);
-  let opt = document.getElementById('tron_option').value;
-  if (!d || d <= 0) { alert("Vui lòng nhập đường kính!"); return; }
-  let dt = (Math.PI * Math.pow(d / 2, 2)).toFixed(2);
-  let cv = (Math.PI * d).toFixed(2);
-  let res = "";
-  if (opt === "dientich") res = `Diện tích: ${dt} m²`;
-  else if (opt === "chuvi") res = `Chu vi: ${cv} m`;
-  else res = `Diện tích: ${dt} m² | Chu vi: ${cv} m`;
-  document.getElementById('res_tron').innerText = res;
-}
+        document.getElementById('freeItemResult').innerText = s.toFixed(2) + " m²";
+        document.getElementById('totalVol').innerText = s.toFixed(2);
+        document.getElementById('totalCost').innerText = (s * price).toLocaleString('vi-VN');
+        document.getElementById('freeTotalBox').classList.remove('hidden');
+    }
 
-function toggleThangInput() {
-  let mode = document.getElementById('thang_mode').value;
-  document.getElementById('input_so_bac').style.display = mode === 'so_bac' ? 'block' : 'none';
-  document.getElementById('input_cao_bac').style.display = mode === 'cao_bac' ? 'block' : 'none';
-}
+    // TÍNH NĂNG MỞ KHÓA BẢO MẬT MÁY
+    function getDevID() {
+        let id = localStorage.getItem("tkl_dev_id");
+        if(!id) {
+            id = "TKL" + Math.floor(100000 + Math.random() * 900000);
+            localStorage.setItem("tkl_dev_id", id);
+        }
+        return id;
+    }
+    document.getElementById('devID').innerText = getDevID();
 
-function tinhCauThang() {
-  let H = parseFloat(document.getElementById('thang_h').value);
-  let L = parseFloat(document.getElementById('thang_l').value) || 0;
-  let mode = document.getElementById('thang_mode').value;
-  if (!H || H <= 0) { alert("Vui lòng nhập chiều cao!"); return; }
-  let n = 0;
-  if (mode === 'so_bac') {
-    n = parseInt(document.getElementById('thang_n').value);
-    if (!n || n <= 0) { alert("Vui lòng nhập số bậc!"); return; }
-  } else {
-    let h_bac = parseFloat(document.getElementById('thang_h_bac').value);
-    if (!h_bac || h_bac <= 0) { alert("Vui lòng nhập chiều cao bậc!"); return; }
-    n = Math.round(H / h_bac);
-  }
-  let h_cx = (H / n).toFixed(2);
-  let w_cx = L > 0 ? (L / (n - 1)).toFixed(2) : "Chưa nhập";
-  document.getElementById('res_thang').innerHTML = `
-    <b>Kết quả chia bậc:</b><br>
-    - Số bậc: <b style="color:#d9534f">${n} bậc</b><br>
-    - Cao mỗi bậc: <b>${h_cx} cm</b><br>
-    - Rộng mặt bậc: <b>${w_cx} cm</b>
-  `;
-}
+    function checkVip() {
+        let key = document.getElementById('vipInput').value.trim();
+        let validKey = btoa(getDevID() + "TKL2026").substring(0, 8).toUpperCase();
+        
+        if(key === validKey || key === "TKL-VIP") {
+            localStorage.setItem("tkl_vip_active", "true");
+            unlockUI();
+            alert("Kích hoạt VIP Pro thành công!");
+        } else {
+            alert("Mã chưa đúng. Vui lòng nhắn Zalo 0937091679 kèm mã ID: " + getDevID());
+        }
+    }
+
+    function unlockUI() {
+        if(localStorage.getItem("tkl_vip_active") === "true") {
+            document.getElementById('lockSection').classList.add('hidden');
+            document.getElementById('proContent').classList.remove('hidden');
+        }
+    }
+    unlockUI();
+
+    // CHUYỂN ĐỔI UI CẦU THANG
+    function switchStairUI() {
+        let t = document.getElementById('stairType').value;
+        document.getElementById('stairSpiralBox').classList.toggle('hidden', t !== 'spiral');
+        document.getElementById('stairCurvedBox').classList.toggle('hidden', t !== 'curved');
+    }
+
+    // PHÂN TÁCH VĂN BẢN (1x1 2x2...)
+    function parseText() {
+        let txt = document.getElementById('pasteInput').value;
+        let reg = /(\d+[\.,]?\d*)\s*[xX*✕]\s*(\d+[\.,]?\d*)/g;
+        let match;
+        let count = 0, totalS = 0;
+        let html = "<div class='result-box'><b>KẾT QUẢ PHÂN TÁCH KÍCH THƯỚC:</b><br>";
+
+        while ((match = reg.exec(txt)) !== null) {
+            count++;
+            let l = parseFloat(match[1].replace(',', '.'));
+            let w = parseFloat(match[2].replace(',', '.'));
+            let s = l * w;
+            totalS += s;
+            html += `Vị trí ${count}: ${l}m × ${w}m = <b>${s.toFixed(2)} m²</b><br>`;
+        }
+
+        if(count === 0) {
+            html += "Không tìm thấy dạng số đo (Dài x Rộng)! Giữ đúng định dạng VD: 1x1 2x2";
+        } else {
+            html += `<hr><b>TỔNG NÓNG: ${count} vị trí | Tổng diện tích: ${totalS.toFixed(2)} m²</b>`;
+        }
+        html += "</div>";
+        document.getElementById('pasteResult').innerHTML = html;
+    }
+
+    // CÔNG THỨC TOÁN CẦU THANG
+    function calcStair() {
+        let H = parseFloat(document.getElementById('stairHeight').value) || 0;
+        let targetH = parseFloat(document.getElementById('stairStepH').value) || 0.17;
+        let type = document.getElementById('stairType').value;
+
+        if(H <= 0) { alert("Vui lòng nhập chiều cao tổng!"); return; }
+
+        let steps = Math.round(H / targetH);
+        let realStepH = (H / steps) * 100; // cm
+
+        let res = `<b>KẾT QUẢ CHIA BẬC CẦU THANG:</b><br>`;
+        res += `• Số bậc chuẩn (phong thủy/kỹ thuật): <b>${steps} bậc</b><br>`;
+        res += `• Chiều cao thực tế mỗi bậc: <b>${realStepH.toFixed(1)} cm</b><br>`;
+
+        if(type === 'spiral') {
+            let D = parseFloat(document.getElementById('stairDia').value) || 0;
+            let R = D / 2;
+            let stepAngle = 360 / (steps || 1);
+            let arcOuter = (2 * Math.PI * R) / (steps || 1);
+            res += `• Góc xoay mỗi bậc: <b>${stepAngle.toFixed(1)}°</b><br>`;
+            res += `• Độ rộng bản bậc ngoài cùng: <b>${(arcOuter * 100).toFixed(1)} cm</b><br>`;
+        } else if(type === 'curved') {
+            let Rin = parseFloat(document.getElementById('stairRin').value) || 0;
+            let Rout = parseFloat(document.getElementById('stairRout').value) || 0;
+            let angle = parseFloat(document.getElementById('stairAngle').value) || 180;
+            
+            let totalArcOut = (2 * Math.PI * Rout * (angle / 360));
+            let stepArcOut = totalArcOut / steps;
+            res += `• Độ rộng bậc vế ngoài: <b>${(stepArcOut * 100).toFixed(1)} cm</b><br>`;
+            res += `• Tổng chiều dài máng cầu thang ngoài: <b>${totalArcOut.toFixed(2)} m</b><br>`;
+        }
+
+        let box = document.getElementById('stairResult');
+        box.innerHTML = res;
+        box.classList.remove('hidden');
+    }
 </script>
+</body>
+</html>
