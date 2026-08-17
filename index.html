@@ -153,29 +153,29 @@
 
 
         <!-- ================= TAB 2: PRO TIER (VIP) ================= -->
-        <section id="sec-pro" class="space-y-4 hidden relative">
+        <section id="sec-pro" class="space-y-4 hidden relative min-h-[400px]">
             
             <!-- LOCK OVERLAY FOR FREE USERS -->
-            <div id="proLockOverlay" class="absolute inset-0 bg-gray-900/80 backdrop-blur-sm z-30 rounded-xl flex flex-col items-center justify-center p-6 text-center text-white">
-                <div class="bg-yellow-500/20 p-4 rounded-full mb-3">
-                    <span class="text-4xl">🔒</span>
+            <div id="proLockOverlay" class="absolute inset-0 bg-gray-900/85 backdrop-blur-md z-30 rounded-xl flex flex-col items-center justify-center p-6 text-center text-white">
+                <div class="bg-yellow-500/20 p-3 rounded-full mb-2">
+                    <span class="text-3xl">🔒</span>
                 </div>
-                <h3 class="text-xl font-bold mb-1">Tính Năng PRO Dành Cho Tài Khoản VIP</h3>
-                <p class="text-xs text-gray-300 mb-4">Mở khóa tính năng OCR nhận diện bản vẽ, bóc tách tin nhắn Zalo, vật tư Thạch cao, Nhôm kính Xingfa, Ván gỗ & Tính phong thủy cầu thang.</p>
+                <h3 class="text-lg font-bold mb-1">Chưa Kích Hoạt Bản Quyền VIP</h3>
+                <p class="text-xs text-gray-300 mb-4">Mở khóa tính năng OCR nhận diện bản vẽ, bóc tách Zalo, Thạch cao, Nhôm kính Xingfa & Phong thủy cầu thang.</p>
                 
                 <div class="bg-white/10 p-3 rounded-lg w-full mb-4 border border-white/20">
-                    <p class="text-[10px] text-gray-300 uppercase tracking-wider">Device ID của thiết bị này:</p>
+                    <p class="text-[10px] text-gray-300 uppercase tracking-wider">Mã Thiết Bị (Device ID):</p>
                     <p id="displayDeviceId" class="text-sm font-mono font-bold text-yellow-300 my-1">TKL-000000</p>
-                    <button onclick="copyDeviceId()" class="text-[10px] bg-white/20 hover:bg-white/30 text-white px-2 py-1 rounded">Sao chép ID</button>
+                    <button onclick="copyDeviceId()" class="text-[10px] bg-white/20 hover:bg-white/30 text-white px-2 py-0.5 rounded">Sao chép ID</button>
                 </div>
 
                 <div class="w-full space-y-2">
-                    <input type="text" id="activationCodeInput" placeholder="Nhập mã kích hoạt VIP..." class="w-full text-center py-2 px-3 rounded-lg text-black text-sm uppercase tracking-widest border">
-                    <button onclick="activatePro()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 rounded-lg text-sm">
-                        Kích Hoạt VIP Nhanh
+                    <input type="text" id="activationCodeInput" placeholder="Nhập mã kích hoạt..." class="w-full text-center py-2 px-3 rounded-lg text-black text-sm uppercase tracking-widest border font-bold">
+                    <button onclick="activatePro()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 rounded-lg text-sm shadow">
+                        Kích Hoạt VIP Ngay
                     </button>
                     <button onclick="switchTab('contact')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg text-xs">
-                        👉 Nhận Mã Kích Hoạt Qua Zalo
+                        👉 Xem Mã QR Chuyển Khoản 50.000đ
                     </button>
                 </div>
             </div>
@@ -423,23 +423,23 @@
                 <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl inline-block w-full max-w-xs mx-auto">
                     <p class="text-xs font-bold text-blue-900 mb-2 uppercase">Chuyển Khoản Ngân Hàng Vietcombank</p>
                     
-                    <!-- Auto-generated VietQR Image -->
-                    <img src="https://img.vietqr.io/image/VCB-0881000475550-compact2.png?amount=0&addInfo=KICH%20HOAT%20TKL%20VIP" alt="Mã QR Vietcombank" class="w-48 h-48 mx-auto rounded-lg shadow-sm border">
+                    <!-- VietQR Image Dynamic (50,000 VND + Auto-AddInfo DeviceID) -->
+                    <img id="vietqrImg" src="https://img.vietqr.io/image/VCB-0881000475550-compact2.png?amount=50000&addInfo=KICH%20HOAT%20TKL%20VIP" alt="Mã QR Vietcombank" class="w-48 h-48 mx-auto rounded-lg shadow-sm border bg-white p-1">
                     
                     <div class="mt-3 text-xs space-y-1 text-gray-700">
                         <p>STK: <strong class="text-blue-700 text-sm font-mono">0881000475550</strong></p>
-                        <p>Chủ TK: <strong class="text-gray-900">NGUYỄN VĂN NGUYÊN</strong></p>
+                        <p>Số tiền: <strong class="text-red-600 text-sm">50.000 VNĐ</strong></p>
                     </div>
 
                     <div class="mt-3 bg-yellow-100 text-yellow-800 text-xs py-1.5 px-2 rounded-lg font-medium border border-yellow-300">
-                        ☕ Mời tác giả một ly cà phê – Nhận ngay mã kích hoạt trọn đời
+                        ☕ Mời tác giả một ly cà phê – Nhận ngay mã kích hoạt VIP trọn đời
                     </div>
                 </div>
 
                 <!-- Contact & Support Info -->
                 <div class="border-t pt-4 space-y-2 text-xs text-gray-600">
                     <p class="text-sm font-semibold text-gray-800">Cảm ơn anh/chị đã tin tưởng và sử dụng phần mềm TKL!</p>
-                    <p>Liên hệ hỗ trợ kỹ thuật & Kích hoạt bản quyền:</p>
+                    <p>Liên hệ hỗ trợ kỹ thuật & Nhận mã kích hoạt:</p>
                     <p class="text-sm font-bold text-blue-600">Nguyên – SĐT/Zalo: 0937091679</p>
                 </div>
 
@@ -469,7 +469,7 @@
 
     <!-- Footer -->
     <footer class="bg-white border-t py-3 text-center text-xs text-gray-400 no-print">
-        TKL Estimator © 2026 | Phiên bản Mobile-Ready v2.5
+        TKL Estimator © 2026 | Phiên bản Mobile-Ready v2.6
     </footer>
 
     <!-- JavaScript Logic -->
@@ -486,12 +486,18 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('displayDeviceId').innerText = deviceId;
             document.getElementById('contactDeviceId').innerText = deviceId;
+            
+            // Auto update QR image with 50,000 VND and Device ID in transfer info
+            const qrImg = document.getElementById('vietqrImg');
+            if (qrImg) {
+                qrImg.src = `https://img.vietqr.io/image/VCB-0881000475550-compact2.png?amount=50000&addInfo=KICH%20HOAT%20VIP%20${deviceId}`;
+            }
+
             checkVipStatus();
         });
 
         function checkVipStatus() {
             const vipKey = localStorage.getItem('tkl_vip_key');
-            // Master Activation Code rule: 8888 or matching device ID ending
             if (vipKey === 'VIP-8888' || vipKey === 'VIP-' + deviceId.slice(-4)) {
                 isVipActivated = true;
                 document.getElementById('vipStatusBadge').innerText = 'Bản PRO (VIP)';
