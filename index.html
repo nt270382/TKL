@@ -395,3 +395,141 @@
     </script>
 </body>
 </html>
+<!-- BỘ CÔNG CỤ TKL NÂNG CẤP & KHÓA VIP -->
+<style>
+  .tkl-card { border: 1px solid #e0e0e0; border-radius: 10px; padding: 15px; margin-top: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+  .tkl-btn { background: #0066cc; color: white; border: none; padding: 10px 15px; border-radius: 5px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
+  .vip-container { position: relative; }
+  .vip-lock-overlay { position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; border-radius: 10px; z-index: 10; }
+  .qr-img { width: 180px; height: 180px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
+</style>
+
+<!-- 1. TÍNH NĂNG CƠ BẢN (MIỄN PHÍ): TÍNH HÌNH TRÒN -->
+<div class="tkl-card">
+  <h3>1. Tính Trần / Vách / Phào Chỉ Hình Tròn</h3>
+  <label>Đường kính D (m):</label>
+  <input type="number" id="tron_d" placeholder="Ví dụ: 2.5" step="0.01" style="width:100%; padding:8px; margin:5px 0;">
+  
+  <label>Cần tính:</label>
+  <select id="tron_option" style="width:100%; padding:8px; margin:5px 0;">
+    <option value="both">Cả Diện tích & Chu vi (Độ dài phào)</option>
+    <option value="dientich">Chỉ tính Diện tích (m²)</option>
+    <option value="chuvi">Chỉ tính Chu vi / Độ dài phào (m)</option>
+  </select>
+  <button class="tkl-btn" onclick="tinhTron()">Tính Kết Quả</button>
+  <p id="res_tron" style="font-weight:bold; color:#0066cc; margin-top:10px;"></p>
+</div>
+
+<!-- 2. TÍNH NĂNG VIP (CÓ KHÓA THU PHÍ): CHIA BẬC CẦU THANG -->
+<div class="tkl-card vip-container">
+  
+  <!-- Màn hình khóa VIP (Tự ẩn khi nhập đúng mã) -->
+  <div id="vipLockOverlay" class="vip-lock-overlay">
+    <h4 style="color:#d9534f; margin:0;">🔒 Tính năng VIP Pro</h4>
+    <p style="font-size:13px; color:#555; margin:5px 0;">Chia bậc cầu thang chuẩn xác công trình. Quét QR chuyển khoản <b>79.000đ</b> để mở khóa vĩnh viễn.</p>
+    
+    <!-- Thay link ảnh QR VietQR ngân hàng của anh vào đây -->
+    <img class="qr-img" src="https://api.vietqr.io/image/970436-123456789-compact.png?amount=79000&addInfo=TKL%20VIP" alt="Mã QR Chuyển Khoản">
+    
+    <div style="display:flex; gap:5px; width:100%; max-width:250px;">
+      <input type="text" id="vipKeyInput" placeholder="Nhập mã kích hoạt..." style="padding:8px; border:1px solid #ccc; border-radius:4px; flex:1;">
+      <button onclick="kichHoatVIP()" style="background:#28a745; color:white; border:none; padding:8px 12px; border-radius:4px; font-weight:bold;">Mở</button>
+    </div>
+  </div>
+
+  <!-- Nội dung tính năng Cầu thang -->
+  <h3>2. Chia Bậc Cầu Thang (VIP)</h3>
+  <label>Tổng chiều cao H (cm):</label>
+  <input type="number" id="thang_h" placeholder="Ví dụ: 360" style="width:100%; padding:8px; margin:5px 0;">
+  
+  <label>Chiều dài ngang L (cm):</label>
+  <input type="number" id="thang_l" placeholder="Ví dụ: 280 (không bắt buộc)" style="width:100%; padding:8px; margin:5px 0;">
+
+  <label>Cách chia:</label>
+  <select id="thang_mode" onchange="toggleThangInput()" style="width:100%; padding:8px; margin:5px 0;">
+    <option value="so_bac">Chia theo Số bậc mong muốn</option>
+    <option value="cao_bac">Chia theo Chiều cao 1 bậc lý tưởng</option>
+  </select>
+
+  <div id="input_so_bac" style="margin-top:5px;">
+    <label>Nhập số bậc (bậc Sinh/Lão):</label>
+    <input type="number" id="thang_n" placeholder="Ví dụ: 21" style="width:100%; padding:8px;">
+  </div>
+
+  <div id="input_cao_bac" style="display:none; margin-top:5px;">
+    <label>Chiều cao 1 bậc lý tưởng (cm):</label>
+    <input type="number" id="thang_h_bac" placeholder="Ví dụ: 17" style="width:100%; padding:8px;">
+  </div>
+
+  <button class="tkl-btn" onclick="tinhCauThang()">Chia Bậc Ngay</button>
+  <div id="res_thang" style="margin-top:10px; background:#f9f9f9; padding:10px; border-radius:5px;"></div>
+</div>
+
+<script>
+// --- XỬ LÝ KHÓA / MỞ VIP ---
+const MA_KICH_HOAT_CHUAN = "TKL888"; // Anh có thể đổi mã này tùy ý
+
+function kiemTraVip() {
+  if (localStorage.getItem("tkl_vip_unlocked") === "true") {
+    document.getElementById("vipLockOverlay").style.display = "none";
+  }
+}
+
+function kichHoatVIP() {
+  let key = document.getElementById("vipKeyInput").value.trim();
+  if (key.toUpperCase() === MA_KICH_HOAT_CHUAN) {
+    localStorage.setItem("tkl_vip_unlocked", "true");
+    document.getElementById("vipLockOverlay").style.display = "none";
+    alert("Kích hoạt tính năng VIP thành công! Cảm ơn anh đã ủng hộ TKL.");
+  } else {
+    alert("Mã kích hoạt không đúng. Vui lòng kiểm tra lại hoặc liên hệ Zalo Admin!");
+  }
+}
+
+// Chạy kiểm tra VIP ngay khi mở app
+window.onload = kiemTraVip;
+
+// --- LOGIC TÍNH TOÁN ---
+function tinhTron() {
+  let d = parseFloat(document.getElementById('tron_d').value);
+  let opt = document.getElementById('tron_option').value;
+  if (!d || d <= 0) { alert("Vui lòng nhập đường kính!"); return; }
+  let dt = (Math.PI * Math.pow(d / 2, 2)).toFixed(2);
+  let cv = (Math.PI * d).toFixed(2);
+  let res = "";
+  if (opt === "dientich") res = `Diện tích: ${dt} m²`;
+  else if (opt === "chuvi") res = `Chu vi: ${cv} m`;
+  else res = `Diện tích: ${dt} m² | Chu vi: ${cv} m`;
+  document.getElementById('res_tron').innerText = res;
+}
+
+function toggleThangInput() {
+  let mode = document.getElementById('thang_mode').value;
+  document.getElementById('input_so_bac').style.display = mode === 'so_bac' ? 'block' : 'none';
+  document.getElementById('input_cao_bac').style.display = mode === 'cao_bac' ? 'block' : 'none';
+}
+
+function tinhCauThang() {
+  let H = parseFloat(document.getElementById('thang_h').value);
+  let L = parseFloat(document.getElementById('thang_l').value) || 0;
+  let mode = document.getElementById('thang_mode').value;
+  if (!H || H <= 0) { alert("Vui lòng nhập chiều cao!"); return; }
+  let n = 0;
+  if (mode === 'so_bac') {
+    n = parseInt(document.getElementById('thang_n').value);
+    if (!n || n <= 0) { alert("Vui lòng nhập số bậc!"); return; }
+  } else {
+    let h_bac = parseFloat(document.getElementById('thang_h_bac').value);
+    if (!h_bac || h_bac <= 0) { alert("Vui lòng nhập chiều cao bậc!"); return; }
+    n = Math.round(H / h_bac);
+  }
+  let h_cx = (H / n).toFixed(2);
+  let w_cx = L > 0 ? (L / (n - 1)).toFixed(2) : "Chưa nhập";
+  document.getElementById('res_thang').innerHTML = `
+    <b>Kết quả chia bậc:</b><br>
+    - Số bậc: <b style="color:#d9534f">${n} bậc</b><br>
+    - Cao mỗi bậc: <b>${h_cx} cm</b><br>
+    - Rộng mặt bậc: <b>${w_cx} cm</b>
+  `;
+}
+</script>
