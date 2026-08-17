@@ -37,7 +37,6 @@
         .action-btn:active { transform: scale(0.99); }
         .btn-vip { background: linear-gradient(135deg, #f39c12, #e67e22); box-shadow: 0 4px 12px rgba(230,126,34,0.3); }
         .btn-secondary { background: #e2e8f0; color: #4a5568; }
-        .btn-danger { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
 
         /* Hạng Mục Card Component */
         .category-card { background: #fff; border: 2px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 15px; position: relative; }
@@ -167,35 +166,44 @@
 
 <!-- ================= TAB LIÊN HỆ ================= -->
 <div id="tab-contact" class="card hidden" style="text-align: center;">
-    <h3 style="justify-content: center;">HỖ TRỢ & KÍCH HOẠT VIP</h3>
-    <p style="font-size: 14px; color: #555;">Liên hệ để nhận mã mở khóa bản VIP Pro sử dụng trọn đời:</p>
+    <h3 style="justify-content: center;">HỖ TRỢ & MỞ KHÓA BẢN PRO</h3>
+    <p style="font-size: 14px; color: #555; line-height: 1.5;">
+        Mua cho <b>Nguyên</b> ly cà phê để lấy mã mở khóa tính năng VIP Pro dùng không giới hạn trọn đời ☕
+    </p>
     
-    <div style="background:#f8fafc; padding:15px; border-radius:12px; margin: 15px 0;">
+    <div style="background:#f8fafc; padding:15px; border-radius:12px; margin: 15px 0; border: 1px solid #e2e8f0;">
         <p style="margin: 5px 0; font-size:13px; color:gray;">Mã ID thiết bị của bạn:</p>
         <b id="devID" style="font-size: 20px; color: var(--primary); letter-spacing: 1px;">...</b>
     </div>
 
     <a href="https://zalo.me/0937091679" target="_blank" class="action-btn" style="display:block; text-decoration:none; background: #0180c7; margin-bottom:10px;">
-        💬 Nhắn Zalo Hỗ Trợ: 0933 091 679
+        💬 Nhắn Zalo/Gọi Nguyên: 0937 091 679
     </a>
 </div>
 
 <!-- ================= MODAL KHÓA PRO ================= -->
 <div id="vipModal" class="modal-overlay hidden">
     <div class="modal-card">
-        <div style="font-size: 40px; margin-bottom: 10px;">👑</div>
-        <h3 style="justify-content: center; border:none; color: var(--dark); margin-bottom: 5px;">TÍNH NĂNG VIP PRO</h3>
-        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Vui lòng nhập mã kích hoạt để sử dụng tính năng này.</p>
+        <div style="font-size: 40px; margin-bottom: 10px;">☕</div>
+        <h3 style="justify-content: center; border:none; color: var(--dark); margin-bottom: 5px;">MỞ KHÓA BẢN PRO</h3>
+        <p id="vipModalNotice" style="font-size: 13px; color: #555; margin-bottom: 15px; line-height: 1.5;">
+            Mua cho <b>Nguyên</b> ly cà phê để lấy mã mở khóa VIP Pro không giới hạn hạng mục & vị trí!
+        </p>
         
-        <input type="text" id="vipInput" placeholder="Nhập mã kích hoạt..." style="text-align: center; text-transform: uppercase; font-weight: bold; font-size: 16px;">
+        <input type="text" id="vipInput" placeholder="Nhập mã mở khóa..." style="text-align: center; text-transform: uppercase; font-weight: bold; font-size: 16px;">
         
         <button class="action-btn btn-vip" onclick="checkVipKey()" style="margin-bottom: 8px;">KÍCH HOẠT BẢN PRO</button>
-        <button class="action-btn btn-secondary" onclick="closeVipModal()">Để Sau</button>
+        
+        <a href="https://zalo.me/0937091679" target="_blank" style="display:block; font-size: 13px; color: #0180c7; text-decoration: none; margin: 8px 0;">
+            📞 Liên hệ Nguyên (0937 091 679) để nhận mã
+        </a>
+
+        <button class="action-btn btn-secondary" onclick="closeVipModal()" style="margin-top: 5px;">Để Sau</button>
     </div>
 </div>
 
 <script>
-    // --- CẤU TRÚC DỮ LIỆU CÁC HẠNG MỤC ---
+    // --- CẤU TRÚC DỮ LIỆU CÁC HẠNG MỤC BAN ĐẦU ---
     let categories = [
         {
             id: 1,
@@ -204,6 +212,11 @@
             items: []
         }
     ];
+
+    // --- KIỂM TRA TRẠNG THÁI VIP PRO ---
+    function isVipActive() {
+        return localStorage.getItem("tkl_vip_active") === "true";
+    }
 
     // --- CHUYỂN TAB ---
     function switchTab(tabId, btn) {
@@ -215,8 +228,19 @@
         btn.classList.add('active');
     }
 
+    // --- LẤY TỔNG SỐ VỊ TRÍ TOÀN BỘ CÔNG TRÌNH ---
+    function getTotalPosCount() {
+        return categories.reduce((sum, cat) => sum + cat.items.length, 0);
+    }
+
     // --- XỬ LÝ QUẢN LÝ HẠNG MỤC ---
     function addNewCategory() {
+        // GIỚI HẠN BẢN FREE: Tối đa 2 hạng mục
+        if (!isVipActive() && categories.length >= 2) {
+            showVipModal("Bản Free chỉ hỗ trợ tối đa 2 hạng mục thi công. Mua cho Nguyên ly cà phê để thêm không giới hạn hạng mục!");
+            return;
+        }
+
         let nameInput = document.getElementById('newCatName');
         let priceInput = document.getElementById('newCatPrice');
 
@@ -252,6 +276,12 @@
 
     // --- XỬ LÝ VỊ TRÍ TRONG TỪNG HẠNG MỤC ---
     function addPosToCategory(catId) {
+        // GIỚI HẠN BẢN FREE: Tối đa 20 vị trí toàn bộ công trình
+        if (!isVipActive() && getTotalPosCount() >= 20) {
+            showVipModal("Bản Free chỉ hỗ trợ tối đa 20 vị trí. Mua cho Nguyên ly cà phê để nhập thêm không giới hạn vị trí!");
+            return;
+        }
+
         let cat = categories.find(c => c.id === catId);
         if (!cat) return;
 
@@ -379,13 +409,21 @@
 
     let pendingProAction = null;
 
+    function showVipModal(msg) {
+        if (msg) {
+            document.getElementById('vipModalNotice').innerText = msg;
+        } else {
+            document.getElementById('vipModalNotice').innerHTML = 'Mua cho <b>Nguyên</b> ly cà phê để lấy mã mở khóa VIP Pro không giới hạn hạng mục & vị trí!';
+        }
+        document.getElementById('vipModal').classList.remove('hidden');
+    }
+
     function handleProAction(actionCallback) {
-        let isVip = localStorage.getItem("tkl_vip_active") === "true";
-        if (isVip) {
+        if (isVipActive()) {
             actionCallback();
         } else {
             pendingProAction = actionCallback;
-            document.getElementById('vipModal').classList.remove('hidden');
+            showVipModal();
         }
     }
 
@@ -400,10 +438,10 @@
         if (key === validKey || key === "TKL-VIP") {
             localStorage.setItem("tkl_vip_active", "true");
             closeVipModal();
-            alert("Kích hoạt bản VIP Pro thành công!");
+            alert("Cảm ơn anh đã mua ly cà phê cho Nguyên! Bản VIP Pro đã được mở khóa thành công.");
             if (pendingProAction) pendingProAction();
         } else {
-            alert("Mã kích hoạt chưa chính xác. Vui lòng liên hệ Zalo 0937 091 679!");
+            alert("Mã chưa chính xác. Vui lòng gọi hoặc nhắn Zalo Nguyên (0937 091 679) để nhận mã mở khóa nhé!");
         }
     }
 
