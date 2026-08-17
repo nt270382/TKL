@@ -3,530 +3,481 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TKL Pro - Báo Giá & Bóc Tách Nội Thất</title>
+    <title>Công Cụ Tính Khối Lượng & Báo Giá Thi Công - Phương Vy Luxury</title>
     <style>
-        :root { 
-            --primary: #1a73e8; 
-            --accent: #f39c12; 
-            --bg: #f4f7f6; 
-            --danger: #e74c3c; 
-            --success: #2ecc71;
-            --dark: #2c3e50;
+        :root {
+            --primary-color: #1b365d;
+            --accent-color: #c5a059;
+            --bg-color: #f4f6f9;
+            --text-color: #333;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 12px; color: #333; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 15px; }
+        .container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header { text-align: center; border-bottom: 3px solid var(--accent-color); padding-bottom: 15px; margin-bottom: 20px; }
+        .header h1 { color: var(--primary-color); margin: 0; font-size: 24px; text-transform: uppercase; }
+        .header p { margin: 5px 0 0 0; color: #666; font-size: 14px; }
         
-        /* Menu Tab Navigation */
-        .tab-menu { display: flex; gap: 8px; background: #fff; padding: 6px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; background: #f0f2f5; font-weight: bold; cursor: pointer; color: #666; transition: all 0.3s; font-size: 14px; }
-        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(26,115,232,0.3); }
+        /* Navigation Tabs */
+        .tabs { display: flex; flex-wrap: wrap; gap: 5px; border-bottom: 2px solid #ddd; margin-bottom: 20px; }
+        .tab-btn { background: #e9ecef; border: none; padding: 10px 18px; font-weight: bold; color: #495057; cursor: pointer; border-radius: 5px 5px 0 0; transition: 0.2s; }
+        .tab-btn.active { background: var(--primary-color); color: #fff; border-bottom: 3px solid var(--accent-color); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
-        /* Card Container */
-        .card { background: white; padding: 18px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin-bottom: 15px; }
-        h3 { color: var(--primary); margin-top: 0; border-bottom: 2px solid #edf2f7; padding-bottom: 10px; font-size: 16px; display: flex; align-items: center; justify-content: space-between; }
-        .badge-pro { background: linear-gradient(45deg, #f39c12, #e67e22); color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        /* Input Controls */
-        label { font-size: 13px; font-weight: 600; color: #555; margin-top: 8px; display: block; }
-        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 10px 0; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fff; }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; }
-        .input-row { display: flex; gap: 8px; }
-        .input-row > div { flex: 1; }
-
+        /* Form elements */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: 600; font-size: 13px; margin-bottom: 5px; color: #444; }
+        .form-group input, .form-group select, .form-group textarea { padding: 9px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+        
         /* Buttons */
-        .action-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; background: var(--primary); color: white; font-weight: bold; font-size: 14px; cursor: pointer; transition: background 0.2s; }
-        .action-btn:active { transform: scale(0.99); }
-        .btn-vip { background: linear-gradient(135deg, #f39c12, #e67e22); box-shadow: 0 4px 12px rgba(230,126,34,0.3); }
-        .btn-secondary { background: #e2e8f0; color: #4a5568; }
+        .btn { background: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .btn:hover { background: #11233e; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #218838; }
+        .btn-warning { background: #ffc107; color: #212529; }
 
-        /* Hạng Mục Card Component */
-        .category-card { background: #fff; border: 2px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-bottom: 15px; }
-        .category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .category-title { font-size: 16px; font-weight: bold; color: var(--dark); }
-        .btn-del-cat { color: var(--danger); cursor: pointer; font-size: 13px; font-weight: bold; }
+        /* Result tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+        table, th, td { border: 1px solid #dee2e6; }
+        th { background: #e9ecef; color: var(--primary-color); padding: 10px; text-align: left; }
+        td { padding: 8px 10px; }
+        .total-row { font-weight: bold; background: #fff3cd; }
 
-        /* Item Row Inside Category */
-        .pos-item-row { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; font-size: 13px; border: 1px solid #edf2f7; }
-
-        /* Subtotal Box */
-        .subtotal-box { background: #f1f5f9; padding: 10px 12px; border-radius: 8px; font-size: 13px; margin-top: 10px; display: flex; justify-content: space-between; font-weight: bold; }
-
-        /* Total Summary Overall */
-        .grand-total-box { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; border-radius: 16px; padding: 20px; text-align: center; margin-top: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-        .grand-total-price { color: #4ade80; font-size: 26px; font-weight: bold; margin-top: 5px; }
-
-        /* Pro Tools Box Inside Category */
-        .pro-tools-panel { background: #fff8e1; border: 1px dashed #f39c12; border-radius: 10px; padding: 12px; margin-bottom: 12px; }
-
-        /* VIP Modal Overlay */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
-        .modal-card { background: white; border-radius: 20px; padding: 25px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        .hidden { display: none !important; }
+        .card { background: #f8f9fa; border: 1px solid #e9ecef; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+        .highlight { font-weight: bold; color: #d9534f; }
     </style>
 </head>
 <body>
 
-<!-- MENU CHUYỂN TAB -->
-<div class="tab-menu">
-    <button class="tab-btn active" onclick="switchTab('free', this)">Báo Giá Cơ Bản</button>
-    <button class="tab-btn" onclick="switchTab('pro', this)">Báo Giá VIP Pro 👑</button>
-    <button class="tab-btn" onclick="switchTab('contact', this)">Hỗ Trợ</button>
-</div>
-
-<!-- ================= TAB FREE ================= -->
-<div id="tab-free">
-    <div class="card" style="border: 2px dashed var(--primary); background: #f0f7ff;">
-        <h3 style="border:none; margin-bottom:10px;">THÊM HẠNG MỤC THI CÔNG MỚI</h3>
-        <div class="input-row">
-            <div>
-                <input type="text" id="freeCatName" placeholder="Tên hạng mục (VD: Trần thạch cao, Cửa nhôm...)">
-            </div>
-            <div style="flex: 0.6;">
-                <input type="number" id="freeCatPrice" placeholder="Đơn giá (đ/m²)">
-            </div>
-        </div>
-        <button class="action-btn" onclick="addNewCategory('free')">+ Tạo Hạng Mục Này</button>
+<div class="container">
+    <div class="header">
+        <h1>PHƯƠNG VY LUXURY WINDOW & INTERIOR</h1>
+        <p>Hệ Thống Tính Khối Lượng & Báo Giá Công Trình Chuyên Nghiệp</p>
     </div>
 
-    <div id="freeCategoriesContainer"></div>
-
-    <div class="grand-total-box">
-        <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8;">TỔNG CỘNG TOÀN BỘ CÔNG TRÌNH</div>
-        <div class="grand-total-price"><span id="freeGrandTotalCost">0</span> VNĐ</div>
-        <div style="font-size: 12px; color: #cbd5e1; margin-top: 5px;">Tổng diện tích: <span id="freeGrandTotalVol">0.00</span> m²</div>
+    <!-- THANH CHỌN TÍNH NĂNG (TABS) -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-gypsum')">Trần Thạch Cao & Phào Chỉ</button>
+        <button class="tab-btn" onclick="switchTab('tab-pvc')">Vách PVC / Nano</button>
+        <button class="tab-btn" onclick="switchTab('tab-glass')">Nhôm Kính Xingfa</button>
+        <button class="tab-btn" onclick="switchTab('tab-stairs')">Tính Bậc Cầu Thang</button>
+        <button class="tab-btn" onclick="switchTab('tab-quote')">Xuất Báo Giá Tổng Hợp</button>
     </div>
-</div>
 
-<!-- ================= TAB PRO ================= -->
-<div id="tab-pro" class="hidden">
-    
-    <!-- KHU VỰC TÍNH BÓC TÁCH VÁN NỘI THẤT -->
-    <div class="card" style="border: 2px solid #f39c12; background: #fffcf5;">
-        <h3>🪚 TÍNH TOÁN BÓC TÁCH VÁN NỘI THẤT <span class="badge-pro">PRO</span></h3>
-        <div class="input-row">
-            <div>
-                <label>Chiều dài phủ bì (mm):</label>
-                <input type="number" id="woodL" placeholder="VD: 1800">
+    <!-- 1. TAB TRẦN THẠCH CAO & PHÀO CHỈ DÁT VÀNG -->
+    <div id="tab-gypsum" class="tab-content active">
+        <h3>Tính Khối Lượng Trần Thạch Cao & Phào Chỉ / Dát Vàng</h3>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Tên khu vực / Phòng:</label>
+                <input type="text" id="gypName" placeholder="Ví dụ: Phòng Khách F1">
             </div>
-            <div>
-                <label>Chiều cao phủ bì (mm):</label>
-                <input type="number" id="woodH" placeholder="VD: 2000">
+            <div class="form-group">
+                <label>Chiều dài sàn (m):</label>
+                <input type="number" id="gypLength" step="0.01" placeholder="0.00">
             </div>
-            <div>
-                <label>Chiều sâu tủ (mm):</label>
-                <input type="number" id="woodD" placeholder="VD: 600">
+            <div class="form-group">
+                <label>Chiều rộng sàn (m):</label>
+                <input type="number" id="gypWidth" step="0.01" placeholder="0.00">
             </div>
-        </div>
-
-        <div class="input-row">
-            <div>
-                <label>Độ dày ván:</label>
-                <select id="woodThick">
-                    <option value="18">18 mm (Thông dụng)</option>
-                    <option value="17">17 mm</option>
-                    <option value="15">15 mm</option>
-                    <option value="12">12 mm</option>
+            <div class="form-group">
+                <label>Loại trần:</label>
+                <select id="gypType">
+                    <option value="flat">Trần phẳng (+0%)</option>
+                    <option value="drop_1">Trần giật cấp đơn (+15% khối lượng)</option>
+                    <option value="drop_2">Trần giật cấp phức tạp / Cổ điển (+25%)</option>
                 </select>
             </div>
-            <div>
-                <label>Số vách dọc (đứng):</label>
-                <input type="number" id="woodVach" value="1">
+            <div class="form-group">
+                <label>Tổng mét dài Phào chỉ / Dát vàng (md):</label>
+                <input type="number" id="gypMolding" step="0.1" placeholder="0.0">
             </div>
-            <div>
-                <label>Số đợt ngang:</label>
-                <input type="number" id="woodDot" value="3">
-            </div>
-        </div>
-
-        <button class="action-btn btn-vip" onclick="handleProAction(calcWoodNoidung)">🧮 Bóc Tách Trừ Hao & Khấu Trừ Ván Tự Động</button>
-        <div id="woodResult"></div>
-    </div>
-
-    <!-- KHU VỰC TẠO HẠNG MỤC PRO -->
-    <div class="card" style="border: 2px dashed #f39c12; background: #fffcf5;">
-        <h3 style="border:none; margin-bottom:10px;">THÊM HẠNG MỤC PRO (ĐẦY ĐỦ CÔNG CỤ TỰ ĐỘNG)</h3>
-        <div class="input-row">
-            <div>
-                <input type="text" id="proCatName" placeholder="Tên hạng mục (VD: Tủ bếp An Cường, Cửa nhôm Xingfa...)">
-            </div>
-            <div style="flex: 0.6;">
-                <input type="number" id="proCatPrice" placeholder="Đơn giá (đ/m²)">
+            <div class="form-group">
+                <label>Đơn giá thạch cao (Đồng/m2):</label>
+                <input type="number" id="gypPrice" value="240000">
             </div>
         </div>
-        <button class="action-btn btn-vip" onclick="addNewCategory('pro')">+ Tạo Hạng Mục VIP Pro</button>
+        <button class="btn btn-success" onclick="addGypsumItem()">Thêm Vào Bảng Tính</button>
+
+        <table id="gypTable">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Hạng Mục / Khu Vực</th>
+                    <th>Diện Tích Sàn (m2)</th>
+                    <th>Diện Tích Thi Công (m2)</th>
+                    <th>Phào Chỉ (md)</th>
+                    <th>Thành Tiền (VNĐ)</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 
-    <div id="proCategoriesContainer"></div>
+    <!-- 2. TAB VÁCH PVC & NANO -->
+    <div id="tab-pvc" class="tab-content">
+        <h3>Tính Khối Lượng Tấm Ốp PVC / Vách Nano</h3>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Vị trí ốp:</label>
+                <input type="text" id="pvcLoc" placeholder="Ví dụ: Mảng Tivi P.Khách">
+            </div>
+            <div class="form-group">
+                <label>Chiều rộng mảng tường (m):</label>
+                <input type="number" id="pvcW" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Chiều cao mảng tường (m):</label>
+                <input type="number" id="pvcH" step="0.01">
+            </div>
+            <div class="form-group">
+                <label>Loại vật liệu:</label>
+                <select id="pvcType">
+                    <option value="400000">Tấm PVC Giả Đá (400.000đ/m2)</option>
+                    <option value="450000">Tấm Nano Lam Sóng (450.000đ/m2)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Trừ cửa / Ô trống (m2):</label>
+                <input type="number" id="pvcSub" value="0" step="0.01">
+            </div>
+        </div>
+        <button class="btn btn-success" onclick="addPvcItem()">Tính & Thêm Vách PVC</button>
 
-    <div class="grand-total-box">
-        <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #f39c12;">TỔNG CỘNG CÔNG TRÌNH (PRO)</div>
-        <div class="grand-total-price"><span id="proGrandTotalCost">0</span> VNĐ</div>
-        <div style="font-size: 12px; color: #cbd5e1; margin-top: 5px;">Tổng diện tích thi công: <span id="proGrandTotalVol">0.00</span> m²</div>
+        <table id="pvcTable">
+            <thead>
+                <tr>
+                    <th>Vị Trí</th>
+                    <th>Kích Thước (RxC)</th>
+                    <th>Trừ Trống</th>
+                    <th>Khối Lượng Thực (m2)</th>
+                    <th>Thành Tiền (VNĐ)</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
-</div>
 
-<!-- ================= TAB LIÊN HỆ ================= -->
-<div id="tab-contact" class="card hidden" style="text-align: center;">
-    <h3 style="justify-content: center;">HỖ TRỢ & MỞ KHÓA BẢN PRO</h3>
-    <p style="font-size: 14px; color: #555; line-height: 1.5;">
-        Mua cho <b>Nguyên</b> ly cà phê để lấy mã mở khóa tính năng VIP Pro dùng không giới hạn trọn đời ☕
-    </p>
-    
-    <div style="background:#f8fafc; padding:15px; border-radius:12px; margin: 15px 0; border: 1px solid #e2e8f0;">
-        <p style="margin: 5px 0; font-size:13px; color:gray;">Mã ID thiết bị của bạn:</p>
-        <b id="devID" style="font-size: 20px; color: var(--primary); letter-spacing: 1px;">...</b>
+    <!-- 3. TAB NHÔM KÍNH XINGFA -->
+    <div id="tab-glass" class="tab-content">
+        <h3>Bóc Tách & Tính Báo Giá Nhôm Kính Xingfa</h3>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Tên cửa / Mã cửa:</label>
+                <input type="text" id="winName" placeholder="Ví dụ: Cửa đi chính C1">
+            </div>
+            <div class="form-group">
+                <label>Rộng (mm):</label>
+                <input type="number" id="winW" placeholder="1800">
+            </div>
+            <div class="form-group">
+                <label>Cao (mm):</label>
+                <input type="number" id="winH" placeholder="2400">
+            </div>
+            <div class="form-group">
+                <label>Số lượng bộ:</label>
+                <input type="number" id="winQty" value="1">
+            </div>
+            <div class="form-group">
+                <label>Hệ nhôm Xingfa:</label>
+                <select id="winSystem">
+                    <option value="2200000">Cửa đi Hệ 55 (2.200.000đ/m2)</option>
+                    <option value="1950000">Cửa sổ Hệ 55 (1.950.000đ/m2)</option>
+                    <option value="2400000">Cửa trượt Hệ 93 (2.400.000đ/m2)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Đơn giá Phụ kiện Kinlong (VNĐ/bộ):</label>
+                <input type="number" id="winAccPrice" value="850000">
+            </div>
+        </div>
+        <button class="btn btn-success" onclick="addWindowItem()">Thêm Cửa Vào Báo Giá</button>
+
+        <table id="winTable">
+            <thead>
+                <tr>
+                    <th>Mã Cửa</th>
+                    <th>Kích Thước (m)</th>
+                    <th>SL</th>
+                    <th>Diện Tích (m2)</th>
+                    <th>Tiền Nhôm Kính</th>
+                    <th>Tiền Phụ Kiện</th>
+                    <th>Tổng (VNĐ)</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 
-    <a href="https://zalo.me/0937091679" target="_blank" class="action-btn" style="display:block; text-decoration:none; background: #0180c7; margin-bottom:10px;">
-        💬 Nhắn Zalo/Gọi Nguyên: 0937 091 679
-    </a>
-</div>
+    <!-- 4. TAB TÍNH CẦU THANG (THẲNG, XOẮN, TRỤ) -->
+    <div id="tab-stairs" class="tab-content">
+        <h3>Tính Toán Bậc Cầu Thang & Phong Thủy</h3>
+        <div class="card">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Loại cầu thang:</label>
+                    <select id="stairType" onchange="toggleStairFields()">
+                        <option value="straight">Cầu thang thẳng / Vuông góc</option>
+                        <option value="spiral">Cầu thang xoắn ốc (Spiral)</option>
+                        <option value="center_pole">Cầu thang xoay quanh trụ tròn</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Chiều cao sàn - sàn (H) [mm]:</label>
+                    <input type="number" id="stairH" value="3600">
+                </div>
+                <div class="form-group">
+                    <label>Chiều rộng mặt bậc mong muốn (mm):</label>
+                    <input type="number" id="stairW" value="250">
+                </div>
+            </div>
 
-<!-- ================= MODAL KHÓA PRO ================= -->
-<div id="vipModal" class="modal-overlay hidden">
-    <div class="modal-card">
-        <div style="font-size: 40px; margin-bottom: 10px;">☕</div>
-        <h3 style="justify-content: center; border:none; color: var(--dark); margin-bottom: 5px;">MỞ KHÓA BẢN PRO</h3>
-        <p id="vipModalNotice" style="font-size: 13px; color: #555; margin-bottom: 15px; line-height: 1.5;">
-            Mua cho <b>Nguyên</b> ly cà phê để lấy mã mở khóa VIP Pro không giới hạn hạng mục & vị trí!
-        </p>
-        
-        <input type="text" id="vipInput" placeholder="Nhập mã mở khóa..." style="text-align: center; text-transform: uppercase; font-weight: bold; font-size: 16px;">
-        
-        <button class="action-btn btn-vip" onclick="checkVipKey()" style="margin-bottom: 8px;">KÍCH HOẠT BẢN PRO</button>
-        
-        <a href="https://zalo.me/0937091679" target="_blank" style="display:block; font-size: 13px; color: #0180c7; text-decoration: none; margin: 8px 0;">
-            📞 Liên hệ Nguyên (0937 091 679) để nhận mã
-        </a>
+            <!-- Trường thông số riêng cho xoắn/trụ -->
+            <div id="stairSpiralFields" class="form-grid" style="display:none;">
+                <div class="form-group">
+                    <label>Đường kính ngoài cầu thang (D) [mm]:</label>
+                    <input type="number" id="stairD" value="1800">
+                </div>
+                <div class="form-group" id="poleGroup" style="display:none;">
+                    <label>Đường kính trụ trung tâm (d) [mm]:</label>
+                    <input type="number" id="stairPoleD" value="114">
+                </div>
+                <div class="form-group">
+                    <label>Góc xoay tổng thể (Độ °):</label>
+                    <input type="number" id="stairAngle" value="360">
+                </div>
+            </div>
 
-        <button class="action-btn btn-secondary" onclick="closeVipModal()" style="margin-top: 5px;">Để Sau</button>
+            <button class="btn" style="width:100%" onclick="calculateStairs()">Tính Bậc Cầu Thang</button>
+        </div>
+
+        <div id="stairResultBox" class="card" style="display:none; background:#e8f4f8;">
+            <h4 style="margin-top:0; color:var(--primary-color);">Kết Quả Phân Tích Cầu Thang:</h4>
+            <p>👉 <b>Tổng số bậc:</b> <span id="resSteps" class="highlight"></span> bậc</p>
+            <p>👉 <b>Chiều cao mỗi bậc (Riser):</b> <span id="resStepH"></span> mm</p>
+            <p>👉 <b>Cung Phong Thủy bậc cuối:</b> <span id="resFengShui"></span></p>
+            <div id="resSpiralExtra"></div>
+        </div>
+    </div>
+
+    <!-- 5. TAB XUẤT BÁO GIÁ TỔNG HỢP -->
+    <div id="tab-quote" class="tab-content">
+        <h3>Tổng Hợp Dự Toán Công Trình</h3>
+        <div class="card">
+            <p><b>Khách hàng / Dự án:</b> <input type="text" id="clientName" value="Anh Phát - Quận 2" style="padding:5px; width:250px;"></p>
+            <p><b>Đơn vị thi công:</b> CÔNG TY TNHH PHƯƠNG VY LUXURY WINDOW</p>
+            <button class="btn btn-warning" onclick="applyMarkup10()">+ Tăng 10% Đơn Giá Toàn Bộ (Theo Yêu Cầu)</button>
+        </div>
+
+        <table id="summaryTable">
+            <thead>
+                <tr>
+                    <th>Hạng Mục Tổng Hợp</th>
+                    <th>Tổng Giá Trị Thi Công (VNĐ)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>1. Trần Thạch Cao & Phào Chỉ Dát Vàng</td><td id="sumGyp">0 đ</td></tr>
+                <tr><td>2. Vách Tấm Ốp PVC / Nano</td><td id="sumPvc">0 đ</td></tr>
+                <tr><td>3. Cửa Nhôm Kính Xingfa & Phụ Kiện</td><td id="sumWin">0 đ</td></tr>
+                <tr class="total-row">
+                    <td>TỔNG CỘNG CHƯA THUẾ (VNĐ)</td>
+                    <td id="sumGrandTotal" style="color:#d9534f; font-size:16px;">0 đ</td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <button class="btn btn-success" onclick="window.print()">In / Xuất PDF Báo Giá</button>
     </div>
 </div>
 
 <script>
-    let freeCategories = [{ id: 1, name: "Trần Thạch Cao Giật Cấp", price: 220000, items: [] }];
-    let proCategories = [{ id: 101, name: "Tủ Bếp An Cường (Pro)", price: 3400000, items: [] }];
-
-    function isVipActive() { return localStorage.getItem("tkl_vip_active") === "true"; }
-
-    function switchTab(tabId, btn) {
-        document.getElementById('tab-free').classList.toggle('hidden', tabId !== 'free');
-        document.getElementById('tab-pro').classList.toggle('hidden', tabId !== 'pro');
-        document.getElementById('tab-contact').classList.toggle('hidden', tabId !== 'contact');
+    // XỬ LÝ CHUYỂN TABS
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
         
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        event.target.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
     }
 
-    function getTotalPosCount(list) {
-        return list.reduce((sum, cat) => sum + cat.items.length, 0);
+    // BIẾN QUẢN LÝ DỮ LIỆU TỔNG
+    let totalGypsumSum = 0;
+    let totalPvcSum = 0;
+    let totalWindowSum = 0;
+    let markupFactor = 1.0; // Hệ số điều chỉnh giá (mặc định 1.0)
+
+    function formatVND(amount) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     }
 
-    function addNewCategory(mode) {
-        let isPro = (mode === 'pro');
-        let list = isPro ? proCategories : freeCategories;
+    // 1. TÍNH TRẦN THẠCH CAO
+    function addGypsumItem() {
+        let name = document.getElementById('gypName').value || "Khu vực chung";
+        let L = parseFloat(document.getElementById('gypLength').value) || 0;
+        let W = parseFloat(document.getElementById('gypWidth').value) || 0;
+        let type = document.getElementById('gypType').value;
+        let molding = parseFloat(document.getElementById('gypMolding').value) || 0;
+        let price = parseFloat(document.getElementById('gypPrice').value) || 0;
 
-        if (!isPro && !isVipActive() && list.length >= 2) {
-            showVipModal("Bản Free chỉ hỗ trợ tối đa 2 hạng mục. Mua cho Nguyên ly cà phê để thêm hạng mục!");
-            return;
-        }
+        let floorArea = L * W;
+        let factor = (type === 'drop_1') ? 1.15 : (type === 'drop_2' ? 1.25 : 1.0);
+        let actualArea = floorArea * factor;
 
-        let nameInput = document.getElementById(isPro ? 'proCatName' : 'freeCatName');
-        let priceInput = document.getElementById(isPro ? 'proCatPrice' : 'freeCatPrice');
+        let totalGypPrice = (actualArea * price * markupFactor) + (molding * 120000 * markupFactor); // 120k/md phào
+        totalGypsumSum += totalGypPrice;
 
-        let name = nameInput.value.trim() || ("Hạng mục " + (list.length + 1));
-        let price = parseFloat(priceInput.value) || 0;
-
-        list.push({ id: Date.now(), name, price, items: [] });
-
-        nameInput.value = '';
-        priceInput.value = '';
-        renderCategories(mode);
+        let tbody = document.querySelector('#gypTable tbody');
+        let rowCount = tbody.rows.length + 1;
+        tbody.innerHTML += `
+            <tr>
+                <td>${rowCount}</td>
+                <td>${name}</td>
+                <td>${floorArea.toFixed(2)}</td>
+                <td>${actualArea.toFixed(2)}</td>
+                <td>${molding}</td>
+                <td>${formatVND(totalGypPrice)}</td>
+            </tr>
+        `;
+        updateGrandSummary();
     }
 
-    function removeCategory(mode, catId) {
-        if(confirm("Bạn có chắc chắn muốn xóa toàn bộ hạng mục này?")) {
-            if(mode === 'pro') proCategories = proCategories.filter(c => c.id !== catId);
-            else freeCategories = freeCategories.filter(c => c.id !== catId);
-            renderCategories(mode);
-        }
+    // 2. TÍNH VÁCH PVC
+    function addPvcItem() {
+        let loc = document.getElementById('pvcLoc').value || "Vách trang trí";
+        let w = parseFloat(document.getElementById('pvcW').value) || 0;
+        let h = parseFloat(document.getElementById('pvcH').value) || 0;
+        let sub = parseFloat(document.getElementById('pvcSub').value) || 0;
+        let unitPrice = parseFloat(document.getElementById('pvcType').value);
+
+        let area = Math.max(0, (w * h) - sub);
+        let total = area * unitPrice * markupFactor;
+        totalPvcSum += total;
+
+        let tbody = document.querySelector('#pvcTable tbody');
+        tbody.innerHTML += `
+            <tr>
+                <td>${loc}</td>
+                <td>${w}m x ${h}m</td>
+                <td>${sub} m2</td>
+                <td>${area.toFixed(2)}</td>
+                <td>${formatVND(total)}</td>
+            </tr>
+        `;
+        updateGrandSummary();
     }
 
-    function addPosToCategory(mode, catId) {
-        let isPro = (mode === 'pro');
-        let list = isPro ? proCategories : freeCategories;
+    // 3. TÍNH CỬA NHÔM KÍNH
+    function addWindowItem() {
+        let name = document.getElementById('winName').value || "Cửa Xingfa";
+        let w = (parseFloat(document.getElementById('winW').value) || 0) / 1000;
+        let h = (parseFloat(document.getElementById('winH').value) || 0) / 1000;
+        let qty = parseInt(document.getElementById('winQty').value) || 1;
+        let systemPrice = parseFloat(document.getElementById('winSystem').value);
+        let accPrice = parseFloat(document.getElementById('winAccPrice').value);
 
-        if (!isVipActive() && getTotalPosCount(list) >= 20) {
-            showVipModal("Bản Free chỉ hỗ trợ tối đa 20 vị trí. Mua cho Nguyên ly cà phê để nhập không giới hạn vị trí!");
-            return;
-        }
+        let areaPerUnit = w * h;
+        let glassTotal = areaPerUnit * qty * systemPrice * markupFactor;
+        let accTotal = qty * accPrice * markupFactor;
+        let grandWin = glassTotal + accTotal;
 
-        let cat = list.find(c => c.id === catId);
-        if (!cat) return;
+        totalWindowSum += grandWin;
 
-        let posName = document.getElementById(`posName_${catId}`).value.trim() || ("Vị trí " + (cat.items.length + 1));
-        let type = document.getElementById(`posType_${catId}`).value;
-        let s = 0, perimeter = 0;
-
-        if (type === 'rect') {
-            let l = parseFloat(document.getElementById(`posLen_${catId}`).value) || 0;
-            let w = parseFloat(document.getElementById(`posWid_${catId}`).value) || 0;
-            if (l <= 0 || w <= 0) { alert("Vui lòng nhập chiều dài và rộng!"); return; }
-            s = l * w;
-        } else if (type === 'circle') {
-            let d = parseFloat(document.getElementById(`posDia_${catId}`).value) || 0;
-            if (d <= 0) { alert("Vui lòng nhập đường kính!"); return; }
-            s = Math.PI * Math.pow(d / 2, 2);
-            perimeter = Math.PI * d;
-        }
-
-        cat.items.push({ posName, s, perimeter, type });
-        renderCategories(mode);
+        let tbody = document.querySelector('#winTable tbody');
+        tbody.innerHTML += `
+            <tr>
+                <td>${name}</td>
+                <td>${w.toFixed(2)} x ${h.toFixed(2)}</td>
+                <td>${qty}</td>
+                <td>${(areaPerUnit * qty).toFixed(2)}</td>
+                <td>${formatVND(glassTotal)}</td>
+                <td>${formatVND(accTotal)}</td>
+                <td>${formatVND(grandWin)}</td>
+            </tr>
+        `;
+        updateGrandSummary();
     }
 
-    function removePosFromCategory(mode, catId, itemIdx) {
-        let list = (mode === 'pro') ? proCategories : freeCategories;
-        let cat = list.find(c => c.id === catId);
-        if (cat) {
-            cat.items.splice(itemIdx, 1);
-            renderCategories(mode);
-        }
-    }
+    // 4. CHUYỂN ĐỔI FIELD CẦU THANG
+    function toggleStairFields() {
+        let type = document.getElementById('stairType').value;
+        let spiralFields = document.getElementById('stairSpiralFields');
+        let poleGroup = document.getElementById('poleGroup');
 
-    // --- TÍNH NĂNG VIP PRO: DÁN SỐ ĐO TỰ ĐỘNG ---
-    function parseAndPasteToCat(catId) {
-        let txt = document.getElementById(`pasteText_${catId}`).value;
-        let cat = proCategories.find(c => c.id === catId);
-        if (!cat || !txt.trim()) return;
-
-        let reg = /(\d+[\.,]?\d*)\s*[xX*✕]\s*(\d+[\.,]?\d*)/g;
-        let match;
-        let added = 0;
-
-        while ((match = reg.exec(txt)) !== null) {
-            let l = parseFloat(match[1].replace(',', '.'));
-            let w = parseFloat(match[2].replace(',', '.'));
-            if (l > 0 && w > 0) {
-                added++;
-                cat.items.push({ posName: `Vị trí Dán ${cat.items.length + 1}`, s: l * w, perimeter: 0, type: 'rect' });
-            }
-        }
-
-        if (added > 0) {
-            document.getElementById(`pasteText_${catId}`).value = '';
-            renderCategories('pro');
-            alert(`Đã tách và thêm tự động ${added} vị trí vào hạng mục!`);
+        if (type === 'straight') {
+            spiralFields.style.display = 'none';
         } else {
-            alert("Không tìm thấy dạng số đo Dài x Rộng! (Ví dụ chuẩn: 4x5, 3.5x4)");
+            spiralFields.style.display = 'grid';
+            poleGroup.style.display = (type === 'center_pole') ? 'flex' : 'none';
         }
     }
 
-    // --- TÍNH NĂNG VIP PRO: CHỤP / TẢI ẢNH BÓC TÁCH ---
-    function triggerCameraOCR(catId) {
-        let input = document.getElementById(`fileOCR_${catId}`);
-        input.click();
-        input.onchange = function() {
-            if (input.files && input.files[0]) {
-                alert("Đang phân tích hình ảnh... Đã nhận diện và nạp số đo tự động từ bản vẽ!");
-                let cat = proCategories.find(c => c.id === catId);
-                cat.items.push({ posName: "Quét từ ảnh 1", s: 4.5 * 3.2, perimeter: 0, type: 'rect' });
-                cat.items.push({ posName: "Quét từ ảnh 2", s: 2.8 * 1.5, perimeter: 0, type: 'rect' });
-                renderCategories('pro');
-            }
-        };
-    }
+    // TÍNH BẬC CẦU THANG (THẲNG, XOẮN, TRỤ)
+    function calculateStairs() {
+        let H = parseFloat(document.getElementById('stairH').value) || 0;
+        let type = document.getElementById('stairType').value;
 
-    // --- TÍNH NĂNG MỚI: BÓC TÁCH VÁN NỘI THẤT ---
-    function calcWoodNoidung() {
-        let L = parseFloat(document.getElementById('woodL').value) || 0;
-        let H = parseFloat(document.getElementById('woodH').value) || 0;
-        let D = parseFloat(document.getElementById('woodD').value) || 0;
-        let thick = parseFloat(document.getElementById('woodThick').value) || 18;
-        let vach = parseInt(document.getElementById('woodVach').value) || 0;
-        let dot = parseInt(document.getElementById('woodDot').value) || 0;
+        if (H <= 0) return;
 
-        if (L <= 0 || H <= 0 || D <= 0) { alert("Vui lòng nhập đầy đủ Dài, Cao, Sâu của tủ!"); return; }
+        let idealRiser = 165; // chiều cao lý tưởng bậc
+        let numSteps = Math.round(H / idealRiser);
+        let actualRiser = (H / numSteps).toFixed(1);
 
-        let t = thick;
-        
-        let batHoi = 2 * (H * D);
-        let batDayPhat = 2 * ((L - 2*t) * D);
-        let batVach = vach * ((H - 2*t) * D);
-        let batDot = dot * ((L - (2 + vach)*t) / (vach + 1) * D);
-        
-        let totalAreaMM2 = batHoi + batDayPhat + batVach + batDot;
-        let totalAreaM2 = totalAreaMM2 / 1000000;
+        let fsCycle = ["Tử", "Sinh", "Bệnh", "Lão"];
+        let fsText = fsCycle[numSteps % 4];
+        let fsColor = (fsText === "Sinh") ? "green" : "red";
 
-        let sheetArea = 1.22 * 2.44;
-        let numSheets = Math.ceil((totalAreaM2 * 1.15) / sheetArea);
+        document.getElementById('resSteps').innerText = numSteps;
+        document.getElementById('resStepH').innerText = actualRiser;
+        document.getElementById('resFengShui').innerHTML = `<b style="color:${fsColor}">${fsText}</b>`;
 
-        let html = `<div style='background:#ebf8ff; border-left:4px solid #f39c12; padding:12px; margin-top:12px; border-radius:8px; font-size:13px;'>`;
-        html += `<b>KẾT QUẢ BÓC TÁCH KHẤU TRỪ VÁN (Độ dày ${thick}mm):</b><br>`;
-        html += `• 2 Hồi bên: <b>${H} × ${D} mm</b><br>`;
-        html += `• Nóc & Đáy lọt lòng: <b>${(L - 2*t).toFixed(0)} × ${D} mm</b><br>`;
-        html += `• ${vach} Vách đứng lọt lòng: <b>${(H - 2*t).toFixed(0)} × ${D} mm</b><br>`;
-        html += `• ${dot} Đợt ngang chia đều: <b>${((L - (2 + vach)*t)/(vach + 1)).toFixed(0)} × ${D} mm</b><br>`;
-        html += `• Tổng diện tích ván: <b>${totalAreaM2.toFixed(2)} m²</b><br>`;
-        html += `👉 Ước tính số tấm ván ($1.22m \times 2.44m$): <b style='color:var(--danger); font-size:15px;'>${numSheets} Tấm</b> (Đã tính 15% hao hụt)`;
-        html += `</div>`;
+        let extraHTML = "";
+        if (type !== 'straight') {
+            let D = parseFloat(document.getElementById('stairD').value) || 1800;
+            let angle = parseFloat(document.getElementById('stairAngle').value) || 360;
+            let poleD = (type === 'center_pole') ? (parseFloat(document.getElementById('stairPoleD').value) || 114) : 0;
 
-        document.getElementById('woodResult').innerHTML = html;
-    }
+            let stepAngle = (angle / numSteps).toFixed(1);
+            let R_outer = D / 2;
+            let R_inner = poleD / 2;
+            let stepLen = R_outer - R_inner;
 
-    function togglePosInputs(mode, catId) {
-        let type = document.getElementById(`posType_${catId}`).value;
-        document.getElementById(`rectBox_${catId}`).classList.toggle('hidden', type !== 'rect');
-        document.getElementById(`circleBox_${catId}`).classList.toggle('hidden', type !== 'circle');
-    }
+            let outerW = ((2 * Math.PI * R_outer) * (stepAngle / 360)).toFixed(1);
+            let midW = ((2 * Math.PI * (R_inner + stepLen/2)) * (stepAngle / 360)).toFixed(1);
 
-    function renderCategories(mode) {
-        let isPro = (mode === 'pro');
-        let list = isPro ? proCategories : freeCategories;
-        let container = document.getElementById(isPro ? 'proCategoriesContainer' : 'freeCategoriesContainer');
-        container.innerHTML = '';
-
-        let grandTotalVol = 0, grandTotalCost = 0;
-
-        list.forEach(cat => {
-            let catVol = cat.items.reduce((sum, item) => sum + item.s, 0);
-            let catCost = catVol * cat.price;
-
-            grandTotalVol += catVol;
-            grandTotalCost += catCost;
-
-            let itemsHtml = '';
-            cat.items.forEach((item, idx) => {
-                let note = item.type === 'circle' ? ` (Chu vi: ${item.perimeter.toFixed(2)}m)` : '';
-                itemsHtml += `
-                    <div class="pos-item-row">
-                        <span><b>${item.posName}:</b> ${item.s.toFixed(2)} m² ${note}</span>
-                        <span style="color:var(--danger); cursor:pointer;" onclick="removePosFromCategory('${mode}', ${cat.id}, ${idx})">✕</span>
-                    </div>
-                `;
-            });
-
-            let proToolsHtml = isPro ? `
-                <div class="pro-tools-panel">
-                    <span class="badge-pro" style="margin-bottom:6px; display:inline-block;">CÔNG CỤ NẠP SỐ ĐO TỰ ĐỘNG PRO</span>
-                    <div class="input-row">
-                        <input type="text" id="pasteText_${cat.id}" placeholder="Dán văn bản số đo vào đây (VD: 4x5, 3x4.5...)" style="margin:0;">
-                        <button class="action-btn btn-vip" style="width: auto; padding: 0 12px; font-size: 12px;" onclick="handleProAction(() => parseAndPasteToCat(${cat.id}))">⚡ Tách & Nạp</button>
-                    </div>
-                    <div style="margin-top:8px;">
-                        <input type="file" id="fileOCR_${cat.id}" accept="image/*" class="hidden">
-                        <button class="action-btn btn-secondary" style="font-size:12px; padding:6px;" onclick="handleProAction(() => triggerCameraOCR(${cat.id}))">📷 Chụp / Tải ảnh bản vẽ bóc tách tự động</button>
-                    </div>
-                </div>
-            ` : '';
-
-            container.innerHTML += `
-                <div class="category-card">
-                    <div class="category-header">
-                        <span class="category-title">📂 ${cat.name}</span>
-                        <span class="btn-del-cat" onclick="removeCategory('${mode}', ${cat.id})">🗑 Xóa Hạng Mục</span>
-                    </div>
-
-                    ${proToolsHtml}
-
-                    <div class="input-row">
-                        <div>
-                            <label>Đơn giá (VNĐ/m²):</label>
-                            <input type="number" value="${cat.price}" onchange="updateCatPrice('${mode}', ${cat.id}, this.value)">
-                        </div>
-                        <div>
-                            <label>Loại hình tính toán:</label>
-                            <select id="posType_${cat.id}" onchange="togglePosInputs('${mode}', ${cat.id})">
-                                <option value="rect">Hình Chữ Nhật (Dài x Rộng)</option>
-                                <option value="circle">Hình Tròn (Diện tích & Chu vi)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px dashed #cbd5e1;">
-                        <input type="text" id="posName_${cat.id}" placeholder="Tên vị trí (VD: Tủ bếp trên, Phòng khách...)">
-                        
-                        <div id="rectBox_${cat.id}" class="input-row">
-                            <div><input type="number" id="posLen_${cat.id}" placeholder="Dài (m)"></div>
-                            <div><input type="number" id="posWid_${cat.id}" placeholder="Rộng (m)"></div>
-                        </div>
-
-                        <div id="circleBox_${cat.id}" class="hidden">
-                            <input type="number" id="posDia_${cat.id}" placeholder="Đường kính D (m)">
-                        </div>
-
-                        <button class="action-btn btn-secondary" style="font-size:12px; padding:8px;" onclick="addPosToCategory('${mode}', ${cat.id})">+ Thêm Vị Trí Thủ Công</button>
-                    </div>
-
-                    <div>${itemsHtml}</div>
-
-                    <div class="subtotal-box">
-                        <span>Khối lượng: ${catVol.toFixed(2)} m²</span>
-                        <span style="color: var(--primary);">${catCost.toLocaleString('vi-VN')} VNĐ</span>
-                    </div>
-                </div>
+            extraHTML = `
+                <hr>
+                <p>🌀 <b>Góc xoay mỗi bậc:</b> ${stepAngle}°</p>
+                <p>🌀 <b>Chiều dài bản bậc:</b> ${stepLen} mm</p>
+                <p>🌀 <b>Rộng mặt bậc lối đi trung tâm:</b> ${midW} mm</p>
+                <p>🌀 <b>Rộng mặt bậc mép ngoài cùng:</b> ${outerW} mm</p>
             `;
-        });
-
-        document.getElementById(isPro ? 'proGrandTotalVol' : 'freeGrandTotalVol').innerText = grandTotalVol.toFixed(2);
-        document.getElementById(isPro ? 'proGrandTotalCost' : 'freeGrandTotalCost').innerText = grandTotalCost.toLocaleString('vi-VN');
-    }
-
-    function updateCatPrice(mode, catId, newPrice) {
-        let list = (mode === 'pro') ? proCategories : freeCategories;
-        let cat = list.find(c => c.id === catId);
-        if (cat) {
-            cat.price = parseFloat(newPrice) || 0;
-            renderCategories(mode);
+            if (type === 'center_pole') extraHTML += `<p>🪵 <b>Đường kính trụ tròn chịu lực:</b> ${poleD} mm</p>`;
         }
+
+        document.getElementById('resSpiralExtra').innerHTML = extraHTML;
+        document.getElementById('stairResultBox').style.display = 'block';
     }
 
-    // --- QUẢN LÝ QUYỀN VIP PRO & POPUP ---
-    function getDevID() {
-        let id = localStorage.getItem("tkl_dev_id");
-        if (!id) {
-            id = "TKL" + Math.floor(100000 + Math.random() * 900000);
-            localStorage.setItem("tkl_dev_id", id);
-        }
-        return id;
-    }
-    document.getElementById('devID').innerText = getDevID();
+    // 5. CẬP NHẬT TỔNG BÁO GIÁ
+    function updateGrandSummary() {
+        document.getElementById('sumGyp').innerText = formatVND(totalGypsumSum);
+        document.getElementById('sumPvc').innerText = formatVND(totalPvcSum);
+        document.getElementById('sumWin').innerText = formatVND(totalWindowSum);
 
-    let pendingProAction = null;
-
-    function showVipModal(msg) {
-        document.getElementById('vipModalNotice').innerText = msg || 'Mua cho Nguyên ly cà phê để lấy mã mở khóa VIP Pro không giới hạn hạng mục & vị trí!';
-        document.getElementById('vipModal').classList.remove('hidden');
+        let grandTotal = totalGypsumSum + totalPvcSum + totalWindowSum;
+        document.getElementById('sumGrandTotal').innerText = formatVND(grandTotal);
     }
 
-    function handleProAction(actionCallback) {
-        if (isVipActive()) {
-            actionCallback();
-        } else {
-            pendingProAction = actionCallback;
-            showVipModal();
-        }
+    // TĂNG 10% TỔNG BÁO GIÁ THEO CẤU HÌNH DỰ ÁN
+    function applyMarkup10() {
+        markupFactor = 1.10;
+        alert("Đã cập nhật tăng 10% đơn giá cho toàn bộ hạng mục công trình!");
+        // Re-calculate tab values if needed
+        updateGrandSummary();
     }
-
-    function closeVipModal() { document.getElementById('vipModal').classList.add('hidden'); }
-
-    function checkVipKey() {
-        let key = document.getElementById('vipInput').value.trim().toUpperCase();
-        let validKey = btoa(getDevID() + "TKL2026").substring(0, 8).toUpperCase();
-
-        if (key === validKey || key === "TKL-VIP") {
-            localStorage.setItem("tkl_vip_active", "true");
-            closeVipModal();
-            alert("Cảm ơn anh đã mua ly cà phê cho Nguyên! Bản VIP Pro đã được mở khóa thành công.");
-            if (pendingProAction) pendingProAction();
-            renderCategories('pro');
-        } else {
-            alert("Mã chưa chính xác. Vui lòng gọi hoặc nhắn Zalo Nguyên (0937 091 679) để nhận mã mở khóa nhé!");
-        }
-    }
-
-    renderCategories('free');
-    renderCategories('pro');
 </script>
+
 </body>
 </html>
