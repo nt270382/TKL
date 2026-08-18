@@ -1078,46 +1078,23 @@ async function exportSectionPDF(elementId, fileName){
   const pageW = pdf.internal.pageSize.getWidth();
   const pageH = pdf.internal.pageSize.getHeight();
   const margin = 10;
-  const printW = pageW - margin * 2;
-  const printH = pageH - margin * 2;
+  const imgW = pageW - margin * 2;
+  const imgH = (canvas.height * imgW) / canvas.width;
+  
+  let heightLeft = imgH;
+  let position = margin;
 
-  const canvasW = canvas.width;
-  const canvasH = canvas.height;
-  const pageCanvasH = Math.floor((canvasW * printH) / printW);
+  pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', margin, position, imgW, imgH);
+  heightLeft -= (pageH - margin * 2);
 
-  let renderedH = 0;
-  let pageIndex = 0;
-
-  while(renderedH < canvasH) {
-    if(pageIndex > 0) pdf.addPage();
-    
-    const currentSliceH = Math.min(pageCanvasH, canvasH - renderedH);
-    const pageCanvas = document.createElement('canvas');
-    pageCanvas.width = canvasW;
-    pageCanvas.height = currentSliceH;
-
-    const ctx = pageCanvas.getContext('2d');
-    ctx.drawImage(canvas, 0, renderedH, canvasW, currentSliceH, 0, 0, canvasW, currentSliceH);
-
-    const imgData = pageCanvas.toDataURL('image/jpeg', 0.95);
-    const targetH = (currentSliceH * printW) / canvasW;
-
-    pdf.addImage(imgData, 'JPEG', margin, margin, printW, targetH);
-
-    renderedH += currentSliceH;
-    pageIndex++;
+  while (heightLeft > 0) {
+    position = heightLeft - imgH + margin;
+    pdf.addPage();
+    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', margin, position, imgW, imgH);
+    heightLeft -= (pageH - margin * 2);
   }
 
-  const pdfBlob = pdf.output('blob');
-  const blobUrl = URL.createObjectURL(pdfBlob);
-  const downloadLink = document.createElement('a');
-  downloadLink.href = blobUrl;
-  downloadLink.download = fileName;
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-  document.body.removeChild(downloadLink);
-  setTimeout(()=> URL.revokeObjectURL(blobUrl), 1000);
-
+  pdf.save(fileName);
  } catch(err) {
   alert('Lỗi xuất PDF: ' + err.message);
  } finally {
