@@ -376,7 +376,7 @@
    </div>
   </div>
 
-  <div class="bg-gray-50 p-4 rounded-xl border space-y-2">
+  <div id="activationBox" class="bg-gray-50 p-4 rounded-xl border space-y-2">
    <p class="text-xs font-semibold text-gray-700">Nhập Mã Kích Hoạt VIP:</p>
    <input type="password" id="activationCodeInput" placeholder="Nhập mã kích hoạt..." class="w-full text-center py-2 px-3 rounded-lg text-black text-sm font-bold bg-white border">
    <button onclick="activatePro()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 rounded-lg text-sm shadow">Kích Hoạt VIP Ngay</button>
@@ -430,8 +430,6 @@
 </footer>
 
 <script>
-// MÃ KEY PRO ĐƯỢC CẤP
-const VIP_KEY = '666888';
 let isVipActivated = false;
 const FREE_CATEGORY_LIMIT = 2;
 const FREE_LOCATION_LIMIT = 20;
@@ -542,18 +540,25 @@ function switchSubTabVattu(subKey){
 function checkVipStatus(){
  isVipActivated = (localStorage.getItem('tkl_vip_active') === 'true');
  const badge = document.getElementById('vipStatusBadge');
+ const activationBox = document.getElementById('activationBox');
+
  if(isVipActivated){
   badge.innerText = 'Bản VIP PRO';
   badge.className = 'text-xs bg-green-400 text-gray-900 font-bold px-2.5 py-1 rounded-full uppercase shadow';
+  if(activationBox) activationBox.style.display = 'none';
  } else {
   badge.innerText = 'Bản FREE';
   badge.className = 'text-xs bg-yellow-400 text-gray-900 font-bold px-2.5 py-1 rounded-full uppercase';
+  if(activationBox) activationBox.style.display = 'block';
  }
 }
 
 function activatePro(){
- const code = document.getElementById('activationCodeInput').value.trim();
- if(code === VIP_KEY){
+ const inputVal = document.getElementById('activationCodeInput').value.trim();
+ const numericId = parseInt(deviceId.replace(/\D/g, ''), 10) || 0;
+ const expectedKey = String(numericId * 9 + 1003);
+
+ if(inputVal === expectedKey){
   localStorage.setItem('tkl_vip_active', 'true');
   checkVipStatus();
   updateProLock();
