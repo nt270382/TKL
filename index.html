@@ -369,11 +369,10 @@
   
   <div class="p-4 bg-blue-50/70 border border-blue-200 rounded-xl inline-block w-full max-w-xs mx-auto">
    <p class="text-xs font-bold text-blue-900 mb-1 uppercase">Vietcombank - Chuyển khoản ủng hộ</p>
-   <img id="vietqrImg" src="https://img.vietqr.io/image/VCB-0881000475550-compact2.png?amount=29000&addInfo=Ung%20ho%20ly%20ca%20phe%20cho%20tac%20gia" alt="QR Vietcombank 29k" class="w-48 h-48 mx-auto rounded-lg shadow-sm border bg-white p-1">
+   <img id="vietqrImg" src="https://img.vietqr.io/image/VCB-0881000475550-compact2.png?addInfo=Cam%20on%20da%20ung%20ho%20va%20moi%20nguoi%20phat%20trien%20ly%20cf%20nhe" alt="QR Vietcombank ủng hộ tác giả" class="w-48 h-48 mx-auto rounded-lg shadow-sm border bg-white p-1">
    <div class="mt-2 text-xs space-y-1 text-gray-700">
     <p>STK: <strong class="text-blue-700 font-mono">0881000475550</strong></p>
-    <p>Số tiền: <strong class="text-red-600 font-bold">29.000 VNĐ</strong></p>
-    <p class="text-[11px] text-gray-500 italic">Nội dung: Ủng hộ ly cà phê cho tác giả</p>
+    <p class="text-[11px] text-gray-600 italic mt-1">Cám ơn đã ủng hộ và mời người phát triển ly cf nhé.</p>
    </div>
   </div>
 
@@ -474,7 +473,7 @@ let proQuoteData = {
 
 document.addEventListener('DOMContentLoaded', ()=>{
  document.getElementById('contactDeviceId').innerText = deviceId;
- document.getElementById('vietqrImg').src = `https://img.vietqr.io/image/VCB-0881000475550-compact2.png?amount=29000&addInfo=Ung%20ho%20ly%20ca%20phe%20cho%20tac%20gia`;
+ document.getElementById('vietqrImg').src = `https://img.vietqr.io/image/VCB-0881000475550-compact2.png?addInfo=Cam%20on%20da%20ung%20ho%20va%20moi%20nguoi%20phat%20trien%20ly%20cf%20nhe`;
  ['companyName','customerPhone','customerAddress','customerNote'].forEach(id=>{
   const v = localStorage.getItem('tkl_'+id);
   if(v && document.getElementById(id)) document.getElementById(id).value = v;
@@ -857,7 +856,6 @@ function addTcVattuRoom(){
  document.getElementById('tcVattuRoomsContainer').appendChild(div);
 }
 
-// BÓC TÁCH VẬT TƯ THẠCH CAO THEO CÁC YÊU CẦU BỔ SUNG
 function calculateThachCaoVattuAuto(){
  let totalArea = 0; let totalPerimeter = 0;
  document.querySelectorAll('.tc-room-row').forEach(row=>{
@@ -881,7 +879,6 @@ function calculateThachCaoVattuAuto(){
   <tbody>`;
 
  if (tcType === 'tha') {
-  // TRẦN THẢ 60x60: Tấm 60cm, Khung T3m6 chịu lực, T1m2 ngang, T0m6 dọc
   let tam60 = Math.ceil((totalArea * 1.05) / 0.36);
   let t3m6 = Math.ceil((totalArea * 0.8) / 3.6);
   let t1m2 = Math.ceil((totalArea * 1.7) / 1.2);
@@ -898,7 +895,6 @@ function calculateThachCaoVattuAuto(){
    <tr><td>Ty treo / Ty ren + Tắc kê đạn</td><td>Bộ</td><td><strong>${tyTreo}</strong></td></tr>`;
  } 
  else if (tcType === 'basi') {
-  // TRẦN CHÌM HỆ BASI: Ty ren, tắc kê đạn, khung chịu lực xương cá, khung phụ
   let tamQty = Math.ceil((totalArea * 1.05) / (1.22 * 2.44));
   let xuongCa = Math.ceil((totalArea * 0.8) / 3); 
   let khungPhu = Math.ceil((totalArea * 2.2) / 3);
@@ -915,9 +911,7 @@ function calculateThachCaoVattuAuto(){
    <tr><td>Vít bắn tấm thạch cao + Bột trét xử lý mối nối</td><td>Gói</td><td><strong>${vitTam} con vít</strong> / Trọn gói phụ kiện</td></tr>`;
  } 
  else {
-  // CÁC HỆ CÒN LẠI: Tính U trên tổng khối lượng đã đưa ra bao gồm U chịu lực gom thành 1 loại U
   let tamQty = (tcType === 'vach') ? Math.ceil((totalArea * 2 * 1.05) / (1.22 * 2.44)) : Math.ceil((totalArea * 1.05) / (1.22 * 2.44));
-  // Gom U chịu lực và U khung thành 1 loại U chung tính trên tổng khối lượng
   let tongThanhU = Math.ceil((totalArea * 3.0) / 3); 
   let vBorder = Math.ceil(totalPerimeter / 3);
   let tyTreo = Math.ceil(totalArea * 1.2);
