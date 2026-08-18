@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TKL - Dự Toán & Báo Giá Thi Công Chuyên Nghiệp</title>
+<title>TKL Estimator - Dự Toán & Báo Giá Thi Công Chuyên Nghiệp</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -17,10 +17,10 @@
 .subtab-btn.active{background:#2563eb;color:#fff}
 .pdf-sheet{background:#fff;color:#111;font-family:Arial,"Noto Sans",sans-serif}
 .pdf-table{width:100%;border-collapse:collapse;font-size:11px}
-.pdf-table th,.pdf-table td{border:1px solid #cbd5e1;padding:6px;vertical-align:top}
+.pdf-table th,.pdf-table td{border:1px solid #cbd5e1;padding:6px;vertical-align:middle}
 .pdf-table th{background:#eff6ff;font-weight:700}
-.quote-row{background:#f8fafc}
-.money{text-align:right;white-space:nowrap}
+.editable-input{background:transparent;border:1px dashed #cbd5e1;padding:2px 4px;border-radius:4px;width:100%}
+.editable-input:focus{background:#fff;border-style:solid;outline:none;border-color:#2563eb}
 @media(max-width:420px){.nav-scroll{overflow-x:auto;justify-content:flex-start}.nav-scroll button{white-space:nowrap}}
 </style>
 </head>
@@ -37,20 +37,22 @@
  <div class="max-w-md mx-auto flex justify-around nav-scroll">
   <button onclick="switchTab('khoan')" id="tab-khoan" class="tab-btn active py-3 px-4 text-sm text-gray-600">Khoán Khối Lượng</button>
   <button onclick="switchTab('baogia')" id="tab-baogia" class="tab-btn py-3 px-4 text-sm text-gray-600 flex items-center gap-1">Báo Giá Chuyên Sâu <span class="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded font-bold">PRO</span></button>
-  <button onclick="switchTab('contact')" id="tab-contact" class="tab-btn py-3 px-4 text-sm text-gray-600">Liên Hệ</button>
+  <button onclick="switchTab('contact')" id="tab-contact" class="tab-btn py-3 px-4 text-sm text-gray-600">Liên Hệ / Ủng Hộ</button>
  </div>
 </nav>
 
 <main class="max-w-md mx-auto w-full flex-grow p-4 pb-28">
 
-<!-- THÔNG TIN KHÁCH HÀNG: chỉ mở khi cần -->
-<div class="flex justify-end mt-3 no-print">
- <button onclick="openCustomerInfo()" class="bg-white border border-blue-200 text-blue-700 text-xs font-semibold px-3 py-2 rounded-lg shadow-sm">＋ Thêm thông tin khách hàng / công trình</button>
+<div class="flex justify-end mt-1 no-print">
+ <button onclick="openCustomerInfo()" class="bg-white border border-blue-200 text-blue-700 text-xs font-semibold px-3 py-2 rounded-lg shadow-sm hover:bg-blue-50">＋ Thêm thông tin khách hàng / công trình</button>
 </div>
 
-<section id="sec-khoan" class="space-y-4 mt-4">
+<section id="sec-khoan" class="space-y-4 mt-3">
  <div class="flex justify-between items-center px-1">
-  <div><h2 class="text-xs font-bold text-gray-500 uppercase">Khoán Khối Lượng Đo Đạc</h2><p class="text-[10px] text-gray-400 mt-1">FREE: tối đa 2 lần thêm hạng mục và 20 lần thêm vị trí • PRO: không giới hạn</p></div>
+  <div>
+   <h2 class="text-xs font-bold text-gray-500 uppercase">Khoán Khối Lượng Đo Đạc</h2>
+   <p class="text-[10px] text-gray-400 mt-0.5">FREE: tối đa 2 hạng mục & 20 vị trí • PRO: không giới hạn</p>
+  </div>
   <button onclick="addNewCategorySection()" class="bg-blue-600 text-white text-xs font-semibold py-1.5 px-3 rounded-lg hover:bg-blue-700 shadow-sm no-print">➕ Thêm Hạng Mục</button>
  </div>
 
@@ -80,7 +82,8 @@
       <div class="flex justify-between items-center">
        <input type="text" class="loc-name text-xs font-semibold bg-transparent border-b border-gray-300 w-1/2" value="Phòng khách">
        <select class="loc-shape text-[11px] border rounded p-1 bg-white" onchange="toggleRowInputs(this);calculateTotals()">
-        <option value="rect">Chữ nhật (DxR)</option><option value="circle">Tròn (Bán kính R)</option>
+        <option value="rect">Chữ nhật (DxR)</option>
+        <option value="circle">Tròn (Bán kính R)</option>
        </select>
       </div>
       <div class="input-rect grid grid-cols-2 gap-2">
@@ -110,147 +113,251 @@
  </div>
 </section>
 
-<section id="sec-baogia" class="space-y-4 hidden mt-4">
- <div id="proFeatureNotice" class="bg-gradient-to-r from-indigo-50 to-blue-50 border border-blue-200 rounded-xl p-4 no-print">
-  <div class="flex items-start gap-3"><div class="text-2xl">⭐</div><div><h2 class="font-bold text-sm text-blue-900">BÁO GIÁ CHUYÊN SÂU — PRO</h2><p class="text-xs text-blue-700 mt-1">Xem đầy đủ các tính năng bên dưới. Bản FREE chỉ xem được giao diện; nhập key <b>686886</b> để sử dụng.</p><p class="text-[11px] text-blue-600 mt-1">• Nhiều dòng báo giá • Tách khối lượng vật tư • Xuất PDF • Sao chép gửi Zalo</p></div></div>
- </div>
+<section id="sec-baogia" class="space-y-4 hidden mt-3">
  <div class="flex border-b bg-white rounded-t-xl overflow-x-auto no-print text-xs">
-  <button onclick="switchSubTab('bg-thachcao')" id="sub-bg-thachcao" class="subtab-btn active px-3 py-2 whitespace-nowrap font-semibold">Thạch Cao</button>
-  <button onclick="switchSubTab('bg-nhomkinh')" id="sub-bg-nhomkinh" class="subtab-btn px-3 py-2 whitespace-nowrap font-semibold">Nhôm Kính Xingfa</button>
-  <button onclick="switchSubTab('bg-go')" id="sub-bg-go" class="subtab-btn px-3 py-2 whitespace-nowrap font-semibold">Ván Gỗ Nội Thất</button>
+  <button onclick="switchSubTab('bg-thachcao')" id="sub-bg-thachcao" class="subtab-btn active px-3 py-2.5 whitespace-nowrap font-semibold">Trần & Vách Thạch Cao</button>
+  <button onclick="switchSubTab('bg-nhomkinh')" id="sub-bg-nhomkinh" class="subtab-btn px-3 py-2.5 whitespace-nowrap font-semibold">Nhôm Kính Xingfa</button>
+  <button onclick="switchSubTab('bg-go')" id="sub-bg-go" class="subtab-btn px-3 py-2.5 whitespace-nowrap font-semibold">Ván Gỗ Nội Thất</button>
  </div>
 
- <!-- THẠCH CAO -->
- <div id="subsec-bg-thachcao" class="bg-white p-4 rounded-xl shadow-sm border space-y-3">
+ <div id="subsec-bg-thachcao" class="bg-white p-4 rounded-xl shadow-sm border space-y-4">
   <div id="pdf-area-thachcao" class="space-y-3 pdf-sheet">
-   <div class="pdf-header">
-    <h3 class="font-bold text-lg text-gray-800 border-b pb-2">BÁO GIÁ & TÍNH VẬT TƯ THẠCH CAO</h3>
+   <div class="pdf-header border-b pb-2">
+    <h3 class="font-bold text-lg text-gray-800">BÁO GIÁ & BÓC TÁCH VẬT TƯ THẠCH CAO</h3>
     <div class="customer-print-info mt-2"></div>
    </div>
-   <div class="no-print space-y-2">
-    <label class="text-xs font-semibold text-gray-600">Chọn khung xương:</label>
-    <select id="tcKhungSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('tcKhung')">
-     <option>Vĩnh Tường BASI</option><option>Vĩnh Tường Alpha</option><option>Vĩnh Tường Eko</option><option>Vĩnh Tường V-Wall</option><option>Gyproc GypFrame</option><option>Knauf</option><option value="custom">-- Tự nhập khung khác --</option>
-    </select>
-    <input id="tcKhungCustom" placeholder="Tên khung xương tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="renderTcRows()">
+
+   <div class="no-print space-y-2 bg-gray-50 p-3 rounded-lg border">
+    <h4 class="font-bold text-xs text-blue-800">1. THÔNG TIN BÁO GIÁ & KÍCH THƯỚC</h4>
+    <div class="grid grid-cols-2 gap-2">
+     <input id="tcCategoryName" type="text" value="Trần thạch cao chìm" placeholder="Hạng mục" class="border rounded p-1.5 text-xs">
+     <input id="tcLocationName" type="text" value="Phòng khách" placeholder="Vị trí" class="border rounded p-1.5 text-xs">
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+     <select id="tcTypeSelect" class="border rounded p-1.5 text-xs font-semibold text-blue-700">
+      <option value="chim">Trần Chìm Khung Xương</option>
+      <option value="tha">Trần Thả (Khung Nổi 60x60)</option>
+      <option value="vach">Vách Thạch Cao 2 Mặt</option>
+     </select>
+     <div class="flex gap-1">
+      <input id="tcLength" type="number" step="0.01" placeholder="Dài (m)" class="w-1/2 border rounded p-1.5 text-xs" oninput="autoCalcTcArea()">
+      <input id="tcWidth" type="number" step="0.01" placeholder="Rộng (m)" class="w-1/2 border rounded p-1.5 text-xs" oninput="autoCalcTcArea()">
+     </div>
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+     <input id="tcArea" type="number" step="0.01" placeholder="Khối lượng (m²)" class="border rounded p-1.5 text-xs font-bold text-blue-600">
+     <input id="tcPrice" type="number" step="1000" placeholder="Đơn giá báo giá/m²" class="border rounded p-1.5 text-xs font-bold text-red-600">
+    </div>
+    <button onclick="calculateThachCaoDetail()" class="w-full bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 shadow">⚡ Bóc Tách Vật Tư Tự Động & Lập Báo Giá</button>
    </div>
-   <div class="no-print space-y-2">
-    <label class="text-xs font-semibold text-gray-600">Chọn tấm thạch cao:</label>
-    <select id="tcTamSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('tcTam')">
-     <option>Gyproc Tiêu Chuẩn 9mm</option><option>Gyproc Chống Ẩm 9mm</option><option>Gyproc Chống Cháy 12.5mm</option><option>Knauf Tiêu Chuẩn 9mm</option><option>Knauf Chống Ẩm 9mm</option><option>Knauf Chống Cháy 12.5mm</option><option>Vĩnh Tường DURAflex</option><option value="custom">-- Tự nhập tấm khác --</option>
-    </select>
-    <input id="tcTamCustom" placeholder="Tên tấm tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="renderTcRows()">
+
+   <div class="mt-3">
+    <h4 class="font-bold text-xs text-gray-700 uppercase mb-1">A. Báo Giá Gửi Khách Hàng</h4>
+    <div id="tcQuoteResult" class="p-3 bg-gray-50 rounded-lg text-xs border">Chưa có dữ liệu báo giá.</div>
    </div>
-   <div class="grid grid-cols-2 gap-2 no-print">
-    <input id="tcArea" type="number" step="0.01" placeholder="Khối lượng vật tư (m²)" class="border rounded p-2 text-xs">
-    <input id="tcPrice" type="number" step="1000" placeholder="Đơn giá/m²" class="border rounded p-2 text-xs">
-   </div>
-   <div class="flex gap-2 no-print">
-    <button onclick="addTcQuoteRow()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold">＋ Thêm dòng báo giá</button>
-    <button onclick="calculateThachCaoDetail()" class="flex-1 bg-slate-700 text-white py-2 rounded-lg text-xs font-bold">Tính</button>
-   </div>
-   <div id="tcQuoteTableWrap" class="space-y-2"></div>
-   <div class="mt-4 border-t-2 pt-4">
-    <h4 class="font-bold text-sm text-blue-800">KHỐI LƯỢNG VẬT TƯ — TÁCH RIÊNG BÁO GIÁ</h4>
-    <div id="tcMaterialResult" class="p-3 bg-blue-50 rounded-lg text-xs border border-blue-200 mt-2"></div>
+
+   <div class="mt-4 border-t pt-3">
+    <div class="flex justify-between items-center mb-1">
+     <h4 class="font-bold text-xs text-blue-900 uppercase">B. Bảng Bóc Tách Vật Tư Thi Công (Cho Thợ)</h4>
+     <span class="text-[10px] text-gray-500">*Có thể sửa trực tiếp số lượng/định mức</span>
+    </div>
+    <div id="tcMaterialResultWrap" class="overflow-x-auto">
+     <p class="text-xs text-gray-400 italic">Vui lòng bấm nút "Bóc Tách Vật Tư" để tạo bảng chi tiết.</p>
+    </div>
    </div>
   </div>
+
   <div class="flex gap-2 no-print">
-   <button onclick="exportSectionPDF('pdf-area-thachcao','Bao-Gia-Thach-Cao.pdf')" class="flex-1 bg-slate-800 text-white font-bold py-2 rounded-xl text-xs">📄 Xuất PDF</button>
-   <button onclick="copySectionText('thachcao')" class="flex-1 bg-emerald-600 text-white font-bold py-2 rounded-xl text-xs">📋 Sao chép → Zalo</button>
+   <button onclick="exportSectionPDF('pdf-area-thachcao','Bao-Gia-Thach-Cao.pdf')" class="flex-1 bg-slate-800 text-white font-bold py-2 rounded-xl text-xs shadow">📄 Xuất PDF</button>
+   <button onclick="copySectionText('thachcao')" class="flex-1 bg-emerald-600 text-white font-bold py-2 rounded-xl text-xs shadow">📋 Sao chép → Zalo</button>
   </div>
  </div>
 
- <!-- NHÔM KÍNH -->
- <div id="subsec-bg-nhomkinh" class="bg-white p-4 rounded-xl shadow-sm border space-y-3 hidden">
+ <div id="subsec-bg-nhomkinh" class="bg-white p-4 rounded-xl shadow-sm border space-y-4 hidden">
   <div id="pdf-area-nhomkinh" class="space-y-3 pdf-sheet">
-   <div class="pdf-header"><h3 class="font-bold text-lg text-gray-800 border-b pb-2">BÁO GIÁ & TÍNH VẬT TƯ NHÔM KÍNH XINGFA</h3><div class="customer-print-info mt-2"></div></div>
-   <div class="no-print space-y-2">
-    <label class="text-xs font-semibold text-gray-600">Chọn hệ nhôm:</label>
-    <select id="xkHeSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('xkHe')">
-     <option>Xingfa Hệ 55 (Cửa quay)</option><option>Xingfa Hệ 93 (Cửa lùa)</option><option>Xingfa Hệ 65 (Cửa đi)</option><option>Xingfa Hệ 95 (Cửa sổ lùa)</option><option>Xingfa Cầu Cách Nhiệt</option><option>PMI</option><option>Hyundai</option><option value="custom">-- Tự nhập hệ nhôm khác --</option>
-    </select>
-    <input id="xkHeCustom" placeholder="Tên hệ nhôm tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="renderXkRows()">
+   <div class="pdf-header border-b pb-2">
+    <h3 class="font-bold text-lg text-gray-800">BÁO GIÁ & BÓC TÁCH VẬT TƯ NHÔM KÍNH XINGFA</h3>
+    <div class="customer-print-info mt-2"></div>
    </div>
-   <div class="no-print space-y-2">
-    <label class="text-xs font-semibold text-gray-600">Chọn loại kính:</label>
-    <select id="xkKinhSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('xkKinh')">
-     <option>Kính cường lực 5mm</option><option>Kính cường lực 8mm</option><option>Kính cường lực 10mm</option><option>Kính cường lực 12mm</option><option>Kính dán an toàn 6.38mm</option><option>Kính hộp 5-9-5</option><option>Kính hộp Low-E</option><option value="custom">-- Tự nhập loại kính khác --</option>
-    </select>
-    <input id="xkKinhCustom" placeholder="Tên kính tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="renderXkRows()">
+
+   <div class="no-print space-y-2 bg-gray-50 p-3 rounded-lg border">
+    <h4 class="font-bold text-xs text-emerald-800">1. THÔNG TIN CỬA & KÍCH THƯỚC</h4>
+    <div class="grid grid-cols-2 gap-2">
+     <input id="xkCategoryName" type="text" value="Cửa đi 2 cánh mở quay" placeholder="Tên cửa / Hạng mục" class="border rounded p-1.5 text-xs">
+     <input id="xkLocationName" type="text" value="Ban công Tầng 2" placeholder="Vị trí" class="border rounded p-1.5 text-xs">
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+     <select id="xkDoorType" class="border rounded p-1.5 text-xs font-semibold text-emerald-700">
+      <option value="quay">Cửa Mở Quay (Hệ 55)</option>
+      <option value="lua">Cửa Lùa / Trượt (Hệ 93)</option>
+      <option value="xep">Cửa Xếp Trượt</option>
+     </select>
+     <select id="xkKinhSelect" class="border rounded p-1.5 text-xs">
+      <option value="Kính cường lực 8mm">Kính CL 8mm</option>
+      <option value="Kính cường lực 10mm">Kính CL 10mm</option>
+      <option value="Kính dán an toàn 6.38mm">Kính an toàn 6.38mm</option>
+     </select>
+    </div>
+    <div class="grid grid-cols-3 gap-2">
+     <input id="xkWidth" type="number" step="0.01" placeholder="Rộng (m)" class="border rounded p-1.5 text-xs" oninput="autoCalcXkArea()">
+     <input id="xkHeight" type="number" step="0.01" placeholder="Cao (m)" class="border rounded p-1.5 text-xs" oninput="autoCalcXkArea()">
+     <input id="xkArea" type="number" step="0.01" placeholder="S (m²)" class="border rounded p-1.5 text-xs font-bold text-emerald-600">
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+     <input id="xkPrice" type="number" step="1000" placeholder="Đơn giá hoàn thiện/m²" class="border rounded p-1.5 text-xs font-bold text-red-600" value="2200000">
+     <button onclick="calculateNhomKinhDetail()" class="bg-emerald-600 text-white py-1.5 rounded-lg text-xs font-bold hover:bg-emerald-700 shadow">⚡ Bóc Tách Vật Tư</button>
+    </div>
    </div>
-   <div class="grid grid-cols-2 gap-2 no-print">
-    <input id="xkArea" type="number" step="0.01" placeholder="Khối lượng vật tư (m²)" class="border rounded p-2 text-xs">
-    <input id="xkPrice" type="number" step="1000" placeholder="Đơn giá/m²" class="border rounded p-2 text-xs">
+
+   <div class="mt-3">
+    <h4 class="font-bold text-xs text-gray-700 uppercase mb-1">A. Báo Giá Gửi Khách Hàng</h4>
+    <div id="xkQuoteResult" class="p-3 bg-gray-50 rounded-lg text-xs border">Chưa có dữ liệu.</div>
    </div>
-   <div class="flex gap-2 no-print"><button onclick="addXkQuoteRow()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold">＋ Thêm dòng báo giá</button><button onclick="calculateNhomKinhDetail()" class="flex-1 bg-slate-700 text-white py-2 rounded-lg text-xs font-bold">Tính</button></div>
-   <div id="xkQuoteTableWrap" class="space-y-2"></div>
-   <div class="mt-4 border-t-2 pt-4"><h4 class="font-bold text-sm text-emerald-800">KHỐI LƯỢNG VẬT TƯ — TÁCH RIÊNG BÁO GIÁ</h4><div id="xkMaterialResult" class="p-3 bg-emerald-50 rounded-lg text-xs border border-emerald-200 mt-2"></div></div>
+
+   <div class="mt-4 border-t pt-3">
+    <div class="flex justify-between items-center mb-1">
+     <h4 class="font-bold text-xs text-emerald-900 uppercase">B. Chi Tiết Khấu Trừ & Vật Tư Nhôm Kính (Cho Thợ)</h4>
+     <span class="text-[10px] text-gray-500">*Có thể chỉnh sửa</span>
+    </div>
+    <div id="xkMaterialResultWrap" class="overflow-x-auto">
+     <p class="text-xs text-gray-400 italic">Vui lòng nhập kích thước và bấm nút "Bóc Tách Vật Tư".</p>
+    </div>
+   </div>
   </div>
-  <div class="flex gap-2 no-print"><button onclick="openCustomerInfo()" class="bg-white border border-blue-200 text-blue-700 font-bold py-2 rounded-xl text-xs px-3">＋ Thông tin</button><button onclick="exportSectionPDF('pdf-area-nhomkinh','Bao-Gia-Nhom-Kinh.pdf')" class="flex-1 bg-slate-800 text-white font-bold py-2 rounded-xl text-xs">📄 Xuất PDF</button><button onclick="copySectionText('nhomkinh')" class="flex-1 bg-emerald-600 text-white font-bold py-2 rounded-xl text-xs">📋 Sao chép → Zalo</button></div>
+
+  <div class="flex gap-2 no-print">
+   <button onclick="exportSectionPDF('pdf-area-nhomkinh','Bao-Gia-Nhom-Kinh.pdf')" class="flex-1 bg-slate-800 text-white font-bold py-2 rounded-xl text-xs shadow">📄 Xuất PDF</button>
+   <button onclick="copySectionText('nhomkinh')" class="flex-1 bg-emerald-600 text-white font-bold py-2 rounded-xl text-xs shadow">📋 Sao chép → Zalo</button>
+  </div>
  </div>
 
- <!-- GỖ -->
- <div id="subsec-bg-go" class="bg-white p-4 rounded-xl shadow-sm border space-y-3 hidden">
+ <div id="subsec-bg-go" class="bg-white p-4 rounded-xl shadow-sm border space-y-4 hidden">
   <div id="pdf-area-go" class="space-y-3 pdf-sheet">
-   <div class="pdf-header"><h3 class="font-bold text-lg text-gray-800 border-b pb-2">BÁO GIÁ & TÍNH VÁN GỖ NỘI THẤT</h3><div class="customer-print-info mt-2"></div></div>
-   <div class="no-print space-y-2">
-    <label class="text-xs font-semibold text-gray-600">Chọn loại ván:</label>
-    <select id="goLoaiSelect" class="w-full border rounded p-2 text-xs" onchange="toggleCustomInput('goLoai')">
-     <option>MDF An Cường Melamine 17mm</option><option>MDF An Cường Acrylic</option><option>MDF chống ẩm Melamine 17mm</option><option>MDF phủ Laminate</option><option>HDF 17mm</option><option>Plywood Phim</option><option>Plywood Melamine</option><option>Ván nhựa PVC</option><option>OSB</option><option value="custom">-- Tự nhập loại ván khác --</option>
-    </select>
-    <input id="goLoaiCustom" placeholder="Tên ván tự do..." class="w-full border rounded p-2 text-xs hidden" oninput="renderGoRows()">
+   <div class="pdf-header border-b pb-2">
+    <h3 class="font-bold text-lg text-gray-800">BÁO GIÁ & KHẤU TRỪ VÁN GỖ NỘI THẤT 3D</h3>
+    <div class="customer-print-info mt-2"></div>
    </div>
-   <div class="grid grid-cols-2 gap-2 no-print"><input id="goArea" type="number" step="0.01" placeholder="Khối lượng vật tư (m²)" class="border rounded p-2 text-xs"><input id="goPrice" type="number" step="1000" placeholder="Đơn giá/m²" value="2200000" class="border rounded p-2 text-xs"></div>
-   <div class="flex gap-2 no-print"><button onclick="addGoQuoteRow()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold">＋ Thêm dòng báo giá</button><button onclick="calculateGoDetail()" class="flex-1 bg-slate-700 text-white py-2 rounded-lg text-xs font-bold">Tính</button></div>
-   <div id="goQuoteTableWrap" class="space-y-2"></div>
-   <div class="mt-4 border-t-2 pt-4"><h4 class="font-bold text-sm text-amber-800">KHỐI LƯỢNG VẬT TƯ — TÁCH RIÊNG BÁO GIÁ</h4><div id="goMaterialResult" class="p-3 bg-amber-50 rounded-lg text-xs border border-amber-200 mt-2"></div></div>
+
+   <div class="no-print space-y-2 bg-gray-50 p-3 rounded-lg border">
+    <h4 class="font-bold text-xs text-amber-800">1. NHẬP KÍCH THƯỚC NỘI THẤT (3D)</h4>
+    <div class="grid grid-cols-2 gap-2">
+     <input id="goCategoryName" type="text" value="Tủ quần áo 2 cánh" placeholder="Hạng mục" class="border rounded p-1.5 text-xs">
+     <input id="goLocationName" type="text" value="Phòng ngủ master" placeholder="Vị trí" class="border rounded p-1.5 text-xs">
+    </div>
+    <div class="grid grid-cols-3 gap-2">
+     <input id="goW" type="number" placeholder="Ngang/Rộng (mm)" class="border rounded p-1.5 text-xs" value="1200">
+     <input id="goH" type="number" placeholder="Cao (mm)" class="border rounded p-1.5 text-xs" value="2000">
+     <input id="goD" type="number" placeholder="Sâu (mm)" class="border rounded p-1.5 text-xs" value="600">
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+     <select id="goLoaiSelect" class="border rounded p-1.5 text-xs">
+      <option value="MDF An Cường Chống Ẩm 17mm">MDF An Cường Chống Ẩm 17mm</option>
+      <option value="MDF Melamine Thường 17mm">MDF Melamine Thường 17mm</option>
+      <option value="Ván Nhựa PVC Chống Nước">Ván Nhựa PVC Chống Nước</option>
+     </select>
+     <select id="goThickSelect" class="border rounded p-1.5 text-xs font-semibold">
+      <option value="18">Độ dày ván: 18 mm</option>
+      <option value="17">Độ dày ván: 17 mm</option>
+      <option value="15">Độ dày ván: 15 mm</option>
+     </select>
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+     <input id="goPrice" type="number" step="1000" placeholder="Đơn giá báo giá / m²" class="border rounded p-1.5 text-xs font-bold text-red-600" value="2200000">
+     <button onclick="calculateGoDetail()" class="bg-amber-600 text-white py-1.5 rounded-lg text-xs font-bold hover:bg-amber-700 shadow">⚡ Tự Động Khấu Trừ & Lập Chi Tiết</button>
+    </div>
+   </div>
+
+   <div class="mt-3">
+    <h4 class="font-bold text-xs text-gray-700 uppercase mb-1">A. Báo Giá Gửi Khách Hàng</h4>
+    <div id="goQuoteResult" class="p-3 bg-gray-50 rounded-lg text-xs border">Chưa có dữ liệu.</div>
+   </div>
+
+   <div class="mt-4 border-t pt-3">
+    <div class="flex justify-between items-center mb-1">
+     <h4 class="font-bold text-xs text-amber-900 uppercase">B. Chi Tiết Tấm Cắt Khấu Trừ & Phụ Kiện (Cho Thợ)</h4>
+     <span class="text-[10px] text-gray-500">*Cho phép sửa trực tiếp</span>
+    </div>
+    <div id="goMaterialResultWrap" class="overflow-x-auto">
+     <p class="text-xs text-gray-400 italic">Vui lòng nhập kích thước tủ và bấm nút "Tự Động Khấu Trừ".</p>
+    </div>
+   </div>
   </div>
-  <div class="flex gap-2 no-print"><button onclick="openCustomerInfo()" class="bg-white border border-blue-200 text-blue-700 font-bold py-2 rounded-xl text-xs px-3">＋ Thông tin</button><button onclick="exportSectionPDF('pdf-area-go','Bao-Gia-Van-Noi-That.pdf')" class="flex-1 bg-slate-800 text-white font-bold py-2 rounded-xl text-xs">📄 Xuất PDF</button><button onclick="copySectionText('go')" class="flex-1 bg-emerald-600 text-white font-bold py-2 rounded-xl text-xs">📋 Sao chép → Zalo</button></div>
+
+  <div class="flex gap-2 no-print">
+   <button onclick="exportSectionPDF('pdf-area-go','Bao-Gia-Van-Noi-That.pdf')" class="flex-1 bg-slate-800 text-white font-bold py-2 rounded-xl text-xs shadow">📄 Xuất PDF</button>
+   <button onclick="copySectionText('go')" class="flex-1 bg-emerald-600 text-white font-bold py-2 rounded-xl text-xs shadow">📋 Sao chép → Zalo</button>
+  </div>
  </div>
 </section>
 
-<section id="sec-contact" class="space-y-4 hidden mt-4">
+<section id="sec-contact" class="space-y-4 hidden mt-3">
  <div id="activationWrapper" class="bg-white p-5 rounded-xl shadow-sm border text-center space-y-4">
-  <h2 class="text-lg font-bold text-gray-800">Mở Khóa Bản Quyền VIP Trọn Đời</h2>
+  <h2 class="text-base font-bold text-gray-800">Mở Khóa Kích Hoạt VIP / Ủng Hộ Tác Giả</h2>
   <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl inline-block w-full max-w-xs mx-auto">
-   <p class="text-xs font-bold text-blue-900 mb-2 uppercase">Chuyển Khoản Ngân Hàng Vietcombank</p>
-   <img id="vietqrImg" src="https://img.vietqr.io/image/VCB-0881000475550-compact2.png?amount=50000&addInfo=KICH%20HOAT%20TKL%20VIP" alt="QR" class="w-48 h-48 mx-auto rounded-lg shadow-sm border bg-white p-1">
-   <div class="mt-3 text-xs space-y-1 text-gray-700"><p>STK: <strong class="text-blue-700 text-sm font-mono">0881000475550</strong></p><p>Số tiền: <strong class="text-red-600 text-sm">50.000 VNĐ</strong></p></div>
+   <p class="text-xs font-bold text-blue-900 mb-2 uppercase">Chuyển Khoản Ủng Hộ Cà Phê</p>
+   <img id="vietqrImg" src="https://img.vietqr.io/image/VCB-0881000475550-compact2.png?amount=29000&addInfo=Ung%20ho%20ly%20ca%20phe" alt="QR VietQR" class="w-48 h-48 mx-auto rounded-lg shadow-sm border bg-white p-1">
+   <div class="mt-3 text-xs space-y-1 text-gray-700">
+    <p>Ngân hàng: <strong>Vietcombank</strong></p>
+    <p>STK: <strong class="text-blue-700 text-sm font-mono">0881000475550</strong></p>
+    <p>Số tiền ủng hộ: <strong class="text-red-600 text-sm">29.000 VNĐ</strong></p>
+    <p class="text-[11px] text-gray-500">Nội dung: <i>Ung ho ly ca phe cho tac gia</i></p>
+   </div>
   </div>
-  <div class="bg-gray-50 p-4 rounded-xl border space-y-2"><p class="text-xs font-semibold text-gray-700">Nhập Mã Kích Hoạt Nâng Cấp:</p><input type="text" id="activationCodeInput" placeholder="Nhập mã kích hoạt..." class="w-full text-center py-2 px-3 rounded-lg text-black text-sm uppercase tracking-widest border font-bold bg-white"><button onclick="activatePro()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 rounded-lg text-sm shadow">Kích Hoạt VIP Ngay</button></div>
-  <div class="bg-gray-50 p-3 rounded-lg text-left text-xs space-y-1 border"><p class="text-gray-500">Device ID thiết bị:</p><div class="flex justify-between items-center"><span id="contactDeviceId" class="font-mono font-bold text-gray-800">TKL-000000</span><button onclick="copyDeviceId()" class="text-[10px] bg-gray-200 px-2 py-1 rounded">Sao chép</button></div></div>
+
+  <div class="bg-gray-50 p-4 rounded-xl border space-y-2 max-w-xs mx-auto">
+   <p class="text-xs font-semibold text-gray-700">Nhập Mã Kích Hoạt PRO:</p>
+   <input type="password" id="activationCodeInput" placeholder="Nhập mã kích hoạt..." class="w-full text-center py-2 px-3 rounded-lg text-black text-sm uppercase tracking-widest border font-bold bg-white">
+   <button onclick="activatePro()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 rounded-lg text-sm shadow">Kích Hoạt VIP Ngay</button>
+  </div>
  </div>
- <div class="bg-white p-4 rounded-xl shadow-sm border text-center space-y-2 text-xs text-gray-600"><p class="font-bold text-gray-800 text-sm">Hỗ Trợ Kỹ Thuật & Giải Đáp</p><p>Tác giả: Nguyên – SĐT/Zalo: <strong class="text-blue-600">0937091679</strong></p><div class="flex justify-center gap-2 pt-2"><a href="tel:0937091679" class="bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold">📞 Gọi Điện</a><a href="https://zalo.me/0937091679" target="_blank" class="bg-emerald-600 text-white py-2 px-4 rounded-lg font-semibold">💬 Chat Zalo</a></div></div>
+
+ <div class="bg-white p-4 rounded-xl shadow-sm border text-center space-y-2 text-xs text-gray-600">
+  <p class="font-bold text-gray-800 text-sm">Hỗ Trợ Kỹ Thuật & Tác Giả</p>
+  <p>Tác giả: Nguyên – SĐT/Zalo: <strong class="text-blue-600">0937091679</strong></p>
+  <div class="flex justify-center gap-2 pt-2">
+   <a href="tel:0937091679" class="bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold shadow">📞 Gọi Điện</a>
+   <a href="https://zalo.me/0937091679" target="_blank" class="bg-emerald-600 text-white py-2 px-4 rounded-lg font-semibold shadow">💬 Chat Zalo</a>
+  </div>
+ </div>
 </section>
 </main>
 
-<!-- MODAL THÔNG TIN KHÁCH HÀNG / CÔNG TRÌNH -->
 <div id="customerInfoModal" class="fixed inset-0 bg-black/50 z-[100] hidden items-center justify-center p-4 no-print">
  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-5 space-y-3">
-  <div class="flex justify-between items-center"><h3 class="font-bold text-base text-gray-800">Thông tin xuất PDF / gửi Zalo</h3><button onclick="closeCustomerInfo()" class="text-gray-500 text-xl">×</button></div>
+  <div class="flex justify-between items-center"><h3 class="font-bold text-base text-gray-800">Thông tin xuất PDF / Báo Giá</h3><button onclick="closeCustomerInfo()" class="text-gray-500 text-xl font-bold">×</button></div>
   <div class="grid grid-cols-2 gap-2">
    <input id="companyName" class="border rounded p-2 text-xs" placeholder="Tên công ty / cá nhân">
    <input id="customerPhone" class="border rounded p-2 text-xs" placeholder="Số điện thoại">
   </div>
-  <input id="customerAddress" class="w-full border rounded p-2 text-xs" placeholder="Địa chỉ / công trình">
-  <input id="customerNote" class="w-full border rounded p-2 text-xs" placeholder="Ghi chú">
-  <div class="flex gap-2"><button onclick="closeCustomerInfo()" class="flex-1 bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg text-xs">Đóng</button><button onclick="saveCustomerInfo();closeCustomerInfo()" class="flex-1 bg-blue-600 text-white font-bold py-2 rounded-lg text-xs">Lưu thông tin</button></div>
+  <input id="customerAddress" class="w-full border rounded p-2 text-xs" placeholder="Địa chỉ / Công trình thi công">
+  <input id="customerNote" class="w-full border rounded p-2 text-xs" placeholder="Ghi chú thêm">
+  <div class="flex gap-2"><button onclick="closeCustomerInfo()" class="flex-1 bg-gray-200 text-gray-700 font-semibold py-2 rounded-lg text-xs">Đóng</button><button onclick="saveCustomerInfo();closeCustomerInfo()" class="flex-1 bg-blue-600 text-white font-bold py-2 rounded-lg text-xs shadow">Lưu Thông Tin</button></div>
  </div>
 </div>
 
-<!-- KHÓA TÍNH NĂNG PRO KHI CHƯA KÍCH HOẠT -->
-<div id="proLockOverlay" class="fixed inset-0 bg-black/50 z-[90] hidden items-center justify-center p-5 no-print">
- <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center space-y-3">
-  <div class="text-4xl">🔒</div><h3 class="text-lg font-bold text-gray-800">Tính năng PRO đang khóa</h3>
-  <p class="text-xs text-gray-600">Bạn có thể xem toàn bộ giao diện và tính năng Báo Giá Chuyên Sâu, nhưng chỉ được sử dụng sau khi mở khóa bằng key.</p>
-  <button onclick="closeProOverlay();switchTab('contact')" class="w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2.5 rounded-xl text-sm">🔑 Mở khóa PRO</button>
-  <button onclick="closeProOverlay()" class="text-xs text-gray-500 underline">Đóng</button>
+<div id="proPromptModal" class="fixed inset-0 bg-black/60 z-[110] hidden items-center justify-center p-4 no-print">
+ <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-5 text-center space-y-4">
+  <div class="text-4xl">🔒</div>
+  <div>
+   <h3 class="text-base font-bold text-gray-800">Tính Năng Thuộc Bản PRO</h3>
+   <p class="text-xs text-gray-600 mt-1">Vui lòng nhập mã kích hoạt để sử dụng không giới hạn các tính năng Báo Giá Chuyên Sâu, Bóc Tách Vật Tư & Xuất File.</p>
+  </div>
+  <input type="password" id="modalProKeyInput" placeholder="Nhập mã kích hoạt..." class="w-full text-center py-2 px-3 rounded-lg text-sm border font-bold bg-gray-50 focus:bg-white">
+  <div class="flex gap-2">
+   <button onclick="closeProPromptModal()" class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-xl text-xs font-semibold">Bỏ Qua</button>
+   <button onclick="submitModalProKey()" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 rounded-xl text-xs shadow">Mở Khóa PRO</button>
+  </div>
+  <div class="border-t pt-2 text-[11px] text-gray-500">
+   Chưa có mã kích hoạt? <button onclick="closeProPromptModal();switchTab('contact')" class="text-blue-600 font-bold underline">Xem thông tin ủng hộ</button>
+  </div>
  </div>
 </div>
 
 <footer class="bg-gray-900 text-white fixed bottom-0 left-0 right-0 p-3 shadow-lg z-50">
- <div class="max-w-md mx-auto flex justify-between items-center text-xs"><div><span class="text-gray-400 block">TỔNG KHỐI LƯỢNG TOÀN BỘ:</span><span id="grandTotalQty" class="font-bold text-sm text-yellow-400">0</span></div><div class="text-right"><span class="text-gray-400 block">TỔNG THÀNH TIỀN:</span><span id="grandTotalPrice" class="font-extrabold text-base text-green-400">0 đ</span></div></div>
+ <div class="max-w-md mx-auto flex justify-between items-center text-xs">
+  <div><span class="text-gray-400 block">TỔNG KHỐI LƯỢNG:</span><span id="grandTotalQty" class="font-bold text-sm text-yellow-400">0 m²</span></div>
+  <div class="text-right"><span class="text-gray-400 block">TỔNG THÀNH TIỀN:</span><span id="grandTotalPrice" class="font-extrabold text-base text-green-400">0 đ</span></div>
+ </div>
 </footer>
 
 <script>
@@ -260,23 +367,75 @@ const FREE_CATEGORY_LIMIT=2;
 const FREE_LOCATION_LIMIT=20;
 let freeCategoryAdds=parseInt(localStorage.getItem('tkl_free_category_adds')||'0',10);
 let freeLocationAdds=parseInt(localStorage.getItem('tkl_free_location_adds')||'0',10);
-let deviceId=localStorage.getItem('tkl_device_id');
-if(!deviceId){deviceId='TKL-'+Math.floor(100000+Math.random()*900000);localStorage.setItem('tkl_device_id',deviceId)}
-
-const state={
- tc:[{tam:'Gyproc Tiêu Chuẩn 9mm',khung:'Vĩnh Tường BASI',qty:0,price:0}],
- xk:[{he:'Xingfa Hệ 55 (Cửa quay)',kinh:'Kính cường lực 8mm',qty:0,price:0}],
- go:[{loai:'MDF An Cường Melamine 17mm',qty:0,price:2200000}]
-};
 
 document.addEventListener('DOMContentLoaded',()=>{
- document.getElementById('contactDeviceId').innerText=deviceId;
- document.getElementById('vietqrImg').src=`https://img.vietqr.io/image/VCB-0881000475550-compact2.png?amount=50000&addInfo=KICH%20HOAT%20VIP%20${deviceId}`;
  ['companyName','customerPhone','customerAddress','customerNote'].forEach(id=>{
   const v=localStorage.getItem('tkl_'+id); if(v && document.getElementById(id)) document.getElementById(id).value=v;
  });
- checkVipStatus(); calculateTotals(); renderAllQuoteRows(); updateProLock();
+ checkVipStatus(); calculateTotals(); updatePrintInfo();
 });
+
+function checkVipStatus(){
+ const key=localStorage.getItem('tkl_vip_key');
+ if(key==='VIP-'+VIP_KEY){
+  isVipActivated=true;
+  const b=document.getElementById('vipStatusBadge');
+  if(b){b.innerText='Bản PRO (VIP)';b.className='text-xs bg-emerald-500 text-white font-bold px-2.5 py-1 rounded-full uppercase';}
+  const w=document.getElementById('activationWrapper');
+  if(w){w.innerHTML='<div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2 text-center"><span class="text-3xl">🎉</span><h3 class="font-bold text-sm text-emerald-800">Tài Khoản Đã Kích Hoạt Bản PRO</h3><p class="text-xs text-emerald-600">Toàn bộ tính năng báo giá chuyên sâu & bóc tách vật tư tự động đã gỡ bỏ mọi giới hạn.</p></div>';}
+ }
+}
+
+function activatePro(){
+ const code=document.getElementById('activationCodeInput').value.trim();
+ if(code===VIP_KEY){
+  localStorage.setItem('tkl_vip_key','VIP-'+VIP_KEY);
+  alert('🎉 Kích hoạt thành công bản quyền PRO!');
+  checkVipStatus();
+  switchTab('baogia');
+ } else {
+  alert('❌ Mã kích hoạt không chính xác!');
+ }
+}
+
+function openProPromptModal(){
+ const m=document.getElementById('proPromptModal');
+ if(m){m.classList.remove('hidden');m.classList.add('flex');}
+}
+function closeProPromptModal(){
+ const m=document.getElementById('proPromptModal');
+ if(m){m.classList.add('hidden');m.classList.remove('flex');}
+}
+function submitModalProKey(){
+ const input=document.getElementById('modalProKeyInput').value.trim();
+ if(input===VIP_KEY){
+  localStorage.setItem('tkl_vip_key','VIP-'+VIP_KEY);
+  alert('🎉 Mở khóa thành công bản PRO!');
+  checkVipStatus();
+  closeProPromptModal();
+ } else {
+  alert('❌ Mã kích hoạt không đúng!');
+ }
+}
+
+function switchTab(tab){
+ if(tab==='baogia' && !isVipActivated){
+  openProPromptModal();
+ }
+ document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+ ['khoan','baogia','contact'].forEach(t=>document.getElementById('sec-'+t).classList.add('hidden'));
+ document.getElementById('tab-'+tab).classList.add('active');
+ document.getElementById('sec-'+tab).classList.remove('hidden');
+ if(tab==='khoan')calculateTotals();
+ updatePrintInfo();
+}
+
+function switchSubTab(sub){
+ document.querySelectorAll('.subtab-btn').forEach(b=>b.classList.remove('active'));
+ ['thachcao','nhomkinh','go'].forEach(x=>document.getElementById('subsec-bg-'+x).classList.add('hidden'));
+ document.getElementById('sub-'+sub).classList.add('active');
+ document.getElementById('subsec-'+sub).classList.remove('hidden');
+}
 
 function openCustomerInfo(){
  const m=document.getElementById('customerInfoModal');m.classList.remove('hidden');m.classList.add('flex');
@@ -296,60 +455,20 @@ function customerInfoHTML(){
  const a=document.getElementById('customerAddress')?.value.trim()||'';
  const n=document.getElementById('customerNote')?.value.trim()||'';
  if(!c&&!p&&!a&&!n)return '';
- return `<div class="text-xs"><b>Khách hàng/Công ty:</b> ${escapeHtml(c||'—')} &nbsp; <b>SĐT:</b> ${escapeHtml(p||'—')}<br><b>Công trình:</b> ${escapeHtml(a||'—')}<br><b>Ghi chú:</b> ${escapeHtml(n||'—')}</div>`;
+ return `<div class="text-xs bg-gray-50 p-2 rounded border mb-2"><b>Đơn vị / Khách:</b> ${escapeHtml(c||'—')} &nbsp;|&nbsp; <b>SĐT:</b> ${escapeHtml(p||'—')}<br><b>Địa điểm/Công trình:</b> ${escapeHtml(a||'—')}<br><b>Ghi chú:</b> ${escapeHtml(n||'—')}</div>`;
 }
 function updatePrintInfo(){document.querySelectorAll('.customer-print-info').forEach(e=>e.innerHTML=customerInfoHTML());}
-function clearCustomerInfo(){
- ['companyName','customerPhone','customerAddress','customerNote'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';localStorage.removeItem('tkl_'+id)});
- updatePrintInfo();
-}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 
-function checkVipStatus(){
- const key=localStorage.getItem('tkl_vip_key');
- if(key==='VIP-'+VIP_KEY){
-  isVipActivated=true;
-  const b=document.getElementById('vipStatusBadge');b.innerText='Bản PRO (VIP)';b.className='text-xs bg-emerald-500 text-white font-bold px-2.5 py-1 rounded-full uppercase';
-  document.getElementById('activationWrapper').innerHTML='<div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2 text-center"><span class="text-2xl">🎉</span><h3 class="font-bold text-sm text-emerald-800">Tài Khoản Đã Kích Hoạt PRO (VIP)</h3><p class="text-xs text-emerald-600">Mọi tính năng chuyên sâu đã được mở khóa hoàn toàn.</p></div>';
- }
-}
-function activatePro(){
- const code=document.getElementById('activationCodeInput').value.trim();
- if(code===VIP_KEY){localStorage.setItem('tkl_vip_key','VIP-'+VIP_KEY);alert('🎉 Kích hoạt thành công bản quyền PRO!');checkVipStatus();updateProLock();switchTab('baogia')}
- else alert('❌ Mã kích hoạt không chính xác!');
-}
-function copyDeviceId(){navigator.clipboard?.writeText(deviceId);alert('Đã sao chép Device ID!')}
-
-function switchTab(tab){
- document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
- ['khoan','baogia','contact'].forEach(t=>document.getElementById('sec-'+t).classList.add('hidden'));
- document.getElementById('tab-'+tab).classList.add('active');
- document.getElementById('sec-'+tab).classList.remove('hidden');
- if(tab==='khoan')calculateTotals();
- updatePrintInfo();
- if(tab==='baogia')updateProLock();
-}
-function updateProLock(){
- const o=document.getElementById('proLockOverlay');if(!o)return;
- if(isVipActivated){o.classList.add('hidden');o.classList.remove('flex');}
- else{o.classList.remove('hidden');o.classList.add('flex');}
-}
-function closeProOverlay(){
- const o=document.getElementById('proLockOverlay');o.classList.add('hidden');o.classList.remove('flex');
-}
-function switchSubTab(sub){
- document.querySelectorAll('.subtab-btn').forEach(b=>b.classList.remove('active'));
- ['thachcao','nhomkinh','go'].forEach(x=>document.getElementById('subsec-bg-'+x).classList.add('hidden'));
- document.getElementById('sub-'+sub).classList.add('active');document.getElementById('subsec-'+sub).classList.remove('hidden');
-}
-
+/* KHOÁN KHỐI LƯỢNG */
 function toggleRowInputs(s){
  const r=s.closest('.location-row'),a=r.querySelector('.input-rect'),c=r.querySelector('.input-circle');
  if(s.value==='rect'){a.classList.remove('hidden');c.classList.add('hidden')}else{a.classList.add('hidden');c.classList.remove('hidden')}
 }
 function addLocationRow(btn){
  if(!isVipActivated && freeLocationAdds>=FREE_LOCATION_LIMIT){
-  alert('🔒 Bản FREE đã đạt giới hạn 20 lần thêm vị trí. Hãy mở khóa PRO bằng key 686886 để tiếp tục.');
+  alert('🔒 Bản FREE đã đạt giới hạn 20 lần thêm vị trí. Vui lòng mở khóa bản PRO để tiếp tục.');
+  openProPromptModal();
   return;
  }
  if(!isVipActivated){freeLocationAdds++;localStorage.setItem('tkl_free_location_adds',String(freeLocationAdds));}
@@ -363,7 +482,8 @@ function removeLocationRow(btn){
 }
 function addNewCategorySection(){
  if(!isVipActivated && freeCategoryAdds>=FREE_CATEGORY_LIMIT){
-  alert('🔒 Bản FREE đã đạt giới hạn 2 lần thêm hạng mục. Hãy mở khóa PRO bằng key 686886 để tiếp tục.');
+  alert('🔒 Bản FREE đã đạt giới hạn 2 lần thêm hạng mục. Vui lòng mở khóa bản PRO.');
+  openProPromptModal();
   return;
  }
  if(!isVipActivated){freeCategoryAdds++;localStorage.setItem('tkl_free_category_adds',String(freeCategoryAdds));}
@@ -389,96 +509,222 @@ function calculateTotals(){
  document.getElementById('grandTotalQty').innerText=q.toFixed(2)+' '+u;document.getElementById('grandTotalPrice').innerText=p.toLocaleString('vi-VN')+' đ';updatePrintInfo();
 }
 
-function toggleCustomInput(prefix){
- const s=document.getElementById(prefix+'Select'),i=document.getElementById(prefix+'Custom');
- if(s.value==='custom'){i.classList.remove('hidden');i.focus()}else i.classList.add('hidden');
- renderAllQuoteRows();
+/* 1. XỬ LÝ TRẦN/VÁCH THẠCH CAO */
+function autoCalcTcArea(){
+ const l=parseFloat(document.getElementById('tcLength').value)||0, w=parseFloat(document.getElementById('tcWidth').value)||0;
+ if(l>0 && w>0) document.getElementById('tcArea').value=(l*w).toFixed(2);
 }
-
-function selectedVal(id,customId,fallback){const s=document.getElementById(id);if(!s)return fallback;return s.value==='custom'?(document.getElementById(customId)?.value.trim()||fallback):s.value}
-
-function _addTcQuoteRowInternal(){state.tc.push({tam:selectedVal('tcTamSelect','tcTamCustom','Tấm tự nhập'),khung:selectedVal('tcKhungSelect','tcKhungCustom','Khung tự nhập'),qty:0,price:0});renderTcRows()}
-function _addXkQuoteRowInternal(){state.xk.push({he:selectedVal('xkHeSelect','xkHeCustom','Hệ nhôm tự nhập'),kinh:selectedVal('xkKinhSelect','xkKinhCustom','Kính tự nhập'),qty:0,price:0});renderXkRows()}
-function _addGoQuoteRowInternal(){state.go.push({loai:selectedVal('goLoaiSelect','goLoaiCustom','Ván tự nhập'),qty:0,price:2200000});renderGoRows()}
-
-function renderTcRows(){
- const w=document.getElementById('tcQuoteTableWrap');
- w.innerHTML='<h4 class="font-bold text-xs text-gray-700">CHI TIẾT CÁC DÒNG BÁO GIÁ</h4>'+state.tc.map((r,i)=>`<div class="quote-row border rounded-lg p-3 space-y-2"><div class="flex justify-between"><b class="text-xs">Dòng ${i+1}</b>${i?`<button onclick="state.tc.splice(${i},1);renderTcRows()" class="text-red-500 text-xs no-print">Xóa</button>`:''}</div><div class="grid grid-cols-2 gap-2 no-print"><input value="${escapeAttr(r.tam)}" onchange="state.tc[${i}].tam=this.value;renderTcRows()" class="border rounded p-2 text-xs" placeholder="Tên tấm"><input value="${escapeAttr(r.khung)}" onchange="state.tc[${i}].khung=this.value;renderTcRows()" class="border rounded p-2 text-xs" placeholder="Tên khung"></div><div class="grid grid-cols-2 gap-2 no-print"><input type="number" step=".01" value="${r.qty||''}" oninput="state.tc[${i}].qty=parseFloat(this.value)||0;renderTcRows()" class="border rounded p-2 text-xs" placeholder="Khối lượng m²"><input type="number" step="1000" value="${r.price||''}" oninput="state.tc[${i}].price=parseFloat(this.value)||0;renderTcRows()" class="border rounded p-2 text-xs" placeholder="Đơn giá/m²"></div><div class="text-xs flex justify-between"><span>${escapeHtml(r.tam)} + ${escapeHtml(r.khung)}</span><b>${(r.qty*r.price).toLocaleString('vi-VN')} đ</b></div></div>`).join('');
-}
-function addGoQuoteRow(){
- if(!isVipActivated){alert('🔒 Tính năng này chỉ dùng được sau khi mở khóa PRO bằng key 686886.');return;}
- _addGoQuoteRowInternal();
-}
-function addXkQuoteRow(){
- if(!isVipActivated){alert('🔒 Tính năng này chỉ dùng được sau khi mở khóa PRO bằng key 686886.');return;}
- _addXkQuoteRowInternal();
-}
-function addTcQuoteRow(){
- if(!isVipActivated){alert('🔒 Tính năng này chỉ dùng được sau khi mở khóa PRO bằng key 686886.');return;}
- _addTcQuoteRowInternal();
-}
-function renderXkRows(){
- const w=document.getElementById('xkQuoteTableWrap');
- w.innerHTML='<h4 class="font-bold text-xs text-gray-700">CHI TIẾT CÁC DÒNG BÁO GIÁ</h4>'+state.xk.map((r,i)=>`<div class="quote-row border rounded-lg p-3 space-y-2"><div class="flex justify-between"><b class="text-xs">Dòng ${i+1}</b>${i?`<button onclick="state.xk.splice(${i},1);renderXkRows()" class="text-red-500 text-xs no-print">Xóa</button>`:''}</div><div class="grid grid-cols-2 gap-2 no-print"><input value="${escapeAttr(r.he)}" onchange="state.xk[${i}].he=this.value;renderXkRows()" class="border rounded p-2 text-xs" placeholder="Hệ nhôm"><input value="${escapeAttr(r.kinh)}" onchange="state.xk[${i}].kinh=this.value;renderXkRows()" class="border rounded p-2 text-xs" placeholder="Loại kính"></div><div class="grid grid-cols-2 gap-2 no-print"><input type="number" step=".01" value="${r.qty||''}" oninput="state.xk[${i}].qty=parseFloat(this.value)||0;renderXkRows()" class="border rounded p-2 text-xs" placeholder="Khối lượng m²"><input type="number" step="1000" value="${r.price||''}" oninput="state.xk[${i}].price=parseFloat(this.value)||0;renderXkRows()" class="border rounded p-2 text-xs" placeholder="Đơn giá/m²"></div><div class="text-xs flex justify-between"><span>${escapeHtml(r.he)} + ${escapeHtml(r.kinh)}</span><b>${(r.qty*r.price).toLocaleString('vi-VN')} đ</b></div></div>`).join('');
-}
-function renderGoRows(){
- const w=document.getElementById('goQuoteTableWrap');
- w.innerHTML='<h4 class="font-bold text-xs text-gray-700">CHI TIẾT CÁC DÒNG BÁO GIÁ</h4>'+state.go.map((r,i)=>`<div class="quote-row border rounded-lg p-3 space-y-2"><div class="flex justify-between"><b class="text-xs">Dòng ${i+1}</b>${i?`<button onclick="state.go.splice(${i},1);renderGoRows()" class="text-red-500 text-xs no-print">Xóa</button>`:''}</div><div class="no-print"><input value="${escapeAttr(r.loai)}" onchange="state.go[${i}].loai=this.value;renderGoRows()" class="w-full border rounded p-2 text-xs" placeholder="Loại ván"></div><div class="grid grid-cols-2 gap-2 no-print"><input type="number" step=".01" value="${r.qty||''}" oninput="state.go[${i}].qty=parseFloat(this.value)||0;renderGoRows()" class="border rounded p-2 text-xs" placeholder="Khối lượng m²"><input type="number" step="1000" value="${r.price||''}" oninput="state.go[${i}].price=parseFloat(this.value)||0;renderGoRows()" class="border rounded p-2 text-xs" placeholder="Đơn giá/m²"></div><div class="text-xs flex justify-between"><span>${escapeHtml(r.loai)}</span><b>${(r.qty*r.price).toLocaleString('vi-VN')} đ</b></div></div>`).join('');
-}
-function renderAllQuoteRows(){renderTcRows();renderXkRows();renderGoRows()}
-
 function calculateThachCaoDetail(){
- const area=parseFloat(document.getElementById('tcArea').value)||0,price=parseFloat(document.getElementById('tcPrice').value)||0;
- if(area&&state.tc.length===1&&state.tc[0].qty===0){state.tc[0].qty=area;state.tc[0].price=price;renderTcRows()}
- const total=state.tc.reduce((s,r)=>s+r.qty*r.price,0);
- const qty=state.tc.reduce((s,r)=>s+r.qty,0);
- const sheets=Math.ceil(qty*1.05/2.88),main=(qty*.32).toFixed(1),sub=(qty*1.6).toFixed(1),edge=(qty*.4).toFixed(1),screw=Math.ceil(qty*18),tape=Math.ceil(qty*.35);
- document.getElementById('tcMaterialResult').innerHTML=`<p><b>Tổng khối lượng:</b> ${qty.toFixed(2)} m²</p><p><b>Tổng báo giá:</b> ${total.toLocaleString('vi-VN')} VNĐ</p><div class="border-t mt-2 pt-2"><b>Định mức vật tư tham khảo:</b><ul class="list-disc pl-4 mt-1"><li>Tấm thạch cao 1.2×2.4m: <b>${sheets} tấm</b></li><li>Thanh xương chính: <b>${main} cây</b></li><li>Thanh xương phụ: <b>${sub} cây</b></li><li>Thanh viền V: <b>${edge} cây</b></li><li>Vít bắn tấm: <b>~${screw} con</b></li><li>Băng keo mối nối: <b>~${tape} m</b></li></ul></div>`;
- renderTcRows();
+ if(!isVipActivated){openProPromptModal();return;}
+ const catName=document.getElementById('tcCategoryName').value||'Trần thạch cao';
+ const locName=document.getElementById('tcLocationName').value||'Phòng';
+ const type=document.getElementById('tcTypeSelect').value;
+ const area=parseFloat(document.getElementById('tcArea').value)||0;
+ const price=parseFloat(document.getElementById('tcPrice').value)||0;
+
+ if(area<=0){alert('Vui lòng nhập khối lượng hoặc kích thước!');return;}
+
+ const totalMoney = area * price;
+ document.getElementById('tcQuoteResult').innerHTML=`
+  <div class="flex justify-between items-center text-xs">
+   <div><b>${escapeHtml(catName)}</b> (${escapeHtml(locName)})</div>
+   <div class="text-right">Khối lượng: <b>${area.toFixed(2)} m²</b></div>
+  </div>
+  <div class="flex justify-between items-center text-xs mt-1 pt-1 border-t">
+   <span>Đơn giá: ${price.toLocaleString('vi-VN')} đ/m²</span>
+   <span class="text-red-600 font-bold text-sm">Thành tiền: ${totalMoney.toLocaleString('vi-VN')} VNĐ</span>
+  </div>`;
+
+ let items=[];
+ if(type==='tha'){
+  items=[
+   {name:'Tấm thạch cao thả 60x60cm', unit:'Tấm', qty: Math.ceil(area/0.36*1.05)},
+   {name:'Thanh chính T3.6m', unit:'Cây', qty: Math.ceil(area*0.23)},
+   {name:'Thanh phụ T1.2m', unit:'Cây', qty: Math.ceil(area*1.38)},
+   {name:'Thanh phụ T0.6m', unit:'Cây', qty: Math.ceil(area*1.38)},
+   {name:'Thanh viền tường V 3m', unit:'Cây', qty: Math.ceil(Math.sqrt(area)*4/3*1.1)},
+   {name:'Ty treo + Tắc kê đạn', unit:'Bộ', qty: Math.ceil(area*1.2)},
+   {name:'Vít & phụ kiện liên kết', unit:'Gói', qty: 1}
+  ];
+ } else if(type==='vach'){
+  items=[
+   {name:'Tấm thạch cao tiêu chuẩn 1.2x2.4m (2 mặt)', unit:'Tấm', qty: Math.ceil(area*2*1.05/2.88)},
+   {name:'Thanh nằm C-Track', unit:'Cây', qty: Math.ceil(Math.sqrt(area)*2/3*1.1)},
+   {name:'Thanh đứng U-Stud', unit:'Cây', qty: Math.ceil(area*0.7)},
+   {name:'Vít bắn tấm 25mm', unit:'Hộp', qty: Math.ceil(area*35/1000)},
+   {name:'Băng keo mối nối', unit:'Cuộn', qty: Math.ceil(area*0.7/50)},
+   {name:'Bột xử lý mối nối', unit:'Bao', qty: Math.ceil(area*0.3/20)}
+  ];
+ } else {
+  items=[
+   {name:'Tấm thạch cao 1.2x2.4m (9mm)', unit:'Tấm', qty: Math.ceil(area*1.05/2.88)},
+   {name:'Thanh xương chính (3m)', unit:'Cây', qty: (area*0.32).toFixed(1)},
+   {name:'Thanh xương phụ (3m)', unit:'Cây', qty: (area*1.6).toFixed(1)},
+   {name:'Thanh viền V3m', unit:'Cây', qty: (area*0.4).toFixed(1)},
+   {name:'Ty treo + Tắc kê', unit:'Bộ', qty: Math.ceil(area*1.5)},
+   {name:'Vít bắn tấm 25mm', unit:'Con', qty: Math.ceil(area*18)},
+   {name:'Băng keo mối nối', unit:'m', qty: Math.ceil(area*0.35)}
+  ];
+ }
+
+ renderMaterialTable('tcMaterialResultWrap', items);
+}
+
+/* 2. XỬ LÝ NHÔM KÍNH XINGFA */
+function autoCalcXkArea(){
+ const w=parseFloat(document.getElementById('xkWidth').value)||0, h=parseFloat(document.getElementById('xkHeight').value)||0;
+ if(w>0 && h>0) document.getElementById('xkArea').value=(w*h).toFixed(2);
 }
 function calculateNhomKinhDetail(){
- const area=parseFloat(document.getElementById('xkArea').value)||0,price=parseFloat(document.getElementById('xkPrice').value)||0;
- if(area&&state.xk.length===1&&state.xk[0].qty===0){state.xk[0].qty=area;state.xk[0].price=price;renderXkRows()}
- const total=state.xk.reduce((s,r)=>s+r.qty*r.price,0),qty=state.xk.reduce((s,r)=>s+r.qty,0);
- document.getElementById('xkMaterialResult').innerHTML=`<p><b>Tổng khối lượng:</b> ${qty.toFixed(2)} m²</p><p><b>Tổng báo giá:</b> ${total.toLocaleString('vi-VN')} VNĐ</p><div class="border-t mt-2 pt-2"><b>Định mức vật tư tham khảo:</b><ul class="list-disc pl-4 mt-1"><li>Gioăng EPDM: <b>~${Math.ceil(qty*3.5)} m</b></li><li>Keo Silicon: <b>~${Math.ceil(qty*.3)} chai</b></li><li>Ke góc/phụ kiện liên kết: <b>~${Math.ceil(qty*4)} cái</b></li><li>Khóa, bản lề, bánh xe: <b>theo số bộ thực tế</b></li></ul></div>`;
- renderXkRows();
-}
-function calculateGoDetail(){
- const area=parseFloat(document.getElementById('goArea').value)||0,price=parseFloat(document.getElementById('goPrice').value)||0;
- if(area&&state.go.length===1&&state.go[0].qty===0){state.go[0].qty=area;state.go[0].price=price;renderGoRows()}
- const total=state.go.reduce((s,r)=>s+r.qty*r.price,0),qty=state.go.reduce((s,r)=>s+r.qty,0);
- document.getElementById('goMaterialResult').innerHTML=`<p><b>Tổng khối lượng:</b> ${qty.toFixed(2)} m²</p><p><b>Tổng báo giá:</b> ${total.toLocaleString('vi-VN')} VNĐ</p><div class="border-t mt-2 pt-2"><b>Định mức vật tư tham khảo:</b><ul class="list-disc pl-4 mt-1"><li>Tấm ván 1.22×2.44m: <b>${Math.ceil(qty*1.1/2.9768)} tấm</b></li><li>Chỉ dán cạnh PVC: <b>~${Math.ceil(qty*1.8)} m</b></li><li>Bản lề/ray trượt: <b>~${Math.ceil(qty*.8)} bộ/cái</b></li><li>Vít, cam, chốt: <b>theo bản vẽ gia công</b></li></ul></div>`;
- renderGoRows();
-}
-function escapeAttr(s){return escapeHtml(s).replace(/`/g,'&#96;')}
+ if(!isVipActivated){openProPromptModal();return;}
+ const catName=document.getElementById('xkCategoryName').value||'Cửa nhôm kính';
+ const locName=document.getElementById('xkLocationName').value||'Công trình';
+ const doorType=document.getElementById('xkDoorType').value;
+ const glassType=document.getElementById('xkKinhSelect').value;
+ const w=parseFloat(document.getElementById('xkWidth').value)||0;
+ const h=parseFloat(document.getElementById('xkHeight').value)||0;
+ const area=parseFloat(document.getElementById('xkArea').value)||0;
+ const price=parseFloat(document.getElementById('xkPrice').value)||0;
 
-function textCustomer(){
- return `Khách hàng/Công ty: ${document.getElementById('companyName').value||'Chưa nhập'}\nSĐT: ${document.getElementById('customerPhone').value||'—'}\nCông trình: ${document.getElementById('customerAddress').value||'—'}\nGhi chú: ${document.getElementById('customerNote').value||'—'}`;
+ if(area<=0){alert('Vui lòng nhập chiều rộng, chiều cao hoặc diện tích cửa!');return;}
+
+ const totalMoney = area * price;
+ document.getElementById('xkQuoteResult').innerHTML=`
+  <div class="flex justify-between items-center text-xs">
+   <div><b>${escapeHtml(catName)}</b> (${escapeHtml(locName)})</div>
+   <div class="text-right">Kích thước: <b>${w}m x ${h}m (${area.toFixed(2)} m²)</b></div>
+  </div>
+  <div class="flex justify-between items-center text-xs mt-1 pt-1 border-t">
+   <span>Kính: ${escapeHtml(glassType)}</span>
+   <span class="text-red-600 font-bold text-sm">Thành tiền: ${totalMoney.toLocaleString('vi-VN')} VNĐ</span>
+  </div>`;
+
+ const glassArea = (w > 0 && h > 0) ? ((w - 0.12) * (h - 0.12)).toFixed(2) : (area * 0.85).toFixed(2);
+ const nhomLen = (w > 0 && h > 0) ? ((w + h) * 4).toFixed(1) : (area * 5.5).toFixed(1);
+
+ let items=[
+  {name:'Thanh nhôm Xingfa khung bao + cánh', unit:'m', qty: nhomLen},
+  {name:`Diện tích kính (${glassType}) sau khấu trừ`, unit:'m²', qty: glassArea},
+  {name:'Gioăng cao su EPDM', unit:'m', qty: Math.ceil(area*4.5)},
+  {name:'Keo Silicone Apollo/Dow Corning', unit:'Chai', qty: Math.ceil(area*0.4)},
+  {name:'Ke góc vĩnh cửu / Ke ma thuật', unit:'Cái', qty: Math.ceil(area*4)},
+  {name:'Bộ phụ kiện Kinlong (Bản lề, khóa, tay nắm)', unit:'Bộ', qty: 1}
+ ];
+
+ renderMaterialTable('xkMaterialResultWrap', items);
 }
+
+/* 3. XỬ LÝ VÁN GỖ NỘI THẤT */
+function calculateGoDetail(){
+ if(!isVipActivated){openProPromptModal();return;}
+ const catName=document.getElementById('goCategoryName').value||'Tủ gỗ';
+ const locName=document.getElementById('goLocationName').value||'Phòng';
+ const W=parseFloat(document.getElementById('goW').value)||0;
+ const H=parseFloat(document.getElementById('goH').value)||0;
+ const D=parseFloat(document.getElementById('goD').value)||0;
+ const woodType=document.getElementById('goLoaiSelect').value;
+ const thick=parseFloat(document.getElementById('goThickSelect').value)||18;
+ const price=parseFloat(document.getElementById('goPrice').value)||0;
+
+ if(W<=0 || H<=0 || D<=0){alert('Vui lòng nhập đủ Ngang x Cao x Sâu (mm)!');return;}
+
+ const areaSqM = ((W * H) / 1000000).toFixed(2);
+ const totalMoney = areaSqM * price;
+
+ document.getElementById('goQuoteResult').innerHTML=`
+  <div class="flex justify-between items-center text-xs">
+   <div><b>${escapeHtml(catName)}</b> (${escapeHtml(locName)})</div>
+   <div class="text-right">Kích thước 3D: <b>${W}x${H}x${D} mm</b> (${areaSqM} m²)</div>
+  </div>
+  <div class="flex justify-between items-center text-xs mt-1 pt-1 border-t">
+   <span>Loại ván: ${escapeHtml(woodType)} (${thick}mm)</span>
+   <span class="text-red-600 font-bold text-sm">Thành tiền: ${totalMoney.toLocaleString('vi-VN')} VNĐ</span>
+  </div>`;
+
+ // Khấu trừ chiều dày ván (ví dụ 18mm)
+ const hSide = H - (thick * 2);
+ const wInner = W - (thick * 2);
+ const totalPvcMeters = Math.ceil(((H*4) + (W*4) + (D*6)) / 1000);
+ const estSheets = ((((H*D*2)+(W*D*2)+(wInner*D)+(W*H))/1000000)*1.15/2.98).toFixed(1);
+
+ let items=[
+  {name:`Vách đứng side (2 tấm): ${D} x ${hSide} mm`, unit:'Tấm', qty: 2},
+  {name:`Tấm Nóc & Đáy (2 tấm): ${D} x ${W} mm`, unit:'Tấm', qty: 2},
+  {name:`Đợt ngang trong (1 tấm): ${D-20} x ${wInner} mm`, unit:'Tấm', qty: 1},
+  {name:`Cánh tủ (2 cánh): ${(W/2-3).toFixed(0)} x ${(H-6).toFixed(0)} mm`, unit:'Tấm', qty: 2},
+  {name:`Tấm Hậu tủ (phủ lưng): ${W} x ${H} mm (Ván 6mm)`, unit:'Tấm', qty: 1},
+  {name:`Tổng số tấm ván dự tính (${woodType})`, unit:'Tấm 1.22x2.44m', qty: estSheets},
+  {name:'Nẹp chỉ dán cạnh PVC 21mm', unit:'m', qty: totalPvcMeters},
+  {name:'Bản lề giảm chấn inox 304', unit:'Cái', qty: 4},
+  {name:'Ốc cam, chốt gỗ, vít liên kết', unit:'Bộ', qty: 1}
+ ];
+
+ renderMaterialTable('goMaterialResultWrap', items);
+}
+
+/* HÀM DÙNG CHUNG RENDER BẢNG VẬT TƯ CHO PHÉP SỬA TRỰC TIẾP */
+function renderMaterialTable(containerId, items){
+ let html=`<table class="pdf-table mt-2">
+  <thead>
+   <tr>
+    <th class="text-left">Tên Vật Tư / Chi Tiết Tấm</th>
+    <th style="width:70px">ĐVT</th>
+    <th style="width:90px" class="text-right">Số Lượng</th>
+   </tr>
+  </thead>
+  <tbody>`;
+ items.forEach(item=>{
+  html+=`<tr>
+   <td><input type="text" class="editable-input font-medium" value="${escapeHtml(item.name)}"></td>
+   <td><input type="text" class="editable-input text-center" value="${escapeHtml(item.unit)}"></td>
+   <td><input type="text" class="editable-input text-right font-bold text-blue-700" value="${item.qty}"></td>
+  </tr>`;
+ });
+ html+=`</tbody></table>`;
+ document.getElementById(containerId).innerHTML=html;
+}
+
+/* KHỐI COPY ZALO & XUẤT PDF */
 function quoteText(type){
- let title='',lines=[],total=0;
+ let title='', lines=[], total=0;
+ const info=customerInfoHTML().replace(/<br>/g,'\n').replace(/<[^>]+>/g,'');
+
  if(type==='khoan'){
   title='BẢNG KHOÁN KHỐI LƯỢNG THI CÔNG';
-  document.querySelectorAll('.category-card').forEach(c=>{const name=c.querySelector('.cat-name-select').value;const qty=c.querySelector('.cat-total-qty').innerText;const money=c.querySelector('.cat-total-price').innerText;lines.push(`${name}: ${qty} — ${money}`);total+=parseFloat((money||'0').replace(/[^\d]/g,''))||0});
- }else if(type==='thachcao'){title='BÁO GIÁ THẠCH CAO';state.tc.forEach((r,i)=>{lines.push(`${i+1}. ${r.tam} | Khung: ${r.khung} | ${r.qty} m² × ${r.price.toLocaleString('vi-VN')} = ${(r.qty*r.price).toLocaleString('vi-VN')} đ`);total+=r.qty*r.price})}
- else if(type==='nhomkinh'){title='BÁO GIÁ NHÔM KÍNH XINGFA';state.xk.forEach((r,i)=>{lines.push(`${i+1}. ${r.he} | ${r.kinh} | ${r.qty} m² × ${r.price.toLocaleString('vi-VN')} = ${(r.qty*r.price).toLocaleString('vi-VN')} đ`);total+=r.qty*r.price})}
- else {title='BÁO GIÁ VÁN GỖ NỘI THẤT';state.go.forEach((r,i)=>{lines.push(`${i+1}. ${r.loai} | ${r.qty} m² × ${r.price.toLocaleString('vi-VN')} = ${(r.qty*r.price).toLocaleString('vi-VN')} đ`);total+=r.qty*r.price})}
- return `${title}\n${textCustomer()}\n\n${lines.join('\n')}\n\nTỔNG THÀNH TIỀN: ${total.toLocaleString('vi-VN')} đ`;
+  document.querySelectorAll('.category-card').forEach(c=>{
+   const name=c.querySelector('.cat-name-select').value;
+   const qty=c.querySelector('.cat-total-qty').innerText;
+   const money=c.querySelector('.cat-total-price').innerText;
+   lines.push(`• ${name}: ${qty} — ${money}`);
+   total+=parseFloat((money||'0').replace(/[^\d]/g,''))||0;
+  });
+ } else if(type==='thachcao'){
+  title='BÁO GIÁ THẠCH CAO & VẬT TƯ';
+  lines.push(document.getElementById('tcQuoteResult').innerText);
+ } else if(type==='nhomkinh'){
+  title='BÁO GIÁ NHÔM KÍNH XINGFA';
+  lines.push(document.getElementById('xkQuoteResult').innerText);
+ } else {
+  title='BÁO GIÁ VÁN GỖ NỘI THẤT 3D';
+  lines.push(document.getElementById('goQuoteResult').innerText);
+ }
+ return `${title}\n${info}\n------------------\n${lines.join('\n')}\n------------------\nTKL ESTIMATOR — Trân trọng cảm ơn!`;
 }
+
 async function copySectionText(type){
- if(type!=='khoan'&&!isVipActivated){alert('🔒 Sao chép báo giá là tính năng PRO. Hãy mở khóa bằng key 686886.');return;}
+ if(!isVipActivated && type!=='khoan'){openProPromptModal();return;}
  const text=quoteText(type);
- try{await navigator.clipboard.writeText(text);alert('✅ Đã sao chép nội dung. Mở Zalo và DÁN (Paste) để gửi.')}
+ try{await navigator.clipboard.writeText(text);alert('✅ Đã sao chép nội dung báo giá. Bạn có thể mở Zalo và dán (Paste) để gửi!')}
  catch(e){prompt('Sao chép nội dung dưới đây:',text)}
 }
 
 async function exportSectionPDF(elementId,filename){
- if(elementId!=='pdf-area-khoan'&&!isVipActivated){
-  alert('🔒 Xuất PDF phần Báo Giá Chuyên Sâu là tính năng PRO. Hãy mở khóa bằng key 686886.');
+ if(!isVipActivated && elementId!=='pdf-area-khoan'){
+  openProPromptModal();
   return;
  }
  const element=document.getElementById(elementId);
- if(!element){alert('Không tìm thấy nội dung cần xuất PDF.');return;}
+ if(!element){alert('Không tìm thấy nội dung!');return;}
  updatePrintInfo();
 
  const clone=element.cloneNode(true);
@@ -487,18 +733,24 @@ async function exportSectionPDF(elementId,filename){
  clone.style.width=Math.max(element.getBoundingClientRect().width,700)+'px';
  clone.style.background='#fff';clone.style.color='#111';clone.style.padding='16px';
  clone.querySelectorAll('.no-print').forEach(e=>e.remove());
- clone.querySelectorAll('input,select,button,textarea').forEach(e=>{if(e.tagName==='BUTTON')e.remove();});
+ clone.querySelectorAll('input,select,button,textarea').forEach(e=>{
+  if(e.tagName==='BUTTON')e.remove();
+  if(e.tagName==='INPUT' || e.tagName==='SELECT'){
+   const span=document.createElement('span');
+   span.innerText=e.value;
+   span.style.fontWeight='bold';
+   e.parentNode.replaceChild(span,e);
+  }
+ });
  clone.querySelectorAll('.hidden').forEach(e=>e.classList.remove('hidden'));
  document.body.appendChild(clone);
 
  try{
   if(typeof html2canvas==='undefined'||!window.jspdf)throw new Error('PDF libraries unavailable');
   await new Promise(r=>setTimeout(r,200));
-  if(document.fonts&&document.fonts.ready)await document.fonts.ready;
 
   const canvas=await html2canvas(clone,{
-   scale:1.5,backgroundColor:'#ffffff',useCORS:true,allowTaint:false,
-   logging:false,imageTimeout:15000,windowWidth:clone.scrollWidth,windowHeight:clone.scrollHeight
+   scale:1.5,backgroundColor:'#ffffff',useCORS:true,allowTaint:false,logging:false
   });
   const {jsPDF}=window.jspdf;
   const pdf=new jsPDF({orientation:'p',unit:'mm',format:'a4',compress:true});
@@ -517,10 +769,9 @@ async function exportSectionPDF(elementId,filename){
   pdf.save(filename);
  }catch(err){
   console.error('PDF ERROR:',err);
-  alert('❌ Xuất PDF thất bại. Hãy mở file khi có Internet để jsPDF/html2canvas tải đầy đủ rồi thử lại.');
+  alert('❌ Không thể xuất PDF. Hãy kiểm tra kết nối Internet để thư viện jsPDF tải đủ.');
  }finally{clone.remove();}
 }
 </script>
 </body>
 </html>
-
