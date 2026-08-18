@@ -206,8 +206,9 @@
      <div>
       <label class="text-[11px] font-semibold text-gray-600 block">Loại trần/vách:</label>
       <select id="tcTypeSelect" class="w-full border rounded p-1.5 text-xs bg-white">
-       <option value="chim">Trần chìm (Khung chìm)</option>
+       <option value="basi">Trần chìm hệ BASI</option>
        <option value="tha">Trần thả (Khung nổi 60x60)</option>
+       <option value="chim">Trần chìm tiêu chuẩn</option>
        <option value="vach">Vách thạch cao 2 mặt</option>
       </select>
      </div>
@@ -438,13 +439,12 @@ let freeLocationAdds = parseInt(localStorage.getItem('tkl_free_location_adds')||
 let deviceId = localStorage.getItem('tkl_device_id');
 if(!deviceId){ deviceId = 'TKL-' + Math.floor(100000 + Math.random()*900000); localStorage.setItem('tkl_device_id', deviceId); }
 
-// DANH SÁCH MẪU THỊ TRƯỜNG CHO BÁO GIÁ DÙNG CHUNG / TỰ ĐỘNG LỌC
 const MARKET_OPTIONS = {
  thachcao: {
-  he: ['Chìm', 'Thả (Chổi)', 'Vách 1 mặt', 'Vách 2 mặt', 'Khác (Tự nhập)'],
-  loai: ['Tấm Gyproc 9mm', 'Tấm Chống Ẩm 9mm', 'Tấm Chống Cháy 9.5mm', 'Tấm Duraflex 6mm', 'Khác (Tự nhập)'],
+  he: ['Chìm hệ BASI', 'Thả (Chổi 60x60)', 'Chìm tiêu chuẩn', 'Vách 1 mặt', 'Vách 2 mặt', 'Khác (Tự nhập)'],
+  loai: ['Tấm Gyproc 9mm', 'Tấm Chống Ẩm 9mm', 'Tấm Chống Cháy 9.5mm', 'Tấm Duraflex 6mm', 'Tấm thả 60x60cm', 'Khác (Tự nhập)'],
   thuonghieu: ['Vĩnh Tường BASI', 'Vĩnh Tường Alpha', 'Gyproc GypFrame', 'Boral', 'Khác (Tự nhập)'],
-  phukien: ['Ty treo, tắc kê, vít', 'Băng keo lưới & bột trét', 'Sơn bả Dulux', 'Khác (Tự nhập)']
+  phukien: ['Ty ren, tắc kê đạn', 'Ty treo, tắc kê, vít', 'Băng keo lưới & bột trét', 'Sơn bả Dulux', 'Khác (Tự nhập)']
  },
  go: {
   he: ['Tủ áo 2 cánh / 4 cánh', 'Tủ bếp trên / dưới', 'Giường ngủ có hộc', 'Kệ tivi treo', 'Khác (Tự nhập)'],
@@ -460,10 +460,9 @@ const MARKET_OPTIONS = {
  }
 };
 
-// MẢNG LƯU DỮ LIỆU BÁO GIÁ CHO 3 TAB
 let proQuoteData = {
  thachcao: [
-  { name: 'Trần thạch cao khung chìm cao cấp', he: 'Chìm', heCustom: '', loai: 'Tấm Gyproc 9mm', loaiCustom: '', thuonghieu: 'Vĩnh Tường BASI', thuonghieuCustom: '', phukien: 'Ty treo, tắc kê, vít', phukienCustom: '', price: 180000, qty: 50, unit: 'm²' }
+  { name: 'Trần thạch cao khung chìm BASI cao cấp', he: 'Chìm hệ BASI', heCustom: '', loai: 'Tấm Gyproc 9mm', loaiCustom: '', thuonghieu: 'Vĩnh Tường BASI', thuonghieuCustom: '', phukien: 'Ty ren, tắc kê đạn', phukienCustom: '', price: 180000, qty: 50, unit: 'm²' }
  ],
  go: [
   { name: 'Tủ áo MDF An Cường phủ Melamine', he: 'Tủ áo 2 cánh / 4 cánh', heCustom: '', loai: 'MDF Melamine 17mm', loaiCustom: '', thuonghieu: 'Gỗ An Cường', thuonghieuCustom: '', phukien: 'Bản lề giảm chấn, ray trượt', phukienCustom: '', price: 2200000, qty: 6, unit: 'm²' }
@@ -710,7 +709,6 @@ function calculateTotals(){
  document.getElementById('grandTotalPrice').innerText = `${Math.round(grandPrice).toLocaleString('vi-VN')} đ`;
 }
 
-// ==================== BÁO GIÁ PRO (CẬP NHẬT 3 TAB THẠCH CAO / GỖ / NHÔM KÍNH) ====================
 function renderProQuoteUI(type = 'thachcao'){
  const container = document.getElementById(`proQuoteContainer_${type}`);
  if(!container) return;
@@ -846,7 +844,6 @@ function copyProQuoteText(type = 'thachcao'){
  navigator.clipboard.writeText(txt).then(()=>alert('Đã sao chép bảng báo giá gửi Zalo!'));
 }
 
-// ==================== TÍNH VẬT TƯ CHUYÊN SÂU (GIỮ NGUYÊN HOÀN TOÀN TÍNH NĂNG) ====================
 function toggleCustomInput(prefix){
  const sel = document.getElementById(prefix+'Select');
  const cust = document.getElementById(prefix+'Custom');
@@ -860,6 +857,7 @@ function addTcVattuRoom(){
  document.getElementById('tcVattuRoomsContainer').appendChild(div);
 }
 
+// BÓC TÁCH VẬT TƯ THẠCH CAO THEO CÁC YÊU CẦU BỔ SUNG
 function calculateThachCaoVattuAuto(){
  let totalArea = 0; let totalPerimeter = 0;
  document.querySelectorAll('.tc-room-row').forEach(row=>{
@@ -874,28 +872,66 @@ function calculateThachCaoVattuAuto(){
  let brand = document.getElementById('tcBrandSelect').value;
  if(brand === 'custom') brand = document.getElementById('tcBrandCustom').value || 'Tự nhập';
 
- let tamQty = Math.ceil((totalArea * 1.05) / (1.22 * 2.44));
- let khungMain = (totalArea * 0.8).toFixed(1);
- let khungSub = (totalArea * 2.2).toFixed(1);
- let VBorder = Math.ceil(totalPerimeter / 3);
- let tyTreo = Math.ceil(totalArea * 1.2);
- let vitTam = Math.ceil(totalArea * 25);
-
  let html = `<div class="bg-blue-50 p-3 rounded-lg border border-blue-200 text-xs space-y-1 mb-2">
-  <p><strong>Loại thi công:</strong> ${tcType === 'chim' ? 'Trần chìm' : tcType === 'tha' ? 'Trần thả 60x60' : 'Vách 2 mặt'} — <strong>Thương hiệu:</strong> ${brand}</p>
+  <p><strong>Loại thi công:</strong> ${tcType === 'tha' ? 'Trần thả 60x60' : tcType === 'basi' ? 'Trần chìm hệ BASI' : tcType === 'vach' ? 'Vách 2 mặt' : 'Trần chìm tiêu chuẩn'} — <strong>Hệ vật tư:</strong> ${brand}</p>
   <p><strong>Tổng diện tích:</strong> <span class="text-blue-700 font-bold">${totalArea.toFixed(2)} m²</span> — <strong>Chu vi viền:</strong> ${totalPerimeter.toFixed(2)} m</p>
  </div>
  <table class="pdf-table">
-  <thead><tr><th>Tên Vật Tư</th><th>ĐVT</th><th>Số Lượng Định Mức</th></tr></thead>
-  <tbody>
-   <tr><td>Tấm thạch cao tiêu chuẩn (1.22x2.44m)</td><td>Tấm</td><td><strong>${tamQty}</strong> (đã hao hụt 5%)</td></tr>
-   <tr><td>Thanh xương chính (Thanh gánh 3m)</td><td>Cây</td><td><strong>${khungMain}</strong></td></tr>
-   <tr><td>Thanh xương phụ (Thanh U/C 3m)</td><td>Cây</td><td><strong>${khungSub}</strong></td></tr>
-   <tr><td>Thanh V viền tường (3m)</td><td>Cây</td><td><strong>${VBorder}</strong></td></tr>
-   <tr><td>Ty treo / Ty ren + Tắc kê đạn</td><td>Bộ</td><td><strong>${tyTreo}</strong></td></tr>
-   <tr><td>Vít bắn tấm thạch cao</td><td>Con</td><td><strong>${vitTam}</strong></td></tr>
-  </tbody>
- </table>`;
+  <thead><tr><th>Tên Vật Tư Bóc Tách Chi Tiết</th><th>ĐVT</th><th>Số Lượng / Định Mức Khấu Trừ</th></tr></thead>
+  <tbody>`;
+
+ if (tcType === 'tha') {
+  // TRẦN THẢ 60x60: Tấm 60cm, Khung T3m6 chịu lực, T1m2 ngang, T0m6 dọc[span_9](start_span)[span_9](end_span)
+  let tam60 = Math.ceil((totalArea * 1.05) / 0.36);
+  let t3m6 = Math.ceil((totalArea * 0.8) / 3.6);
+  let t1m2 = Math.ceil((totalArea * 1.7) / 1.2);
+  let t0m6 = Math.ceil((totalArea * 1.7) / 0.6);
+  let vBorder = Math.ceil(totalPerimeter / 3);
+  let tyTreo = Math.ceil(totalArea * 1.2);
+
+  html += `
+   <tr><td>Tấm thạch cao thả 60x60cm (hoặc tấm hoa văn)</td><td>Tấm</td><td><strong>${tam60}</strong> (đã hao hụt 5%)</td></tr>
+   <tr><td>Khung T 3m6 (Thanh gánh chịu lực chính)</td><td>Cây</td><td><strong>${t3m6}</strong></td></tr>
+   <tr><td>Thanh T 1m2 (Chạy ngang)</td><td>Cây</td><td><strong>${t1m2}</strong></td></tr>
+   <tr><td>Thanh T 0m6 (Chạy dọc)</td><td>Cây</td><td><strong>${t0m6}</strong></td></tr>
+   <tr><td>Thanh V viền tường (3m)</td><td>Cây</td><td><strong>${vBorder}</strong></td></tr>
+   <tr><td>Ty treo / Ty ren + Tắc kê đạn</td><td>Bộ</td><td><strong>${tyTreo}</strong></td></tr>`;
+ } 
+ else if (tcType === 'basi') {
+  // TRẦN CHÌM HỆ BASI: Ty ren, tắc kê đạn, khung chịu lực xương cá, khung phụ[span_10](start_span)[span_10](end_span)
+  let tamQty = Math.ceil((totalArea * 1.05) / (1.22 * 2.44));
+  let xuongCa = Math.ceil((totalArea * 0.8) / 3); 
+  let khungPhu = Math.ceil((totalArea * 2.2) / 3);
+  let vBorder = Math.ceil(totalPerimeter / 3);
+  let tyRenBasi = Math.ceil(totalArea * 1.2);
+  let vitTam = Math.ceil(totalArea * 25);
+
+  html += `
+   <tr><td>Tấm thạch cao tiêu chuẩn Gyproc (1.22x2.44m)</td><td>Tấm</td><td><strong>${tamQty}</strong> (đã hao hụt 5%)</td></tr>
+   <tr><td>Khung chịu lực xương cá (BASI 3m)</td><td>Cây</td><td><strong>${xuongCa}</strong></td></tr>
+   <tr><td>Khung phụ (Thanh U/C BASI 3m)</td><td>Cây</td><td><strong>${khungPhu}</strong></td></tr>
+   <tr><td>Thanh V viền tường (3m)</td><td>Cây</td><td><strong>${vBorder}</strong></td></tr>
+   <tr><td>Ty ren + Tắc kê đạn (Hệ BASI)</td><td>Bộ</td><td><strong>${tyRenBasi}</strong></td></tr>
+   <tr><td>Vít bắn tấm thạch cao + Bột trét xử lý mối nối</td><td>Gói</td><td><strong>${vitTam} con vít</strong> / Trọn gói phụ kiện</td></tr>`;
+ } 
+ else {
+  // CÁC HỆ CÒN LẠI: Tính U trên tổng khối lượng đã đưa ra bao gồm U chịu lực gom thành 1 loại U[span_11](start_span)[span_11](end_span)
+  let tamQty = (tcType === 'vach') ? Math.ceil((totalArea * 2 * 1.05) / (1.22 * 2.44)) : Math.ceil((totalArea * 1.05) / (1.22 * 2.44));
+  // Gom U chịu lực và U khung thành 1 loại U chung tính trên tổng khối lượng
+  let tongThanhU = Math.ceil((totalArea * 3.0) / 3); 
+  let vBorder = Math.ceil(totalPerimeter / 3);
+  let tyTreo = Math.ceil(totalArea * 1.2);
+  let vitTam = Math.ceil(totalArea * (tcType === 'vach' ? 45 : 25));
+
+  html += `
+   <tr><td>Tấm thạch cao (1.22x2.44m) ${tcType === 'vach' ? '(Vách 2 mặt)' : ''}</td><td>Tấm</td><td><strong>${tamQty}</strong> (đã bao gồm hao hụt)</td></tr>
+   <tr><td>Thanh U tổng hợp (Bao gồm U chịu lực & U khung)</td><td>Cây (3m)</td><td><strong>${tongThanhU}</strong> (tính trên tổng khối lượng)</td></tr>
+   <tr><td>Thanh V viền tường (3m)</td><td>Cây</td><td><strong>${vBorder}</strong></td></tr>
+   <tr><td>Ty treo / Tắc kê đạn</td><td>Bộ</td><td><strong>${tyTreo}</strong></td></tr>
+   <tr><td>Vít bắn tấm & Phụ kiện vật tư phụ</td><td>Lô</td><td><strong>${vitTam} con vít</strong> / Trọn bộ</td></tr>`;
+ }
+
+ html += `</tbody></table>`;
  document.getElementById('tcVattuResultWrap').innerHTML = html;
 }
 
