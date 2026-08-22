@@ -1080,7 +1080,19 @@ async function exportSectionPDF(elementId, fileName){
  clone.querySelectorAll('input, select').forEach(el=>{
   if(el.tagName === 'INPUT' && (el.type==='number'||el.type==='text')){
    const span = document.createElement('span');
-   span.innerText = el.value || '';
+   let label = '';
+   if (el.classList.contains('loc-length')) label = 'Dài: ';
+   else if (el.classList.contains('loc-width')) label = 'Rộng: ';
+   else if (el.classList.contains('loc-radius')) label = 'Bán kính R: ';
+   else if (el.classList.contains('tc-r-length')) label = 'Dài: ';
+   else if (el.classList.contains('tc-r-width')) label = 'Rộng: ';
+   else if (el.classList.contains('go-i-w')) label = 'Ngang(W): ';
+   else if (el.classList.contains('go-i-h')) label = 'Cao(H): ';
+   else if (el.classList.contains('go-i-d')) label = 'Sâu(D): ';
+   else if (el.classList.contains('xk-i-w')) label = 'Rộng: ';
+   else if (el.classList.contains('xk-i-h')) label = 'Cao: ';
+
+   span.innerText = el.value ? `${label}${el.value}` : '';
    span.className = 'font-bold px-1';
    el.parentNode.replaceChild(span, el);
   } else if(el.tagName === 'SELECT'){
