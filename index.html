@@ -1076,20 +1076,50 @@ async function exportSectionPDF(elementId, fileName){
  clone.querySelectorAll('.no-print').forEach(e=>e.remove());
  clone.querySelectorAll('.pdf-header').forEach(e=>e.classList.remove('hidden'));
 
+ if (elementId === 'pdf-area-khoan') {
+  let headerAdded = false;
+  clone.querySelectorAll('.category-card').forEach(card => {
+   let hasInputs = false;
+   card.querySelectorAll('.location-row').forEach(row => {
+    const shape = row.querySelector('.loc-shape')?.value;
+    if (shape === 'rect') {
+     const l = row.querySelector('.loc-length')?.value;
+     const w = row.querySelector('.loc-width')?.value;
+     if (l || w) hasInputs = true;
+    } else if (shape === 'circle') {
+     const r = row.querySelector('.loc-radius')?.value;
+     if (r) hasInputs = true;
+    }
+   });
+
+   if (hasInputs && !headerAdded) {
+    const headerDiv = document.createElement('div');
+    headerDiv.className = 'font-bold text-xs text-gray-600 border-b pb-1 mb-2 flex justify-between';
+    headerDiv.innerHTML = '<span>Kích thước chung (m):</span><span class="text-blue-600">Dài x Rộng (hoặc Bán kính R)</span>';
+    const locList = card.querySelector('.location-list');
+    if (locList) locList.insertBefore(headerDiv, locList.firstChild);
+    headerAdded = true;
+   }
+  });
+ }
+
  clone.querySelectorAll('input, select').forEach(el=>{
   if(el.tagName === 'INPUT' && (el.type==='number'||el.type==='text')){
    const span = document.createElement('span');
    let label = '';
-   if (el.classList.contains('loc-length')) label = 'Dài: ';
-   else if (el.classList.contains('loc-width')) label = 'Rộng: ';
-   else if (el.classList.contains('loc-radius')) label = 'Bán kính R: ';
-   else if (el.classList.contains('tc-r-length')) label = 'Dài: ';
-   else if (el.classList.contains('tc-r-width')) label = 'Rộng: ';
-   else if (el.classList.contains('go-i-w')) label = 'Ngang(W): ';
-   else if (el.classList.contains('go-i-h')) label = 'Cao(H): ';
-   else if (el.classList.contains('go-i-d')) label = 'Sâu(D): ';
-   else if (el.classList.contains('xk-i-w')) label = 'Rộng: ';
-   else if (el.classList.contains('xk-i-h')) label = 'Cao: ';
+   if (elementId === 'pdf-area-khoan') {
+    if (el.classList.contains('loc-length') || el.classList.contains('loc-width') || el.classList.contains('loc-radius')) {
+     label = '';
+    }
+   } else {
+    if (el.classList.contains('tc-r-length')) label = 'Dài: ';
+    else if (el.classList.contains('tc-r-width')) label = 'Rộng: ';
+    else if (el.classList.contains('go-i-w')) label = 'Ngang(W): ';
+    else if (el.classList.contains('go-i-h')) label = 'Cao(H): ';
+    else if (el.classList.contains('go-i-d')) label = 'Sâu(D): ';
+    else if (el.classList.contains('xk-i-w')) label = 'Rộng: ';
+    else if (el.classList.contains('xk-i-h')) label = 'Cao: ';
+   }
 
    span.innerText = el.value ? `${label}${el.value}` : '';
    span.className = 'font-bold px-1';
